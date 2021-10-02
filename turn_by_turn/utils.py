@@ -1,0 +1,99 @@
+"""
+Utils
+-----
+
+Utility functions for convenience operations on turn-by-turn data objects in this package.
+"""
+import logging
+from typing import Dict, Sequence
+
+import numpy as np
+import pandas as pd
+
+from turn_by_turn.constants import PLANES
+from turn_by_turn.structures import TbtData
+
+LOGGER = logging.getLogger(__name__)
+
+
+def generate_average_tbtdata(tbtdata: TbtData) -> TbtData:
+    """
+    Takes a ``TbtData`` object and returns another containing the averaged matrices over all
+    bunches/particles at all used BPMs.
+
+    Args:
+        tbtdata (TbtData): entry TbtData object from measurements.
+
+    Returns:
+        A new TbtData object with the averaged matrices.
+    """
+    data = tbtdata.matrices
+    bpm_names = data[0]["X"].index
+
+    new_matrices = [
+        {
+            plane: pd.DataFrame(
+                index=bpm_names,
+                data=get_averaged_data(bpm_names, data, plane, tbtdata.nturns),
+                dtype=float,
+            )
+            for plane in PLANES
+        }
+    ]
+    return TbtData(new_matrices, tbtdata.date, [1], tbtdata.nturns)
+
+
+def get_averaged_data(
+    bpm_names: Sequence[str], matrices: Sequence[Dict[str, pd.DataFrame]], plane: str, turns: int
+) -> np.ndarray:
+    """
+    Average data from a given plane from the matrices of a ``TbtData``.
+
+    Args:
+        bpm_names (Sequence[str]):
+        matrices (Sequence[Dict[str, pd.DataFrame]]): matrices from a ``TbtData`` object.
+        plane (str): name of the given plane to average in.
+        turns (int): number of turns in the provided data.
+
+    Returns:
+        A numpy array with the averaged data for the given bpms.
+    """
+    bpm_data: np.ndarray = np.empty((len(bpm_names), len(matrices), turns))
+    bpm_data.fill(np.nan)
+
+    for index, bpm in enumerate(bpm_names):
+        for i in range(len(matrices)):
+            bpm_data[index, i, : len(matrices[i][plane].loc[bpm])] = matrices[i][plane].loc[bpm]
+
+    return np.nanmean(bpm_data, axis=1)
+
+
+def add_noise(data: np.ndarray, noise: float) -> np.ndarray:
+    return data + noise * np.random.standard_normal(data.shape)
+
+
+def numpy_to_tbts(names: np.ndarray, matrix: np.ndarray) -> TbtData:
+    """
+    Converts turn by turn matrices and names into a ``TbTData`` object.
+
+    Args:
+        names (np.ndarray): Numpy array of BPM names.
+        matrix (np.ndarray): 4D Numpy array [quantity, BPM, particle/bunch No., turn No.]
+            quantities in order [x, y].
+
+    Returns:
+        A ``TbtData`` object loaded with the matrices in the provided numpy arrays.
+    """
+    # get list of TbTFile from 4D matrix ...
+    _, nbpms, nbunches, nturns = matrix.shape
+    matrices = []
+    indices = []
+    for index in range(nbunches):
+        matrices.append(
+            {
+                "X": pd.DataFrame(index=names, data=matrix[0, :, index, :]),
+                "Y": pd.DataFrame(index=names, data=matrix[1, :, index, :]),
+            }
+        )
+        indices.append(index)
+    return TbtData(matrices, None, indices, nturns)

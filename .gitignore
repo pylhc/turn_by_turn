@@ -1,0 +1,11 @@
+.idea/
+.hypothesis*
+.project
+.pydevproject
+.vscode
+.cache
+/doc/_build/*
+*pycache*
+build/*
+dist/*
+tfs_pandas.egg-info/*
