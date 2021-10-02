@@ -127,11 +127,11 @@ def _read_ascii(file_path: Union[str, Path]) -> Tuple[List[Dict[str, pd.DataFram
             try:
                 bpm_names[NUM_TO_PLANE[plane_num]].append(bpm_name)
                 bpm_data[NUM_TO_PLANE[plane_num]].append(bpm_samples)
-            except KeyError:
+            except KeyError as error:
                 raise ValueError(
                     f"Plane number '{plane_num}' found in file '{file_path}'.\n"
                     "Only '0' and '1' are allowed."
-                )
+                ) from error
 
     matrices = [{p: pd.DataFrame(index=bpm_names[p], data=np.array(bpm_data[p])) for p in PLANES}]
     return matrices, date
@@ -159,4 +159,5 @@ def _parse_date(line: str) -> datetime:
     try:
         return datetime.strptime(date_str, _ACQ_DATE_FORMAT)
     except ValueError:
+        LOGGER.warning("No date found in file, defaulting to today")
         return datetime.today()

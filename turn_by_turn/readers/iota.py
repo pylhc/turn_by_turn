@@ -58,10 +58,12 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
             ]
             return TbtData(matrices, date, bunch_ids, nturns)
 
-        except TypeError:
+        except TypeError as error:
             LOGGER.error("An unhandled TypeError occured during reading.")
-        except KeyError:
+            raise IOError(f"An error occured when reading the file at {file_path.absolute()}") from error
+        except KeyError as error:
             LOGGER.error("An unhandled KeyError occured during reading.")
+            raise IOError(f"An error occured when reading the file at {file_path.absolute()}") from error
 
 
 def _get_turn_by_turn_data_v1(hdf5_v1_file: h5py.File, plane: str, version: int) -> np.ndarray:
