@@ -6,7 +6,6 @@ import h5py
 import numpy as np
 import pandas as pd
 import pytest
-from omc3.tbt_converter import converter_entrypoint
 
 from turn_by_turn.constants import PLANES, PRINT_PRECISION
 from turn_by_turn.io import read_tbt, write_lhc_ascii, write_tbt
