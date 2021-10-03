@@ -44,7 +44,13 @@ def read_tbt(file_path: Union[str, Path], datatype: str = "lhc") -> TbtData:
     """
     file_path = Path(file_path)
     LOGGER.info(f"Loading turn-by-turn matrices from '{file_path}'")
-    return DATA_READERS[datatype.lower()].read_tbt(file_path)
+    try:
+        return DATA_READERS[datatype.lower()].read_tbt(file_path)
+    except KeyError as error:
+        LOGGER.error(
+            f"Unsupported datatype '{datatype}' was provided, should be one of {list(DATA_READERS.keys())}"
+        )
+        raise ValueError("The provided datatype is not supported by this package") from error
 
 
 def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = None) -> None:

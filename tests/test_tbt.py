@@ -16,6 +16,15 @@ INPUTS_DIR = Path(__file__).parent / "inputs"
 ASCII_PRECISION = 0.5 / np.power(10, PRINT_PRECISION)
 
 
+@pytest.mark.parametrize("datatype", ["invalid", "not_supported"])
+def test_tbt_read_raises_on_invalid_datatype(_sdds_file, caplog, datatype):
+    with pytest.raises(ValueError):
+        _ = read_tbt(_sdds_file, datatype=datatype)
+
+    for record in caplog.records:
+        assert record.levelname == "ERROR"
+
+
 def test_tbt_write_read_sdds_binary(_sdds_file, _test_file):
     origin = read_tbt(_sdds_file)
     write_tbt(_test_file, origin)
