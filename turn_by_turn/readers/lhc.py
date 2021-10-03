@@ -160,4 +160,4 @@ def _parse_date(line: str) -> datetime:
         return datetime.strptime(date_str, _ACQ_DATE_FORMAT)
     except ValueError:
         LOGGER.warning("No date found in file, defaulting to today")
-        return datetime.today()
+        return datetime.today().replace(tzinfo=tz.tzutc())
