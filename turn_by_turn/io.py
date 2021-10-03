@@ -54,7 +54,7 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = N
     Args:
         output_path (Union[str, Path]): path to a the disk locatino where to write the data.
         tbt_data (TbtData): the ``TbtData`` object to write to disk.
-        noise (float): optional noise to add too the data.
+        noise (float): optional noise to add to the data.
     """
     output_path = Path(output_path)
     LOGGER.info(f"Writing TbTdata in binary SDDS (LHC) format at '{output_path.absolute()}'")
