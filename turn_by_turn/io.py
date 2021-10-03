@@ -49,7 +49,7 @@ def read_tbt(file_path: Union[str, Path], datatype: str = "lhc") -> TbtData:
 
 def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = None) -> None:
     """
-    Write a ``TbtData`` object's data to file, in the **SDDS** format.
+    Write a ``TbtData`` object's data to file, in the ``LHC``'s **SDDS** format.
 
     Args:
         output_path (Union[str, Path]): path to a the disk locatino where to write the data.
