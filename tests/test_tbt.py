@@ -10,7 +10,7 @@ from turn_by_turn.constants import PLANES, PRINT_PRECISION
 from turn_by_turn.io import read_tbt, write_lhc_ascii, write_tbt
 from turn_by_turn.readers import iota, ptc, trackone
 from turn_by_turn.structures import TbtData
-from turn_by_turn.utils import generate_average_tbtdata
+from turn_by_turn.utils import add_noise, generate_average_tbtdata
 
 INPUTS_DIR = Path(__file__).parent / "inputs"
 ASCII_PRECISION = 0.5 / np.power(10, PRINT_PRECISION)
@@ -165,6 +165,34 @@ def test_tbt_write_read_ascii(_sdds_file, _test_file):
     write_lhc_ascii(_test_file, origin)
     new = read_tbt(_test_file)
     _compare_tbt(origin, new, True)
+
+
+def test_noise_addition():
+    array = _create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin).flatten()
+    noised = add_noise(array, noise=0)
+    np.testing.assert_array_equal(array, noised)
+
+    noised = add_noise(array, sigma=0)
+    np.testing.assert_array_equal(array, noised)
+
+    noised = add_noise(array, noise=5)
+    assert np.std(array) != np.std(noised)
+    with pytest.raises(AssertionError):
+        np.testing.assert_array_equal(array, noised)
+
+    noised = add_noise(array, sigma=1)
+    assert np.std(array) != np.std(noised)
+    with pytest.raises(AssertionError):
+        np.testing.assert_array_equal(array, noised)
+
+
+def test_add_noise_raises_on_both_arguments():
+    array = _create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin).flatten()
+    with pytest.raises(ValueError):
+        _ = add_noise(array, noise=5, sigma=1)
+
+
+# ----- Helpers ----- #
 
 
 def _compare_tbt(origin: TbtData, new: TbtData, no_binary: bool, max_deviation=ASCII_PRECISION) -> None:

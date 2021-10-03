@@ -84,12 +84,12 @@ def add_noise(data: np.ndarray, noise: float = None, sigma: float = None) -> np.
     Returns:
         A new numpy array with added noise to the provided data.
     """
-    if noise and not sigma:
+    if noise is not None and sigma is None:
         scaling = noise
-    elif sigma and not noise:
+    elif sigma is not None and noise is None:
         scaling = sigma * np.std(data, dtype=np.float64)
-    else:
-        raise ValueError("Only one of 'noise' or 'sigma' should be provided/")
+    elif (noise is None and sigma is None) or (noise is not None and sigma is not None):
+        raise ValueError("Only one of 'noise' or 'sigma' should be provided")
     return np.array(data + scaling * np.random.default_rng().standard_normal(data.shape))
 
 
