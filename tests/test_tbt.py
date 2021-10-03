@@ -1,4 +1,3 @@
-import tempfile
 from datetime import datetime
 from pathlib import Path
 
@@ -204,83 +203,77 @@ def _create_data(nturns, nbpm, function) -> np.ndarray:
 
 
 @pytest.fixture()
+def _hdf5_file(tmp_path) -> Path:
+    with h5py.File(tmp_path / "test_file.hdf5", "w") as hd5_file:
+        hd5_file.create_dataset(
+            "N:IBE2RH",
+            data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin).flatten(),
+        )
+        hd5_file.create_dataset(
+            "N:IBE2RV",
+            data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.cos).flatten(),
+        )
+        hd5_file.create_dataset(
+            "N:IBE2RS",
+            data=_create_data(np.linspace(0, 20, 2000, endpoint=False), 1, np.exp).flatten(),
+        )
+
+        hd5_file.create_dataset(
+            "N:IBA1CH",
+            data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin).flatten(),
+        )
+        hd5_file.create_dataset(
+            "N:IBA1CV",
+            data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.cos).flatten(),
+        )
+        hd5_file.create_dataset(
+            "N:IBA1CS",
+            data=_create_data(np.linspace(0, 20, 2000, endpoint=False), 1, np.exp).flatten(),
+        )
+    yield tmp_path / "test_file.hdf5"
+
+
+@pytest.fixture()
+def _hdf5_file_v2(tmp_path) -> Path:
+    with h5py.File(tmp_path / "test_file_v2.hdf5", "w") as hd5_file:
+        hd5_file.create_group("A1C")
+        hd5_file["A1C"].create_dataset(
+            "Horizontal",
+            data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin).flatten(),
+        )
+        hd5_file["A1C"].create_dataset(
+            "Vertical",
+            data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.cos).flatten(),
+        )
+        hd5_file["A1C"].create_dataset(
+            "Intensity",
+            data=_create_data(np.linspace(0, 20, 2000, endpoint=False), 1, np.exp).flatten(),
+        )
+
+        hd5_file.create_group("E2R")
+        hd5_file["E2R"].create_dataset(
+            "Horizontal",
+            data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin).flatten(),
+        )
+        hd5_file["E2R"].create_dataset(
+            "Vertical",
+            data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.cos).flatten(),
+        )
+        hd5_file["E2R"].create_dataset(
+            "Intensity",
+            data=_create_data(np.linspace(0, 20, 2000, endpoint=False), 1, np.exp).flatten(),
+        )
+    yield tmp_path / "test_file_v2.hdf5"
+
+
+@pytest.fixture()
+def _test_file(tmp_path) -> Path:
+    yield tmp_path / "test_file"
+
+
+@pytest.fixture()
 def _sdds_file() -> Path:
     return INPUTS_DIR / "test_file.sdds"
-
-
-@pytest.fixture()
-def _hdf5_file() -> Path:
-    with tempfile.TemporaryDirectory() as cwd:
-        with h5py.File(Path(cwd) / "test_file.hdf5", "w") as hd5_file:
-            hd5_file.create_dataset(
-                "N:IBE2RH",
-                data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin).flatten(),
-            )
-            hd5_file.create_dataset(
-                "N:IBE2RV",
-                data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.cos).flatten(),
-            )
-            hd5_file.create_dataset(
-                "N:IBE2RS",
-                data=_create_data(np.linspace(0, 20, 2000, endpoint=False), 1, np.exp).flatten(),
-            )
-
-            hd5_file.create_dataset(
-                "N:IBA1CH",
-                data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin).flatten(),
-            )
-            hd5_file.create_dataset(
-                "N:IBA1CV",
-                data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.cos).flatten(),
-            )
-            hd5_file.create_dataset(
-                "N:IBA1CS",
-                data=_create_data(np.linspace(0, 20, 2000, endpoint=False), 1, np.exp).flatten(),
-            )
-
-        yield Path(cwd) / "test_file.hdf5"
-
-
-@pytest.fixture()
-def _hdf5_file_v2() -> Path:
-    with tempfile.TemporaryDirectory() as cwd:
-        with h5py.File(Path(cwd) / "test_file_v2.hdf5", "w") as hd5_file:
-
-            hd5_file.create_group("A1C")
-            hd5_file["A1C"].create_dataset(
-                "Horizontal",
-                data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin).flatten(),
-            )
-            hd5_file["A1C"].create_dataset(
-                "Vertical",
-                data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.cos).flatten(),
-            )
-            hd5_file["A1C"].create_dataset(
-                "Intensity",
-                data=_create_data(np.linspace(0, 20, 2000, endpoint=False), 1, np.exp).flatten(),
-            )
-
-            hd5_file.create_group("E2R")
-            hd5_file["E2R"].create_dataset(
-                "Horizontal",
-                data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin).flatten(),
-            )
-            hd5_file["E2R"].create_dataset(
-                "Vertical",
-                data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.cos).flatten(),
-            )
-            hd5_file["E2R"].create_dataset(
-                "Intensity",
-                data=_create_data(np.linspace(0, 20, 2000, endpoint=False), 1, np.exp).flatten(),
-            )
-
-        yield Path(cwd) / "test_file_v2.hdf5"
-
-
-@pytest.fixture()
-def _test_file() -> Path:
-    with tempfile.TemporaryDirectory() as cwd:
-        yield Path(cwd) / "test_file"
 
 
 @pytest.fixture()
