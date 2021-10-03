@@ -126,6 +126,12 @@ def test_tbt_read_ptc(_ptc_file):
     _compare_tbt(origin, new, True)
 
 
+def test_tbt_read_ptc_defaults_date(_ptc_file_no_date):
+    new = ptc.read_tbt(_ptc_file_no_date)
+    assert new.date.day == datetime.today().day
+    assert new.date.tzname() == "UTC"
+
+
 def test_tbt_read_trackone(_ptc_file):
     new = trackone.read_tbt(_ptc_file)
     origin = _original_trackone(True)
@@ -307,6 +313,11 @@ def _sdds_file() -> Path:
 @pytest.fixture()
 def _ptc_file() -> Path:
     return INPUTS_DIR / "test_trackone"
+
+
+@pytest.fixture()
+def _ptc_file_no_date() -> Path:
+    return INPUTS_DIR / "test_trackone_no_date"
 
 
 @pytest.fixture()
