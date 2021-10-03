@@ -13,6 +13,7 @@ from typing import Dict, List, Sequence, Tuple, Union
 
 import numpy as np
 import pandas as pd
+from dateutil import tz
 
 from turn_by_turn.constants import (
     COLPARTICLE,
@@ -84,9 +85,9 @@ def _read_header(lines: Sequence[str]) -> datetime:
         if parts[1] in date_str.keys():
             date_str[parts[1]] = parts[-1].strip("'\" ")
 
-    if any(ds is None for ds in date_str.keys()):
-        LOGGER.warning("Date and Time could not be read from Tbt File! Using now()!")
-        return datetime.utcnow(), idx_line
+    if any(datestring is None for datestring in date_str.values()):
+        LOGGER.warning("No date found in file, defaulting to today")
+        return datetime.today().replace(tzinfo=tz.tzutc()), idx_line
 
     return datetime.strptime(f"{date_str[DATE]} {date_str[TIME]}", TIME_FORMAT), idx_line
 
