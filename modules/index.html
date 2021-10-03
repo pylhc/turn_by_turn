@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Turn_by_Turn Modules &mdash; turn-by-turn 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Turn_by_Turn Readers" href="../readers/index.html" />
+    <link rel="prev" title="Welcome to turn_by_turn’ documentation!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html">
+            <img src="../_static/omc_logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Turn_by_Turn Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#constants">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#io">IO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#structures">Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#utils">Utils</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Readers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readers/index.html">Turn_by_Turn Readers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../readers/index.html#esrf-tbt-data-handler">ESRF TbT Data Handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../readers/index.html#iota-tbt-data-handler">Iota TbT Data Handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../readers/index.html#lhc-tbt-data-handler">LHC TbT Data Handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../readers/index.html#ptc-tbt-data-handler">PTC TbT Data Handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../readers/index.html#trackone-tbt-data-handler">Trackone TbT Data Handler</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">turn-by-turn</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Turn_by_Turn Modules</li>
+      <li class="wy-breadcrumbs-aside">
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/pylhc/turn-by-turn" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-turn_by_turn.constants">
+<span id="turn-by-turn-modules"></span><h1>Turn_by_Turn Modules<a class="headerlink" href="#module-turn_by_turn.constants" title="Permalink to this headline"></a></h1>
+<section id="constants">
+<h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline"></a></h2>
+<p>Specific constants to be used in <code class="docutils literal notranslate"><span class="pre">turn_by_turn</span></code>, to help with consistency.</p>
+</section>
+<span class="target" id="module-turn_by_turn.io"></span><section id="io">
+<h2>IO<a class="headerlink" href="#io" title="Permalink to this headline"></a></h2>
+<p>This module contains high-level I/O functions to read and write tur-by-turn data objects in different
+formats.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="turn_by_turn.io.read_tbt">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.io.</span></span><span class="sig-name descname"><span class="pre">read_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'lhc'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#turn_by_turn.structures.TbtData" title="turn_by_turn.structures.TbtData"><span class="pre">turn_by_turn.structures.TbtData</span></a></span></span><a class="reference internal" href="../_modules/turn_by_turn/io.html#read_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#turn_by_turn.io.read_tbt" title="Permalink to this definition"></a></dt>
+<dd><p>Calls the appropriate loader for the provided matrices type and returns a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object of the
+loaded matrices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>]</em>) -- path to a file containing TbtData.</p></li>
+<li><p><strong>datatype</strong> (<em>str</em>) -- type of matrices in the file, determines the reader to use. Case-insensitive,
+defaults to <code class="docutils literal notranslate"><span class="pre">lhc</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object with the loaded matrices.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="turn_by_turn.io.write_lhc_ascii">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.io.</span></span><span class="sig-name descname"><span class="pre">write_lhc_ascii</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tbt_data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#turn_by_turn.structures.TbtData" title="turn_by_turn.structures.TbtData"><span class="pre">turn_by_turn.structures.TbtData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/io.html#write_lhc_ascii"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#turn_by_turn.io.write_lhc_ascii" title="Permalink to this definition"></a></dt>
+<dd><p>Write a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object’s data to file, in the ASCII <strong>SDDS</strong> format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_path</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>]</em>) -- path to a the disk locatino where to write the data.</p></li>
+<li><p><strong>tbt_data</strong> (<a class="reference internal" href="#turn_by_turn.structures.TbtData" title="turn_by_turn.structures.TbtData"><em>TbtData</em></a>) -- the <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object to write to disk.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="turn_by_turn.io.write_tbt">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.io.</span></span><span class="sig-name descname"><span class="pre">write_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tbt_data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#turn_by_turn.structures.TbtData" title="turn_by_turn.structures.TbtData"><span class="pre">turn_by_turn.structures.TbtData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/io.html#write_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#turn_by_turn.io.write_tbt" title="Permalink to this definition"></a></dt>
+<dd><p>Write a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object’s data to file, in the <code class="docutils literal notranslate"><span class="pre">LHC</span></code>’s <strong>SDDS</strong> format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_path</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>]</em>) -- path to a the disk locatino where to write the data.</p></li>
+<li><p><strong>tbt_data</strong> (<a class="reference internal" href="#turn_by_turn.structures.TbtData" title="turn_by_turn.structures.TbtData"><em>TbtData</em></a>) -- the <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object to write to disk.</p></li>
+<li><p><strong>noise</strong> (<em>float</em>) -- optional noise to add to the data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<span class="target" id="module-turn_by_turn.structures"></span><section id="structures">
+<h2>Structures<a class="headerlink" href="#structures" title="Permalink to this headline"></a></h2>
+<p>Data structures to be used in <code class="docutils literal notranslate"><span class="pre">turn_by_turn</span></code> to store turn-by-turn measurement data.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="turn_by_turn.structures.TbtData">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.structures.</span></span><span class="sig-name descname"><span class="pre">TbtData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrices</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.datetime</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">datetime.datetime(2021,</span> <span class="pre">10,</span> <span class="pre">3,</span> <span class="pre">16,</span> <span class="pre">14,</span> <span class="pre">39,</span> <span class="pre">322965,</span> <span class="pre">tzinfo=tzutc())</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_ids</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nturns</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TbtData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#turn_by_turn.structures.TbtData" title="Permalink to this definition"></a></dt>
+<dd><p>Object holding a representation of a Turn-by-Turn Data.</p>
+</dd></dl>
+
+</section>
+<span class="target" id="module-turn_by_turn.utils"></span><section id="utils">
+<h2>Utils<a class="headerlink" href="#utils" title="Permalink to this headline"></a></h2>
+<p>Utility functions for convenience operations on turn-by-turn data objects in this package.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="turn_by_turn.utils.add_noise">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.utils.</span></span><span class="sig-name descname"><span class="pre">add_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/utils.html#add_noise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#turn_by_turn.utils.add_noise" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the given data with added noise. Noise is generated as a standard normal distribution (mean=0,
+standard_deviation=1) with the size of the input data, and scaled by the a factor before being added to
+the provided data. Said factor can either be provided, or calculated from the input data’s own standard
+deviation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>np.ndarray</em>) -- your input data.</p></li>
+<li><p><strong>noise</strong> (<em>float</em>) -- the scaling factor applied to the generated noise.</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) -- if provided, then that number times the standard deviation of the input data will
+be used as scaling factor for the generated noise.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new numpy array with added noise to the provided data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="turn_by_turn.utils.generate_average_tbtdata">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.utils.</span></span><span class="sig-name descname"><span class="pre">generate_average_tbtdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tbtdata</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#turn_by_turn.structures.TbtData" title="turn_by_turn.structures.TbtData"><span class="pre">turn_by_turn.structures.TbtData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#turn_by_turn.structures.TbtData" title="turn_by_turn.structures.TbtData"><span class="pre">turn_by_turn.structures.TbtData</span></a></span></span><a class="reference internal" href="../_modules/turn_by_turn/utils.html#generate_average_tbtdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#turn_by_turn.utils.generate_average_tbtdata" title="Permalink to this definition"></a></dt>
+<dd><p>Takes a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object and returns another containing the averaged matrices over all
+bunches/particles at all used BPMs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tbtdata</strong> (<a class="reference internal" href="#turn_by_turn.structures.TbtData" title="turn_by_turn.structures.TbtData"><em>TbtData</em></a>) -- entry TbtData object from measurements.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new TbtData object with the averaged matrices.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="turn_by_turn.utils.get_averaged_data">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.utils.</span></span><span class="sig-name descname"><span class="pre">get_averaged_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bpm_names</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrices</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plane</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turns</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/utils.html#get_averaged_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#turn_by_turn.utils.get_averaged_data" title="Permalink to this definition"></a></dt>
+<dd><p>Average data from a given plane from the matrices of a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bpm_names</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) -- </p></li>
+<li><p><strong>matrices</strong> (<em>Sequence</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>pd.DataFrame</em><em>]</em><em>]</em>) -- matrices from a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object.</p></li>
+<li><p><strong>plane</strong> (<em>str</em>) -- name of the given plane to average in.</p></li>
+<li><p><strong>turns</strong> (<em>int</em>) -- number of turns in the provided data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A numpy array with the averaged data for the given bpms.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="turn_by_turn.utils.numpy_to_tbts">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.utils.</span></span><span class="sig-name descname"><span class="pre">numpy_to_tbts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#turn_by_turn.structures.TbtData" title="turn_by_turn.structures.TbtData"><span class="pre">turn_by_turn.structures.TbtData</span></a></span></span><a class="reference internal" href="../_modules/turn_by_turn/utils.html#numpy_to_tbts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#turn_by_turn.utils.numpy_to_tbts" title="Permalink to this definition"></a></dt>
+<dd><p>Converts turn by turn matrices and names into a <code class="docutils literal notranslate"><span class="pre">TbTData</span></code> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>names</strong> (<em>np.ndarray</em>) -- Numpy array of BPM names.</p></li>
+<li><p><strong>matrix</strong> (<em>np.ndarray</em>) -- 4D Numpy array [quantity, BPM, particle/bunch No., turn No.]
+quantities in order [x, y].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object loaded with the matrices in the provided numpy arrays.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to turn_by_turn’ documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../readers/index.html" class="btn btn-neutral float-right" title="Turn_by_Turn Readers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>turn_by_turn.io &mdash; turn-by-turn 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html">
+            <img src="../../_static/omc_logo.svg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Turn_by_Turn Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#constants">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#io">IO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#structures">Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#utils">Utils</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Readers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html">Turn_by_Turn Readers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#esrf-tbt-data-handler">ESRF TbT Data Handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#iota-tbt-data-handler">Iota TbT Data Handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#lhc-tbt-data-handler">LHC TbT Data Handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#ptc-tbt-data-handler">PTC TbT Data Handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#trackone-tbt-data-handler">Trackone TbT Data Handler</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">turn-by-turn</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>turn_by_turn.io</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for turn_by_turn.io</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">IO</span>
+<span class="sd">--</span>
+
+<span class="sd">This module contains high-level I/O functions to read and write tur-by-turn data objects in different</span>
+<span class="sd">formats.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">sdds</span>
+
+<span class="kn">from</span> <span class="nn">turn_by_turn.constants</span> <span class="kn">import</span> <span class="n">FORMAT_STRING</span><span class="p">,</span> <span class="n">PLANE_TO_NUM</span><span class="p">,</span> <span class="n">PLANES</span>
+<span class="kn">from</span> <span class="nn">turn_by_turn.readers</span> <span class="kn">import</span> <span class="n">esrf</span><span class="p">,</span> <span class="n">iota</span><span class="p">,</span> <span class="n">lhc</span><span class="p">,</span> <span class="n">ptc</span><span class="p">,</span> <span class="n">trackone</span>
+<span class="kn">from</span> <span class="nn">turn_by_turn.structures</span> <span class="kn">import</span> <span class="n">TbtData</span>
+<span class="kn">from</span> <span class="nn">turn_by_turn.utils</span> <span class="kn">import</span> <span class="n">add_noise</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+
+<span class="n">DATA_READERS</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">lhc</span><span class="o">=</span><span class="n">lhc</span><span class="p">,</span>
+    <span class="n">iota</span><span class="o">=</span><span class="n">iota</span><span class="p">,</span>
+    <span class="n">esrf</span><span class="o">=</span><span class="n">esrf</span><span class="p">,</span>
+    <span class="n">ptc</span><span class="o">=</span><span class="n">ptc</span><span class="p">,</span>
+    <span class="n">trackone</span><span class="o">=</span><span class="n">trackone</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="read_tbt"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.io.read_tbt">[docs]</a><span class="k">def</span> <span class="nf">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">datatype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;lhc&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calls the appropriate loader for the provided matrices type and returns a ``TbtData`` object of the</span>
+<span class="sd">    loaded matrices.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        file_path (Union[str, Path]): path to a file containing TbtData.</span>
+<span class="sd">        datatype (str): type of matrices in the file, determines the reader to use. Case-insensitive,</span>
+<span class="sd">            defaults to ``lhc``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A ``TbtData`` object with the loaded matrices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading turn-by-turn matrices from &#39;</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DATA_READERS</span><span class="p">[</span><span class="n">datatype</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span><span class="o">.</span><span class="n">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unsupported datatype &#39;</span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">&#39; was provided, should be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">DATA_READERS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The provided datatype is not supported by this package&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span></div>
+
+
+<div class="viewcode-block" id="write_tbt"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.io.write_tbt">[docs]</a><span class="k">def</span> <span class="nf">write_tbt</span><span class="p">(</span><span class="n">output_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write a ``TbtData`` object&#39;s data to file, in the ``LHC``&#39;s **SDDS** format.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_path (Union[str, Path]): path to a the disk locatino where to write the data.</span>
+<span class="sd">        tbt_data (TbtData): the ``TbtData`` object to write to disk.</span>
+<span class="sd">        noise (float): optional noise to add to the data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Writing TbTdata in binary SDDS (LHC) format at &#39;</span><span class="si">{</span><span class="n">output_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+    <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">_matrices_to_array</span><span class="p">(</span><span class="n">tbt_data</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">noise</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">add_noise</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">noise</span><span class="p">)</span>
+
+    <span class="n">definitions</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">lhc</span><span class="o">.</span><span class="n">ACQ_STAMP</span><span class="p">,</span> <span class="s2">&quot;llong&quot;</span><span class="p">),</span>
+        <span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">lhc</span><span class="o">.</span><span class="n">N_BUNCHES</span><span class="p">,</span> <span class="s2">&quot;long&quot;</span><span class="p">),</span>
+        <span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">lhc</span><span class="o">.</span><span class="n">N_TURNS</span><span class="p">,</span> <span class="s2">&quot;long&quot;</span><span class="p">),</span>
+        <span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">lhc</span><span class="o">.</span><span class="n">BUNCH_ID</span><span class="p">,</span> <span class="s2">&quot;long&quot;</span><span class="p">),</span>
+        <span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">lhc</span><span class="o">.</span><span class="n">BPM_NAMES</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">),</span>
+        <span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">lhc</span><span class="o">.</span><span class="n">POSITIONS</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">],</span> <span class="s2">&quot;float&quot;</span><span class="p">),</span>
+        <span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">lhc</span><span class="o">.</span><span class="n">POSITIONS</span><span class="p">[</span><span class="s2">&quot;Y&quot;</span><span class="p">],</span> <span class="s2">&quot;float&quot;</span><span class="p">),</span>
+    <span class="p">]</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">tbt_data</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e9</span><span class="p">,</span>
+        <span class="n">tbt_data</span><span class="o">.</span><span class="n">nbunches</span><span class="p">,</span>
+        <span class="n">tbt_data</span><span class="o">.</span><span class="n">nturns</span><span class="p">,</span>
+        <span class="n">tbt_data</span><span class="o">.</span><span class="n">bunch_ids</span><span class="p">,</span>
+        <span class="n">tbt_data</span><span class="o">.</span><span class="n">matrices</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;X&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">PLANE_TO_NUM</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">]]),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">PLANE_TO_NUM</span><span class="p">[</span><span class="s2">&quot;Y&quot;</span><span class="p">]]),</span>
+    <span class="p">]</span>
+    <span class="n">sdds</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sdds</span><span class="o">.</span><span class="n">SddsFile</span><span class="p">(</span><span class="s2">&quot;SDDS1&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">definitions</span><span class="p">,</span> <span class="n">values</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">.sdds&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="write_lhc_ascii"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.io.write_lhc_ascii">[docs]</a><span class="k">def</span> <span class="nf">write_lhc_ascii</span><span class="p">(</span><span class="n">output_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write a ``TbtData`` object&#39;s data to file, in the ASCII **SDDS** format.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_path (Union[str, Path]): path to a the disk locatino where to write the data.</span>
+<span class="sd">        tbt_data (TbtData): the ``TbtData`` object to write to disk.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Writing TbTdata in ASCII SDDS (LHC) format at &#39;</span><span class="si">{</span><span class="n">output_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">bunch_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tbt_data</span><span class="o">.</span><span class="n">nbunches</span><span class="p">):</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Writing data for bunch </span><span class="si">{</span><span class="n">bunch_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">tbt_data</span><span class="o">.</span><span class="n">bunch_ids</span><span class="p">[</span><span class="n">bunch_id</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">tbt_data</span><span class="o">.</span><span class="n">nbunches</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">output_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
+            <span class="n">_write_header</span><span class="p">(</span><span class="n">tbt_data</span><span class="p">,</span> <span class="n">bunch_id</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
+            <span class="n">_write_tbt_data</span><span class="p">(</span><span class="n">tbt_data</span><span class="p">,</span> <span class="n">bunch_id</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_matrices_to_array</span><span class="p">(</span><span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert  the matrices of a ``TbtData`` object to a numpy array.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tbt_data (TbtData): ``TbtData`` object to convert the data from.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A numpy array with the matrices data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Getting number of BPMs from the measurement data.&quot;</span><span class="p">)</span>
+    <span class="n">n_bpms</span> <span class="o">=</span> <span class="n">tbt_data</span><span class="o">.</span><span class="n">matrices</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;X&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_bpms</span><span class="p">,</span> <span class="n">tbt_data</span><span class="o">.</span><span class="n">nbunches</span><span class="p">,</span> <span class="n">tbt_data</span><span class="o">.</span><span class="n">nturns</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Converting matrices data &quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tbt_data</span><span class="o">.</span><span class="n">nbunches</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">PLANES</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">PLANE_TO_NUM</span><span class="p">[</span><span class="n">plane</span><span class="p">],</span> <span class="p">:,</span> <span class="n">index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">tbt_data</span><span class="o">.</span><span class="n">matrices</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="n">plane</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+
+<span class="k">def</span> <span class="nf">_write_header</span><span class="p">(</span><span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">bunch_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">output_file</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write the appropriate headers for a ``TbtData`` object&#39;s given bunch_id in the ASCII **SDDS**  format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#SDDSASCIIFORMAT v1</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;#Created: </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> at %H:%M:%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> By: Python SDDS converter</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#Number of turns: </span><span class="si">{</span><span class="n">tbt_data</span><span class="o">.</span><span class="n">nturns</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;#Number of horizontal monitors: </span><span class="si">{</span><span class="n">tbt_data</span><span class="o">.</span><span class="n">matrices</span><span class="p">[</span><span class="n">bunch_id</span><span class="p">][</span><span class="s1">&#39;X&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;#Number of vertical monitors: </span><span class="si">{</span><span class="n">tbt_data</span><span class="o">.</span><span class="n">matrices</span><span class="p">[</span><span class="n">bunch_id</span><span class="p">][</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#Acquisition date: </span><span class="si">{</span><span class="n">tbt_data</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> at %H:%M:%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_write_tbt_data</span><span class="p">(</span><span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">bunch_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">output_file</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Write a ``TbtData`` object&#39;s data for the given bunch_id to disk in the ASCII **SDDS** format.&quot;&quot;&quot;</span>
+    <span class="n">row_format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">  &quot;</span> <span class="o">+</span> <span class="n">FORMAT_STRING</span> <span class="o">*</span> <span class="n">tbt_data</span><span class="o">.</span><span class="n">nturns</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">PLANES</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">bpm_index</span><span class="p">,</span> <span class="n">bpm_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tbt_data</span><span class="o">.</span><span class="n">matrices</span><span class="p">[</span><span class="n">bunch_id</span><span class="p">][</span><span class="n">plane</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">):</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="n">tbt_data</span><span class="o">.</span><span class="n">matrices</span><span class="p">[</span><span class="n">bunch_id</span><span class="p">][</span><span class="n">plane</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">bpm_name</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+            <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">row_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">PLANE_TO_NUM</span><span class="p">[</span><span class="n">plane</span><span class="p">],</span> <span class="n">bpm_name</span><span class="p">,</span> <span class="n">bpm_index</span><span class="p">,</span> <span class="o">*</span><span class="n">samples</span><span class="p">))</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
