@@ -23,6 +23,15 @@ def test_tbt_write_read_sdds_binary(_sdds_file, _test_file):
     _compare_tbt(origin, new, False)
 
 
+def test_tbt_write_read_sdds_binary_with_noise(_sdds_file, _test_file):
+    origin = read_tbt(_sdds_file)
+    write_tbt(_test_file, origin, noise=2)
+    new = read_tbt(f"{_test_file}.sdds")
+
+    with pytest.raises(AssertionError):  # should be different
+        _compare_tbt(origin, new, False)
+
+
 def test_tbt_read_hdf5(_hdf5_file):
 
     origin = TbtData(

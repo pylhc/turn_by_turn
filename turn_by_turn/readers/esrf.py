@@ -3,7 +3,7 @@ ESRF TbT Data Handler
 ---------------------
 
 Data handling for turn-by-turn measurement files from ``ESRF`` (files in matlab format).
-This should be considered experimental at the moment.
+This module is untested and should be considered experimental at the moment.
 """
 
 import json
