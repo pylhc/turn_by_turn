@@ -1,6 +1,3 @@
-Turn_by_Turn Modules
-********************
-
 .. automodule:: turn_by_turn.constants
     :members:
 

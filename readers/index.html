@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Turn_by_Turn Readers &mdash; turn-by-turn 0.1.0 documentation</title>
+  <title>ESRF TbT Data Handler &mdash; turn-by-turn 0.1.0 documentation</title>
   
 
   
@@ -40,7 +40,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="Turn_by_Turn Modules" href="../modules/index.html" /> 
+    <link rel="prev" title="Constants" href="../modules/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -94,24 +94,18 @@
             
               <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Turn_by_Turn Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#constants">Constants</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#io">IO</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#structures">Structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#utils">Utils</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html#io">IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html#structures">Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html#utils">Utils</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Readers</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Turn_by_Turn Readers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#esrf-tbt-data-handler">ESRF TbT Data Handler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#iota-tbt-data-handler">Iota TbT Data Handler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#lhc-tbt-data-handler">LHC TbT Data Handler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ptc-tbt-data-handler">PTC TbT Data Handler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#trackone-tbt-data-handler">Trackone TbT Data Handler</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ESRF TbT Data Handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#iota-tbt-data-handler">Iota TbT Data Handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#lhc-tbt-data-handler">LHC TbT Data Handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#ptc-tbt-data-handler">PTC TbT Data Handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#trackone-tbt-data-handler">Trackone TbT Data Handler</a></li>
 </ul>
 
             
@@ -162,7 +156,7 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Turn_by_Turn Readers</li>
+      <li>ESRF TbT Data Handler</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -184,10 +178,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-turn_by_turn.readers.esrf">
-<span id="turn-by-turn-readers"></span><h1>Turn_by_Turn Readers<a class="headerlink" href="#module-turn_by_turn.readers.esrf" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="esrf-tbt-data-handler">
-<h2>ESRF TbT Data Handler<a class="headerlink" href="#esrf-tbt-data-handler" title="Permalink to this headline">¶</a></h2>
+  <span class="target" id="module-turn_by_turn.readers.esrf"></span><div class="section" id="esrf-tbt-data-handler">
+<h1>ESRF TbT Data Handler<a class="headerlink" href="#esrf-tbt-data-handler" title="Permalink to this headline">¶</a></h1>
 <p>Data handling for turn-by-turn measurement files from <code class="docutils literal notranslate"><span class="pre">ESRF</span></code> (files in matlab format).
 This module is untested and should be considered experimental at the moment.</p>
 <dl class="py function">
@@ -221,7 +213,7 @@ turn No.] quantities in order [x, y]</p>
 
 </div>
 <span class="target" id="module-turn_by_turn.readers.iota"></span><div class="section" id="iota-tbt-data-handler">
-<h2>Iota TbT Data Handler<a class="headerlink" href="#iota-tbt-data-handler" title="Permalink to this headline">¶</a></h2>
+<h1>Iota TbT Data Handler<a class="headerlink" href="#iota-tbt-data-handler" title="Permalink to this headline">¶</a></h1>
 <p>Data handling for turn-by-turn measurement files from <code class="docutils literal notranslate"><span class="pre">Iota</span></code> (files in hdf5 format).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="turn_by_turn.readers.iota.read_tbt">
@@ -240,7 +232,7 @@ As there are 2 possible versions of the HDF5 format, this will try them both suc
 
 </div>
 <span class="target" id="module-turn_by_turn.readers.lhc"></span><div class="section" id="lhc-tbt-data-handler">
-<h2>LHC TbT Data Handler<a class="headerlink" href="#lhc-tbt-data-handler" title="Permalink to this headline">¶</a></h2>
+<h1>LHC TbT Data Handler<a class="headerlink" href="#lhc-tbt-data-handler" title="Permalink to this headline">¶</a></h1>
 <p>Data handling for turn-by-turn measurement files from the <code class="docutils literal notranslate"><span class="pre">LHC</span></code> (files in SDDS format).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="turn_by_turn.readers.lhc.read_tbt">
@@ -259,7 +251,7 @@ format to figure out which reading method to use.</p>
 
 </div>
 <span class="target" id="module-turn_by_turn.readers.ptc"></span><div class="section" id="ptc-tbt-data-handler">
-<h2>PTC TbT Data Handler<a class="headerlink" href="#ptc-tbt-data-handler" title="Permalink to this headline">¶</a></h2>
+<h1>PTC TbT Data Handler<a class="headerlink" href="#ptc-tbt-data-handler" title="Permalink to this headline">¶</a></h1>
 <p>Data handling for turn-by-turn measurement files from the <code class="docutils literal notranslate"><span class="pre">PTC</span></code> code.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="turn_by_turn.readers.ptc.Segment">
@@ -312,7 +304,7 @@ format to figure out which reading method to use.</p>
 
 </div>
 <span class="target" id="module-turn_by_turn.readers.trackone"></span><div class="section" id="trackone-tbt-data-handler">
-<h2>Trackone TbT Data Handler<a class="headerlink" href="#trackone-tbt-data-handler" title="Permalink to this headline">¶</a></h2>
+<h1>Trackone TbT Data Handler<a class="headerlink" href="#trackone-tbt-data-handler" title="Permalink to this headline">¶</a></h1>
 <p>Data handling for turn-by-turn measurement files from the <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> code.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="turn_by_turn.readers.trackone.get_structure_from_trackone">
@@ -368,7 +360,6 @@ turn No.] quantities in order [x, px, y, py, t, pt, s, E].</p>
 </dd></dl>
 
 </div>
-</div>
 
 
            </div>
@@ -376,7 +367,7 @@ turn No.] quantities in order [x, px, y, py, t, pt, s, E].</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../modules/index.html" class="btn btn-neutral float-left" title="Turn_by_Turn Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../modules/index.html" class="btn btn-neutral float-left" title="Constants" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

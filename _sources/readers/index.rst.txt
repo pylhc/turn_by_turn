@@ -1,6 +1,3 @@
-Turn_by_Turn Readers
-********************
-
 .. automodule:: turn_by_turn.readers.esrf
     :members:
 

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Turn_by_Turn Modules &mdash; turn-by-turn 0.1.0 documentation</title>
+  <title>Constants &mdash; turn-by-turn 0.1.0 documentation</title>
   
 
   
@@ -40,7 +40,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Turn_by_Turn Readers" href="../readers/index.html" />
+    <link rel="next" title="ESRF TbT Data Handler" href="../readers/index.html" />
     <link rel="prev" title="Welcome to turn_by_turn’ documentation!" href="../index.html" /> 
 </head>
 
@@ -95,24 +95,18 @@
             
               <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Turn_by_Turn Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#constants">Constants</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#io">IO</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#structures">Structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#utils">Utils</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#io">IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#structures">Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#utils">Utils</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Readers</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../readers/index.html">Turn_by_Turn Readers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../readers/index.html#esrf-tbt-data-handler">ESRF TbT Data Handler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../readers/index.html#iota-tbt-data-handler">Iota TbT Data Handler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../readers/index.html#lhc-tbt-data-handler">LHC TbT Data Handler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../readers/index.html#ptc-tbt-data-handler">PTC TbT Data Handler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../readers/index.html#trackone-tbt-data-handler">Trackone TbT Data Handler</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../readers/index.html">ESRF TbT Data Handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readers/index.html#iota-tbt-data-handler">Iota TbT Data Handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readers/index.html#lhc-tbt-data-handler">LHC TbT Data Handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readers/index.html#ptc-tbt-data-handler">PTC TbT Data Handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readers/index.html#trackone-tbt-data-handler">Trackone TbT Data Handler</a></li>
 </ul>
 
             
@@ -163,7 +157,7 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Turn_by_Turn Modules</li>
+      <li>Constants</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -185,14 +179,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-turn_by_turn.constants">
-<span id="turn-by-turn-modules"></span><h1>Turn_by_Turn Modules<a class="headerlink" href="#module-turn_by_turn.constants" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="constants">
-<h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
+  <span class="target" id="module-turn_by_turn.constants"></span><div class="section" id="constants">
+<h1>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h1>
 <p>Specific constants to be used in <code class="docutils literal notranslate"><span class="pre">turn_by_turn</span></code>, to help with consistency.</p>
 </div>
 <span class="target" id="module-turn_by_turn.io"></span><div class="section" id="io">
-<h2>IO<a class="headerlink" href="#io" title="Permalink to this headline">¶</a></h2>
+<h1>IO<a class="headerlink" href="#io" title="Permalink to this headline">¶</a></h1>
 <p>This module contains high-level I/O functions to read and write tur-by-turn data objects in different
 formats.</p>
 <dl class="py function">
@@ -245,17 +237,17 @@ defaults to <code class="docutils literal notranslate"><span class="pre">lhc</sp
 
 </div>
 <span class="target" id="module-turn_by_turn.structures"></span><div class="section" id="structures">
-<h2>Structures<a class="headerlink" href="#structures" title="Permalink to this headline">¶</a></h2>
+<h1>Structures<a class="headerlink" href="#structures" title="Permalink to this headline">¶</a></h1>
 <p>Data structures to be used in <code class="docutils literal notranslate"><span class="pre">turn_by_turn</span></code> to store turn-by-turn measurement data.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="turn_by_turn.structures.TbtData">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.structures.</span></span><span class="sig-name descname"><span class="pre">TbtData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrices</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.datetime</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">datetime.datetime(2021,</span> <span class="pre">10,</span> <span class="pre">4,</span> <span class="pre">6,</span> <span class="pre">41,</span> <span class="pre">19,</span> <span class="pre">302450,</span> <span class="pre">tzinfo=tzutc())</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_ids</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nturns</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TbtData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#turn_by_turn.structures.TbtData" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.structures.</span></span><span class="sig-name descname"><span class="pre">TbtData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrices</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.datetime</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">datetime.datetime(2021,</span> <span class="pre">10,</span> <span class="pre">4,</span> <span class="pre">6,</span> <span class="pre">45,</span> <span class="pre">14,</span> <span class="pre">239184,</span> <span class="pre">tzinfo=tzutc())</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_ids</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nturns</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TbtData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#turn_by_turn.structures.TbtData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Object holding a representation of a Turn-by-Turn Data.</p>
 </dd></dl>
 
 </div>
 <span class="target" id="module-turn_by_turn.utils"></span><div class="section" id="utils">
-<h2>Utils<a class="headerlink" href="#utils" title="Permalink to this headline">¶</a></h2>
+<h1>Utils<a class="headerlink" href="#utils" title="Permalink to this headline">¶</a></h1>
 <p>Utility functions for convenience operations on turn-by-turn data objects in this package.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="turn_by_turn.utils.add_noise">
@@ -332,7 +324,6 @@ quantities in order [x, y].</p></li>
 </dd></dl>
 
 </div>
-</div>
 
 
            </div>
@@ -340,7 +331,7 @@ quantities in order [x, y].</p></li>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../readers/index.html" class="btn btn-neutral float-right" title="Turn_by_Turn Readers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../readers/index.html" class="btn btn-neutral float-right" title="ESRF TbT Data Handler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to turn_by_turn’ documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
