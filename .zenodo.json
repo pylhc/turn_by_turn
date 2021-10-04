@@ -44,6 +44,6 @@
             "affiliation": "CERN"
         }
     ],
-    "title": "TFS-Pandas",
-    "description": "Python 3 package to handle TFS files."
+    "title": "Turn-by-Turn",
+    "description": "Python 3 package I/O of turn-by-turn BPM measurements data from different particle accelerators."
 }
