@@ -33,7 +33,7 @@ DEPENDENCIES = ["numpy>=1.19.0", "pandas>=1.0", "sdds>=0.1.3", "scipy>=1.5.0", "
 # Extra dependencies
 EXTRA_DEPENDENCIES = {
     "test": ["pytest>=5.2", "pytest-cov>=2.9"],
-    "doc": ["sphinx", "sphinx_rtd_theme"],
+    "doc": ["sphinx", "sphinx_rtd_theme<1.0"],
 }
 EXTRA_DEPENDENCIES.update(
     {"all": [elem for list_ in EXTRA_DEPENDENCIES.values() for elem in list_]}
