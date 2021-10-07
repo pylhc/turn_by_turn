@@ -47,7 +47,7 @@ def read_tbt(file_path: Union[str, Path], datatype: str = "lhc") -> TbtData:
     try:
         return DATA_READERS[datatype.lower()].read_tbt(file_path)
     except KeyError as error:
-        LOGGER.error(
+        LOGGER.exception(
             f"Unsupported datatype '{datatype}' was provided, should be one of {list(DATA_READERS.keys())}"
         )
         raise ValueError("The provided datatype is not supported by this package") from error
