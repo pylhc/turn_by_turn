@@ -12,7 +12,7 @@ import pandas as pd
 
 from turn_by_turn.constants import PLANES
 from turn_by_turn.errors import ExclusiveArgumentsError
-from turn_by_turn.structures import TbtData
+from turn_by_turn.structures import TbtData, TransverseData
 
 LOGGER = logging.getLogger(__name__)
 
@@ -29,17 +29,21 @@ def generate_average_tbtdata(tbtdata: TbtData) -> TbtData:
         A new TbtData object with the averaged matrices.
     """
     data = tbtdata.matrices
-    bpm_names = data[0]["X"].index
+    bpm_names = data[0].X.index
 
     new_matrices = [
-        {
-            plane: pd.DataFrame(
+        TransverseData(
+            X=pd.DataFrame(
                 index=bpm_names,
-                data=get_averaged_data(bpm_names, data, plane, tbtdata.nturns),
+                data=get_averaged_data(bpm_names, data, "X", tbtdata.nturns),
                 dtype=float,
-            )
-            for plane in PLANES
-        }
+            ),
+            Y=pd.DataFrame(
+                index=bpm_names,
+                data=get_averaged_data(bpm_names, data, "Y", tbtdata.nturns),
+                dtype=float,
+            ),
+        )
     ]
     return TbtData(new_matrices, tbtdata.date, [1], tbtdata.nturns)
 
@@ -112,10 +116,10 @@ def numpy_to_tbts(names: np.ndarray, matrix: np.ndarray) -> TbtData:
     indices = []
     for index in range(nbunches):
         matrices.append(
-            {
-                "X": pd.DataFrame(index=names, data=matrix[0, :, index, :]),
-                "Y": pd.DataFrame(index=names, data=matrix[1, :, index, :]),
-            }
+            TransverseData(
+                X=pd.DataFrame(index=names, data=matrix[0, :, index, :]),
+                Y=pd.DataFrame(index=names, data=matrix[1, :, index, :]),
+            )
         )
         indices.append(index)
     return TbtData(matrices, None, indices, nturns)

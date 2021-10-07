@@ -34,7 +34,7 @@ from turn_by_turn.constants import (
     TYPES,
 )
 from turn_by_turn.errors import PTCFormatError
-from turn_by_turn.structures import TbtData
+from turn_by_turn.structures import TbtData, TransverseData
 
 LOGGER = logging.getLogger()
 Segment = namedtuple("Segment", ["number", "turns", "particles", "element", "name"])
@@ -67,8 +67,10 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     ]
     matrices = _read_data(lines, matrices, column_indices)
     for bunch in range(n_particles):
-        for plane in PLANES:
-            matrices[bunch][plane] = pd.DataFrame(matrices[bunch][plane]).transpose()
+        matrices[bunch] = TransverseData(
+            X=pd.DataFrame(matrices[bunch]["X"]).transpose(),
+            Y=pd.DataFrame(matrices[bunch]["Y"]).transpose(),
+        )
 
     LOGGER.debug(f"Read Tbt matrices from: '{file_path.absolute()}'")
     return TbtData(matrices, date, particles, n_turns)

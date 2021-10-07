@@ -1,6 +1,6 @@
 """Exposes TbtData, read_tbt and write_tbt directly in the package's namespace."""
 from .io import read_tbt, write_tbt
-from .structures import TbtData
+from .structures import TbtData, TransverseData
 
 __title__ = "turn-by-turn"
 __description__ = (

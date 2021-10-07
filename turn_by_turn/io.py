@@ -86,7 +86,7 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = N
         tbt_data.nbunches,
         tbt_data.nturns,
         tbt_data.bunch_ids,
-        tbt_data.matrices[0]["X"].index.to_numpy(),
+        tbt_data.matrices[0].X.index.to_numpy(),
         np.ravel(data[PLANE_TO_NUM["X"]]),
         np.ravel(data[PLANE_TO_NUM["Y"]]),
     ]
@@ -123,7 +123,7 @@ def _matrices_to_array(tbt_data: TbtData) -> np.ndarray:
         A numpy array with the matrices data.
     """
     LOGGER.debug("Getting number of BPMs from the measurement data.")
-    n_bpms = tbt_data.matrices[0]["X"].index.size
+    n_bpms = tbt_data.matrices[0].X.index.size
     data = np.empty((2, n_bpms, tbt_data.nbunches, tbt_data.nturns), dtype=float)
 
     LOGGER.debug("Converting matrices data ")
@@ -139,15 +139,13 @@ def _write_header(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> None
     """
     output_file.write("#SDDSASCIIFORMAT v1\n")
     output_file.write(
-        f"#Created: {datetime.now().strftime('%Y-%m-%d at %H:%M:%S')} By: Python SDDS converter\n"
+        f"#Created: {datetime.now().strftime('%Y-%m-%d at %H:%M:%S')} By: Python turn_by_turn Package\n"
     )
     output_file.write(f"#Number of turns: {tbt_data.nturns}\n")
     output_file.write(
-        f"#Number of horizontal monitors: {tbt_data.matrices[bunch_id]['X'].index.size}\n"
+        f"#Number of horizontal monitors: {tbt_data.matrices[bunch_id].X.index.size}\n"
     )
-    output_file.write(
-        f"#Number of vertical monitors: {tbt_data.matrices[bunch_id]['Y'].index.size}\n"
-    )
+    output_file.write(f"#Number of vertical monitors: {tbt_data.matrices[bunch_id].Y.index.size}\n")
     output_file.write(f"#Acquisition date: {tbt_data.date.strftime('%Y-%m-%d at %H:%M:%S')}\n")
 
 

@@ -31,9 +31,15 @@ data: tbt.TbtData = tbt.read("Beam2@BunchTurn@2018_12_02@20_08_49_739.sdds", dat
 
 # Easily access relevant information from the loaded data: transverse data, measurement date, 
 # number of turns, bunches and IDs of the recorded bunches
+first_bunch_transverse_positions: tbt.TransverseData = data.matrices[0]
 measurement_date = data.date  # a datetime.datetime object
-first_bunch_horizontal_positions = data.matrices[0]["X"].copy()  # a pandas.DataFrame
-second_bunch_vertical_positions = data.matrices[1]["Y"].copy()  # a pandas DataFrame
+
+# Transverse positions are recorded as pandas DataFrames
+first_bunch_x = first_bunch_transverse_positions.X.copy()
+first_bunch_y = first_bunch_transverse_positions.Y.copy()
+
+# Do any operations with these as you usually do with pandas
+first_bunch_mean_x = first_bunch_x.mean()
 
 # Average over all bunches/particles at all used BPMs from the measurement
 averaged_tbt: tbt.TbtData = tbt.utils.generate_average_tbtdata(data)

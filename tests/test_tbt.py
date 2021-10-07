@@ -10,7 +10,7 @@ from turn_by_turn.constants import PLANES, PRINT_PRECISION
 from turn_by_turn.errors import DataTypeError, ExclusiveArgumentsError, HDF5VersionError, PTCFormatError
 from turn_by_turn.io import read_tbt, write_lhc_ascii, write_tbt
 from turn_by_turn.readers import iota, ptc, trackone
-from turn_by_turn.structures import TbtData
+from turn_by_turn.structures import TbtData, TransverseData
 from turn_by_turn.utils import add_noise, generate_average_tbtdata
 
 INPUTS_DIR = Path(__file__).parent / "inputs"
@@ -46,18 +46,18 @@ def test_tbt_read_hdf5(_hdf5_file):
 
     origin = TbtData(
         matrices=[
-            {
-                "X": pd.DataFrame(
+            TransverseData(
+                X=pd.DataFrame(
                     index=["IBPMA1C", "IBPME2R"],
                     data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 2, np.sin),
                     dtype=float,
                 ),
-                "Y": pd.DataFrame(
+                Y=pd.DataFrame(
                     index=["IBPMA1C", "IBPME2R"],
                     data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 2, np.cos),
                     dtype=float,
                 ),
-            }
+            )
         ],
         date=datetime.now(),
         bunch_ids=[1],
@@ -71,18 +71,18 @@ def test_tbt_read_hdf5_v2(_hdf5_file_v2):
 
     origin = TbtData(
         matrices=[
-            {
-                "X": pd.DataFrame(
+            TransverseData(
+                X=pd.DataFrame(
                     index=["IBPMA1C", "IBPME2R"],
                     data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 2, np.sin),
                     dtype=float,
                 ),
-                "Y": pd.DataFrame(
+                Y=pd.DataFrame(
                     index=["IBPMA1C", "IBPME2R"],
                     data=_create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 2, np.cos),
                     dtype=float,
                 ),
-            }
+            )
         ],
         date=datetime.now(),
         bunch_ids=[1],
@@ -118,10 +118,10 @@ def test_compare_average_Tbtdata():
 
     origin = TbtData(
         matrices=[
-            {
-                "X": pd.DataFrame(index=["IBPMA1C", "IBPME2R"], data=data["X"][i], dtype=float),
-                "Y": pd.DataFrame(index=["IBPMA1C", "IBPME2R"], data=data["Y"][i], dtype=float),
-            }
+            TransverseData(
+                X=pd.DataFrame(index=["IBPMA1C", "IBPME2R"], data=data["X"][i], dtype=float),
+                Y=pd.DataFrame(index=["IBPMA1C", "IBPME2R"], data=data["Y"][i], dtype=float),
+            )
             for i in range(npart)
         ],
         date=datetime.now(),
@@ -131,10 +131,10 @@ def test_compare_average_Tbtdata():
 
     new = TbtData(
         matrices=[
-            {
-                "X": pd.DataFrame(index=["IBPMA1C", "IBPME2R"], data=np.mean(data["X"], axis=0), dtype=float),
-                "Y": pd.DataFrame(index=["IBPMA1C", "IBPME2R"], data=np.mean(data["Y"], axis=0), dtype=float),
-            }
+            TransverseData(
+                X=pd.DataFrame(index=["IBPMA1C", "IBPME2R"], data=np.mean(data["X"], axis=0), dtype=float),
+                Y=pd.DataFrame(index=["IBPMA1C", "IBPME2R"], data=np.mean(data["Y"], axis=0), dtype=float),
+            )
         ],
         date=datetime.now(),
         bunch_ids=[1],
@@ -182,17 +182,17 @@ def test_tbt_read_trackone_sci(_ptc_file_sci):
 def test_tbt_read_ptc_looseparticles(_ptc_file_losses):
     new = ptc.read_tbt(_ptc_file_losses)
     assert len(new.matrices) == 3
-    assert len(new.matrices[0]["X"].columns) == 9
-    assert all(new.matrices[0]["X"].index == np.array([f"BPM{i+1}" for i in range(3)]))
-    assert not new.matrices[0]["X"].isna().any().any()
+    assert len(new.matrices[0].X.columns) == 9
+    assert all(new.matrices[0].X.index == np.array([f"BPM{i+1}" for i in range(3)]))
+    assert not new.matrices[0].X.isna().any().any()
 
 
 def test_tbt_read_trackone_looseparticles(_ptc_file_losses):
     new = trackone.read_tbt(_ptc_file_losses)
     assert len(new.matrices) == 3
-    assert len(new.matrices[0]["X"].columns) == 9
-    assert all(new.matrices[0]["X"].index == np.array([f"BPM{i+1}" for i in range(3)]))
-    assert not new.matrices[0]["X"].isna().any().any()
+    assert len(new.matrices[0].X.columns) == 9
+    assert all(new.matrices[0].X.index == np.array([f"BPM{i+1}" for i in range(3)]))
+    assert not new.matrices[0].X.isna().any().any()
 
 
 def test_tbt_write_read_ascii(_sdds_file, _test_file):
@@ -248,11 +248,11 @@ def _compare_tbt(origin: TbtData, new: TbtData, no_binary: bool, max_deviation=A
 def _original_trackone(track: bool = False) -> TbtData:
     names = np.array(["C1.BPM1"])
     matrix = [
-        dict(
+        TransverseData(
             X=pd.DataFrame(index=names, data=[[0.001, -0.0003606, -0.00165823, -0.00266631]]),
             Y=pd.DataFrame(index=names, data=[[0.001, 0.00070558, -0.00020681, -0.00093807]]),
         ),
-        dict(
+        TransverseData(
             X=pd.DataFrame(index=names, data=[[0.0011, -0.00039666, -0.00182406, -0.00293294]]),
             Y=pd.DataFrame(index=names, data=[[0.0011, 0.00077614, -0.00022749, -0.00103188]]),
         ),

@@ -27,7 +27,7 @@ from turn_by_turn.constants import (
     NUM_TO_PLANE,
     PLANES,
 )
-from turn_by_turn.structures import TbtData
+from turn_by_turn.structures import TbtData, TransverseData
 
 LOGGER = logging.getLogger()
 
@@ -53,7 +53,7 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
 
     if _is_ascii_file(file_path):
         matrices, date = _read_ascii(file_path)
-        return TbtData(matrices, date, [0], matrices[0]["X"].shape[1])
+        return TbtData(matrices, date, [0], matrices[0].X.shape[1])
 
     sdds_file = sdds.read(file_path)
     nbunches = sdds_file.values[N_BUNCHES]
@@ -68,7 +68,10 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     nbpms = len(bpm_names)
     data = {k: sdds_file.values[POSITIONS[k]].reshape((nbpms, nbunches, nturns)) for k in PLANES}
     matrices = [
-        {k: pd.DataFrame(index=bpm_names, data=data[k][:, idx, :], dtype=float) for k in data}
+        TransverseData(
+            X=pd.DataFrame(index=bpm_names, data=data["X"][:, idx, :], dtype=float),
+            Y=pd.DataFrame(index=bpm_names, data=data["Y"][:, idx, :], dtype=float),
+        )
         for idx in range(nbunches)
     ]
     return TbtData(matrices, date, bunch_ids, nturns)
@@ -133,7 +136,12 @@ def _read_ascii(file_path: Union[str, Path]) -> Tuple[List[Dict[str, pd.DataFram
                     "Only '0' and '1' are allowed."
                 ) from error
 
-    matrices = [{p: pd.DataFrame(index=bpm_names[p], data=np.array(bpm_data[p])) for p in PLANES}]
+    matrices = [
+        TransverseData(
+            X=pd.DataFrame(index=bpm_names["X"], data=np.array(bpm_data["X"])),
+            Y=pd.DataFrame(index=bpm_names["Y"], data=np.array(bpm_data["Y"])),
+        )
+    ]
     return matrices, date
 
 

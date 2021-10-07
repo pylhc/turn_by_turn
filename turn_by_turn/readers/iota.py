@@ -15,7 +15,7 @@ import pandas as pd
 
 from turn_by_turn.constants import PLANES
 from turn_by_turn.errors import HDF5VersionError
-from turn_by_turn.structures import TbtData
+from turn_by_turn.structures import TbtData, TransverseData
 
 LOGGER = logging.getLogger()
 
@@ -48,14 +48,18 @@ def read_tbt(file_path: Union[str, Path], hdf5_version: int = 2) -> TbtData:
     bpm_names = FUNCTIONS[hdf5_version]["get_bpm_names"](hdf_file)
     nturns = FUNCTIONS[hdf5_version]["get_nturns"](hdf_file, hdf5_version)
     matrices = [
-        {
-            plane: pd.DataFrame(
+        TransverseData(
+            X=pd.DataFrame(
                 index=bpm_names,
-                data=FUNCTIONS[hdf5_version]["get_tbtdata"](hdf_file, plane, hdf5_version),
+                data=FUNCTIONS[hdf5_version]["get_tbtdata"](hdf_file, "X", hdf5_version),
                 dtype=float,
-            )
-            for plane in PLANES
-        }
+            ),
+            Y=pd.DataFrame(
+                index=bpm_names,
+                data=FUNCTIONS[hdf5_version]["get_tbtdata"](hdf_file, "Y", hdf5_version),
+                dtype=float,
+            ),
+        )
     ]
     return TbtData(matrices, date, bunch_ids, nturns)
 
