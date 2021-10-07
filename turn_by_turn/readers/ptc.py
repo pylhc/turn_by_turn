@@ -33,6 +33,7 @@ from turn_by_turn.constants import (
     TIME_FORMAT,
     TYPES,
 )
+from turn_by_turn.errors import PTCFormatError
 from turn_by_turn.structures import TbtData
 
 LOGGER = logging.getLogger()
@@ -134,14 +135,16 @@ def _read_from_first_turn(lines: Sequence[str]) -> Tuple[List[str], List[int], d
 
         elif first_segment:
             if column_indices is None:
-                raise IOError("Columns not defined in Tbt file!")
+                LOGGER.error("Columns not defined in Tbt file")
+                raise PTCFormatError
 
             new_data = _parse_data(column_indices, parts)
             particle = int(float(new_data[COLPARTICLE]))
             particles.append(particle)
 
     if len(particles) == 0:
-        raise IOError("No matrices found in TbT file!")
+        LOGGER.error("No matrices found in TbT file")
+        raise PTCFormatError
     return bpms, particles, column_indices, n_turns, n_particles
 
 
@@ -164,7 +167,8 @@ def _read_data(
             continue
 
         if segment is None:
-            raise IOError("Data defined before Segment definition!")
+            LOGGER.error("Data written before Segment definition")
+            raise PTCFormatError
 
         if segment.name in SEGMENT_MARKER:
             continue

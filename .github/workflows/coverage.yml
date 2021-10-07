@@ -74,7 +74,7 @@ jobs:
           ./cc-test-reporter before-build
 
       - name: Run all tests
-        run: python -m pytest --cov-report xml --cov=turn-by-turn
+        run: python -m pytest --cov-report xml --cov=turn_by_turn
 
       - name: Push Coverage to CodeClimate
         if: ${{ success() }}  # only if tests were successful

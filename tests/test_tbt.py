@@ -7,6 +7,7 @@ import pandas as pd
 import pytest
 
 from turn_by_turn.constants import PLANES, PRINT_PRECISION
+from turn_by_turn.errors import DataTypeError, ExclusiveArgumentsError, HDF5VersionError, PTCFormatError
 from turn_by_turn.io import read_tbt, write_lhc_ascii, write_tbt
 from turn_by_turn.readers import iota, ptc, trackone
 from turn_by_turn.structures import TbtData
@@ -18,7 +19,7 @@ ASCII_PRECISION = 0.5 / np.power(10, PRINT_PRECISION)
 
 @pytest.mark.parametrize("datatype", ["invalid", "not_supported"])
 def test_tbt_read_raises_on_invalid_datatype(_sdds_file, caplog, datatype):
-    with pytest.raises(ValueError):
+    with pytest.raises(DataTypeError):
         _ = read_tbt(_sdds_file, datatype=datatype)
 
     for record in caplog.records:
@@ -62,7 +63,7 @@ def test_tbt_read_hdf5(_hdf5_file):
         bunch_ids=[1],
         nturns=2000,
     )
-    new = iota.read_tbt(_hdf5_file)
+    new = iota.read_tbt(_hdf5_file, hdf5_version=1)
     _compare_tbt(origin, new, False)
 
 
@@ -89,6 +90,11 @@ def test_tbt_read_hdf5_v2(_hdf5_file_v2):
     )
     new = iota.read_tbt(_hdf5_file_v2)
     _compare_tbt(origin, new, False)
+
+
+def test_tbt_raises_on_wrong_hdf5_version(_hdf5_file):
+    with pytest.raises(HDF5VersionError):
+        new = iota.read_tbt(_hdf5_file, hdf5_version=2)
 
 
 def test_compare_average_Tbtdata():
@@ -142,6 +148,11 @@ def test_tbt_read_ptc(_ptc_file):
     new = ptc.read_tbt(_ptc_file)
     origin = _original_trackone()
     _compare_tbt(origin, new, True)
+
+
+def test_tbt_read_ptc_raises_on_invalid_file(_invalid_ptc_file):
+    with pytest.raises(PTCFormatError):
+        _ = ptc.read_tbt(_invalid_ptc_file)
 
 
 def test_tbt_read_ptc_defaults_date(_ptc_file_no_date):
@@ -212,7 +223,7 @@ def test_noise_addition():
 
 def test_add_noise_raises_on_both_arguments():
     array = _create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin).flatten()
-    with pytest.raises(ValueError):
+    with pytest.raises(ExclusiveArgumentsError):
         _ = add_noise(array, noise=5, sigma=1)
 
 
@@ -255,7 +266,7 @@ def _create_data(nturns, nbpm, function) -> np.ndarray:
 
 
 @pytest.fixture()
-def _hdf5_file(tmp_path) -> Path:
+def _hdf5_file(tmp_path) -> h5py.File:
     with h5py.File(tmp_path / "test_file.hdf5", "w") as hd5_file:
         hd5_file.create_dataset(
             "N:IBE2RH",
@@ -286,7 +297,7 @@ def _hdf5_file(tmp_path) -> Path:
 
 
 @pytest.fixture()
-def _hdf5_file_v2(tmp_path) -> Path:
+def _hdf5_file_v2(tmp_path) -> h5py.File:
     with h5py.File(tmp_path / "test_file_v2.hdf5", "w") as hd5_file:
         hd5_file.create_group("A1C")
         hd5_file["A1C"].create_dataset(
@@ -331,6 +342,11 @@ def _sdds_file() -> Path:
 @pytest.fixture()
 def _ptc_file() -> Path:
     return INPUTS_DIR / "test_trackone"
+
+
+@pytest.fixture()
+def _invalid_ptc_file() -> Path:
+    return INPUTS_DIR / "test_wrong_ptc"
 
 
 @pytest.fixture()

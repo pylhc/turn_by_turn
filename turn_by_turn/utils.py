@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 
 from turn_by_turn.constants import PLANES
+from turn_by_turn.errors import ExclusiveArgumentsError
 from turn_by_turn.structures import TbtData
 
 LOGGER = logging.getLogger(__name__)
@@ -89,7 +90,7 @@ def add_noise(data: np.ndarray, noise: float = None, sigma: float = None) -> np.
     elif sigma is not None and noise is None:
         scaling = sigma * np.std(data, dtype=np.float64)
     elif (noise is None and sigma is None) or (noise is not None and sigma is not None):
-        raise ValueError("Only one of 'noise' or 'sigma' should be provided")
+        raise ExclusiveArgumentsError("noise", "sigma")
     return np.array(data + scaling * np.random.default_rng().standard_normal(data.shape))
 
 

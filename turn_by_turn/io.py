@@ -15,6 +15,7 @@ import numpy as np
 import sdds
 
 from turn_by_turn.constants import FORMAT_STRING, PLANE_TO_NUM, PLANES
+from turn_by_turn.errors import DataTypeError
 from turn_by_turn.readers import esrf, iota, lhc, ptc, trackone
 from turn_by_turn.structures import TbtData
 from turn_by_turn.utils import add_noise
@@ -51,7 +52,7 @@ def read_tbt(file_path: Union[str, Path], datatype: str = "lhc") -> TbtData:
         LOGGER.exception(
             f"Unsupported datatype '{datatype}' was provided, should be one of {list(DATA_READERS.keys())}"
         )
-        raise ValueError("The provided datatype is not supported by this package") from error
+        raise DataTypeError(datatype) from error
 
 
 def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = None) -> None:
