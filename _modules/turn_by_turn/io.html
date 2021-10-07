@@ -85,7 +85,8 @@
 <span class="sd">--</span>
 
 <span class="sd">This module contains high-level I/O functions to read and write tur-by-turn data objects in different</span>
-<span class="sd">formats.</span>
+<span class="sd">formats. While data can be loaded from the formats of different machines / codes, each format getting its</span>
+<span class="sd">own reader module, writing functionality is at the moment always done in the ``LHC``&#39;s **SDDS** format.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>

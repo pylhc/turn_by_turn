@@ -84,7 +84,7 @@
              
   <span class="target" id="module-turn_by_turn.readers.esrf"></span><section id="esrf">
 <h1>ESRF<a class="headerlink" href="#esrf" title="Permalink to this headline"></a></h1>
-<p>Data handling for turn-by-turn measurement files from <code class="docutils literal notranslate"><span class="pre">ESRF</span></code> (files in matlab format).
+<p>Data handling for turn-by-turn measurement files from <code class="docutils literal notranslate"><span class="pre">ESRF</span></code> (files in <strong>matlab</strong> format).
 This module is untested and should be considered experimental at the moment.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="turn_by_turn.readers.esrf.load_esrf_mat_file">
@@ -118,7 +118,7 @@ turn No.] quantities in order [x, y]</p>
 </section>
 <span class="target" id="module-turn_by_turn.readers.iota"></span><section id="iota">
 <h1>Iota<a class="headerlink" href="#iota" title="Permalink to this headline"></a></h1>
-<p>Data handling for turn-by-turn measurement files from <code class="docutils literal notranslate"><span class="pre">Iota</span></code> (files in hdf5 format).</p>
+<p>Data handling for turn-by-turn measurement files from <code class="docutils literal notranslate"><span class="pre">Iota</span></code> (files in <strong>hdf5</strong> format).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="turn_by_turn.readers.iota.read_tbt">
 <span class="sig-prename descclassname"><span class="pre">turn_by_turn.readers.iota.</span></span><span class="sig-name descname"><span class="pre">read_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../modules/index.html#turn_by_turn.structures.TbtData" title="turn_by_turn.structures.TbtData"><span class="pre">turn_by_turn.structures.TbtData</span></a></span></span><a class="reference internal" href="../_modules/turn_by_turn/readers/iota.html#read_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#turn_by_turn.readers.iota.read_tbt" title="Permalink to this definition"></a></dt>
@@ -137,7 +137,7 @@ As there are 2 possible versions of the HDF5 format, this will try them both suc
 </section>
 <span class="target" id="module-turn_by_turn.readers.lhc"></span><section id="lhc">
 <h1>LHC<a class="headerlink" href="#lhc" title="Permalink to this headline"></a></h1>
-<p>Data handling for turn-by-turn measurement files from the <code class="docutils literal notranslate"><span class="pre">LHC</span></code> (files in SDDS format).</p>
+<p>Data handling for turn-by-turn measurement files from the <code class="docutils literal notranslate"><span class="pre">LHC</span></code> (files in <strong>SDDS</strong> format).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="turn_by_turn.readers.lhc.read_tbt">
 <span class="sig-prename descclassname"><span class="pre">turn_by_turn.readers.lhc.</span></span><span class="sig-name descname"><span class="pre">read_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../modules/index.html#turn_by_turn.structures.TbtData" title="turn_by_turn.structures.TbtData"><span class="pre">turn_by_turn.structures.TbtData</span></a></span></span><a class="reference internal" href="../_modules/turn_by_turn/readers/lhc.html#read_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#turn_by_turn.readers.lhc.read_tbt" title="Permalink to this definition"></a></dt>
@@ -156,7 +156,10 @@ format to figure out which reading method to use.</p>
 </section>
 <span class="target" id="module-turn_by_turn.readers.ptc"></span><section id="ptc">
 <h1>PTC<a class="headerlink" href="#ptc" title="Permalink to this headline"></a></h1>
-<p>Data handling for turn-by-turn measurement files from the <code class="docutils literal notranslate"><span class="pre">PTC</span></code> code.</p>
+<p>Data handling for turn-by-turn measurement files from the <code class="docutils literal notranslate"><span class="pre">PTC</span></code> code, which can be obtained by performing
+particle tracking of your machine through the <code class="docutils literal notranslate"><span class="pre">MAD-X</span> <span class="pre">PTC</span></code> interface. The files are very close in
+structure to <strong>TFS</strong> files, with the difference that the data part is split into “segments” relating
+containing data for a given observation point.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="turn_by_turn.readers.ptc.Segment">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.readers.ptc.</span></span><span class="sig-name descname"><span class="pre">Segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#turn_by_turn.readers.ptc.Segment" title="Permalink to this definition"></a></dt>
@@ -209,7 +212,10 @@ format to figure out which reading method to use.</p>
 </section>
 <span class="target" id="module-turn_by_turn.readers.trackone"></span><section id="trackone">
 <h1>Trackone<a class="headerlink" href="#trackone" title="Permalink to this headline"></a></h1>
-<p>Data handling for turn-by-turn measurement files from the <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> code.</p>
+<p>Data handling for turn-by-turn measurement files from the <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> code, which can be obtained by performing
+particle tracking of your machine through in <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code>. The files are very close in structure to <strong>TFS</strong>
+files, with the difference that the data part is split into “segments” relating containing data for a given
+observation point.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="turn_by_turn.readers.trackone.get_structure_from_trackone">
 <span class="sig-prename descclassname"><span class="pre">turn_by_turn.readers.trackone.</span></span><span class="sig-name descname"><span class="pre">get_structure_from_trackone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nturns</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">npart</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'trackone'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/turn_by_turn/readers/trackone.html#get_structure_from_trackone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#turn_by_turn.readers.trackone.get_structure_from_trackone" title="Permalink to this definition"></a></dt>
