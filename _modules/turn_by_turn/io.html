@@ -129,7 +129,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">DATA_READERS</span><span class="p">[</span><span class="n">datatype</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span><span class="o">.</span><span class="n">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Unsupported datatype &#39;</span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">&#39; was provided, should be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">DATA_READERS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The provided datatype is not supported by this package&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span></div>
