@@ -115,6 +115,7 @@
     <span class="n">TIME_FORMAT</span><span class="p">,</span>
     <span class="n">TYPES</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">turn_by_turn.errors</span> <span class="kn">import</span> <span class="n">PTCFormatError</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.structures</span> <span class="kn">import</span> <span class="n">TbtData</span>
 
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
@@ -216,14 +217,16 @@
 
         <span class="k">elif</span> <span class="n">first_segment</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">column_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Columns not defined in Tbt file!&quot;</span><span class="p">)</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Columns not defined in Tbt file&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">PTCFormatError</span>
 
             <span class="n">new_data</span> <span class="o">=</span> <span class="n">_parse_data</span><span class="p">(</span><span class="n">column_indices</span><span class="p">,</span> <span class="n">parts</span><span class="p">)</span>
             <span class="n">particle</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">new_data</span><span class="p">[</span><span class="n">COLPARTICLE</span><span class="p">]))</span>
             <span class="n">particles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">particle</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;No matrices found in TbT file!&quot;</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No matrices found in TbT file&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">PTCFormatError</span>
     <span class="k">return</span> <span class="n">bpms</span><span class="p">,</span> <span class="n">particles</span><span class="p">,</span> <span class="n">column_indices</span><span class="p">,</span> <span class="n">n_turns</span><span class="p">,</span> <span class="n">n_particles</span>
 
 
@@ -246,7 +249,8 @@
             <span class="k">continue</span>
 
         <span class="k">if</span> <span class="n">segment</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Data defined before Segment definition!&quot;</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Data written before Segment definition&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">PTCFormatError</span>
 
         <span class="k">if</span> <span class="n">segment</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">SEGMENT_MARKER</span><span class="p">:</span>
             <span class="k">continue</span>

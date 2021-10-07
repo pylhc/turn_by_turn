@@ -96,6 +96,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="kn">from</span> <span class="nn">turn_by_turn.constants</span> <span class="kn">import</span> <span class="n">PLANES</span>
+<span class="kn">from</span> <span class="nn">turn_by_turn.errors</span> <span class="kn">import</span> <span class="n">HDF5VersionError</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.structures</span> <span class="kn">import</span> <span class="n">TbtData</span>
 
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
@@ -107,13 +108,15 @@
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="read_tbt"><a class="viewcode-back" href="../../../readers/index.html#turn_by_turn.readers.iota.read_tbt">[docs]</a><span class="k">def</span> <span class="nf">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+<div class="viewcode-block" id="read_tbt"><a class="viewcode-back" href="../../../readers/index.html#turn_by_turn.readers.iota.read_tbt">[docs]</a><span class="k">def</span> <span class="nf">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">hdf5_version</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads turn-by-turn data from ``IOITA``&#39;s **hdf5** format file.</span>
 <span class="sd">    As there are 2 possible versions of the HDF5 format, this will try them both successively.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        file_path (Union[str, Path]): path to the turn-by-turn measurement file.</span>
+<span class="sd">        hdf5_version (int): the HDF5 format version to use when reading the written file. Defaults to the</span>
+<span class="sd">            latest, a.k.a 2.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A ``TbTData`` object with the loaded data.</span>
@@ -124,26 +127,19 @@
     <span class="n">bunch_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 
-    <span class="k">for</span> <span class="n">version</span> <span class="ow">in</span> <span class="n">VERSIONS</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">bpm_names</span> <span class="o">=</span> <span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">version</span><span class="p">][</span><span class="s2">&quot;get_bpm_names&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">)</span>
-            <span class="n">nturns</span> <span class="o">=</span> <span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">version</span><span class="p">][</span><span class="s2">&quot;get_nturns&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
-            <span class="n">matrices</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="p">{</span>
-                    <span class="n">plane</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-                        <span class="n">index</span><span class="o">=</span><span class="n">bpm_names</span><span class="p">,</span>
-                        <span class="n">data</span><span class="o">=</span><span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">version</span><span class="p">][</span><span class="s2">&quot;get_tbtdata&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">,</span> <span class="n">plane</span><span class="p">,</span> <span class="n">version</span><span class="p">),</span>
-                        <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
-                    <span class="p">)</span>
-                    <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">PLANES</span>
-                <span class="p">}</span>
-            <span class="p">]</span>
-            <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span><span class="n">matrices</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">bunch_ids</span><span class="p">,</span> <span class="n">nturns</span><span class="p">)</span>
-
-        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;An unhandled TypeError occured during reading.&quot;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="n">LOGGER</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;An unhandled KeyError occured during reading.&quot;</span><span class="p">)</span></div>
+    <span class="n">bpm_names</span> <span class="o">=</span> <span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_bpm_names&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">)</span>
+    <span class="n">nturns</span> <span class="o">=</span> <span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_nturns&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">,</span> <span class="n">hdf5_version</span><span class="p">)</span>
+    <span class="n">matrices</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="n">plane</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">bpm_names</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_tbtdata&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">,</span> <span class="n">plane</span><span class="p">,</span> <span class="n">hdf5_version</span><span class="p">),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">PLANES</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span><span class="n">matrices</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">bunch_ids</span><span class="p">,</span> <span class="n">nturns</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_get_turn_by_turn_data_v1</span><span class="p">(</span><span class="n">hdf5_v1_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">plane</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -173,7 +169,8 @@
     <span class="sd">&quot;&quot;&quot;Go through the file to determine the turn-by-turn data as a numpy array, for an hdf5 v2 file.&quot;&quot;&quot;</span>
     <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">hdf5_v2_file</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;N:&quot;</span><span class="p">)]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">keys</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Wrong version of converter was used.&quot;</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Wrong version of the HDF format was used&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">HDF5VersionError</span>
     <span class="n">nbpm</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
     <span class="n">nturn</span> <span class="o">=</span> <span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">version</span><span class="p">][</span><span class="s2">&quot;get_nturns&quot;</span><span class="p">](</span><span class="n">hdf5_v2_file</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nbpm</span><span class="p">,</span> <span class="n">nturn</span><span class="p">))</span>
@@ -187,7 +184,8 @@
     <span class="sd">&quot;&quot;&quot;Go through the file to determine the list of BPMs, for an hdf5 v2 file.&quot;&quot;&quot;</span>
     <span class="n">bpms</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;IBPM</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">hdf5_v2_file</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">check_key_v2</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">bpms</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Wrong version of converter was used.&quot;</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Wrong version of the HDF format was used&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">HDF5VersionError</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">bpms</span><span class="p">)</span>
 
 
