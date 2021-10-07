@@ -116,7 +116,7 @@
     <span class="n">TYPES</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.errors</span> <span class="kn">import</span> <span class="n">PTCFormatError</span>
-<span class="kn">from</span> <span class="nn">turn_by_turn.structures</span> <span class="kn">import</span> <span class="n">TbtData</span>
+<span class="kn">from</span> <span class="nn">turn_by_turn.structures</span> <span class="kn">import</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">TransverseData</span>
 
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
 <span class="n">Segment</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Segment&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;number&quot;</span><span class="p">,</span> <span class="s2">&quot;turns&quot;</span><span class="p">,</span> <span class="s2">&quot;particles&quot;</span><span class="p">,</span> <span class="s2">&quot;element&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">])</span>
@@ -149,8 +149,10 @@
     <span class="p">]</span>
     <span class="n">matrices</span> <span class="o">=</span> <span class="n">_read_data</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">matrices</span><span class="p">,</span> <span class="n">column_indices</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">bunch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_particles</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">PLANES</span><span class="p">:</span>
-            <span class="n">matrices</span><span class="p">[</span><span class="n">bunch</span><span class="p">][</span><span class="n">plane</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">matrices</span><span class="p">[</span><span class="n">bunch</span><span class="p">][</span><span class="n">plane</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+        <span class="n">matrices</span><span class="p">[</span><span class="n">bunch</span><span class="p">]</span> <span class="o">=</span> <span class="n">TransverseData</span><span class="p">(</span>
+            <span class="n">X</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">matrices</span><span class="p">[</span><span class="n">bunch</span><span class="p">][</span><span class="s2">&quot;X&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span>
+            <span class="n">Y</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">matrices</span><span class="p">[</span><span class="n">bunch</span><span class="p">][</span><span class="s2">&quot;Y&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span>
+        <span class="p">)</span>
 
     <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read Tbt matrices from: &#39;</span><span class="si">{</span><span class="n">file_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span><span class="n">matrices</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">particles</span><span class="p">,</span> <span class="n">n_turns</span><span class="p">)</span></div>

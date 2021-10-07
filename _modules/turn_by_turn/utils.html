@@ -94,7 +94,7 @@
 
 <span class="kn">from</span> <span class="nn">turn_by_turn.constants</span> <span class="kn">import</span> <span class="n">PLANES</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.errors</span> <span class="kn">import</span> <span class="n">ExclusiveArgumentsError</span>
-<span class="kn">from</span> <span class="nn">turn_by_turn.structures</span> <span class="kn">import</span> <span class="n">TbtData</span>
+<span class="kn">from</span> <span class="nn">turn_by_turn.structures</span> <span class="kn">import</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">TransverseData</span>
 
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -111,17 +111,21 @@
 <span class="sd">        A new TbtData object with the averaged matrices.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">tbtdata</span><span class="o">.</span><span class="n">matrices</span>
-    <span class="n">bpm_names</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;X&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">bpm_names</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">index</span>
 
     <span class="n">new_matrices</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="n">plane</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">TransverseData</span><span class="p">(</span>
+            <span class="n">X</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
                 <span class="n">index</span><span class="o">=</span><span class="n">bpm_names</span><span class="p">,</span>
-                <span class="n">data</span><span class="o">=</span><span class="n">get_averaged_data</span><span class="p">(</span><span class="n">bpm_names</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">plane</span><span class="p">,</span> <span class="n">tbtdata</span><span class="o">.</span><span class="n">nturns</span><span class="p">),</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">get_averaged_data</span><span class="p">(</span><span class="n">bpm_names</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="n">tbtdata</span><span class="o">.</span><span class="n">nturns</span><span class="p">),</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">PLANES</span>
-        <span class="p">}</span>
+            <span class="p">),</span>
+            <span class="n">Y</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">bpm_names</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">get_averaged_data</span><span class="p">(</span><span class="n">bpm_names</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="n">tbtdata</span><span class="o">.</span><span class="n">nturns</span><span class="p">),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
     <span class="p">]</span>
     <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span><span class="n">new_matrices</span><span class="p">,</span> <span class="n">tbtdata</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">tbtdata</span><span class="o">.</span><span class="n">nturns</span><span class="p">)</span></div>
 
@@ -194,10 +198,10 @@
     <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbunches</span><span class="p">):</span>
         <span class="n">matrices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="p">{</span>
-                <span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="n">index</span><span class="p">,</span> <span class="p">:]),</span>
-                <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">matrix</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="n">index</span><span class="p">,</span> <span class="p">:]),</span>
-            <span class="p">}</span>
+            <span class="n">TransverseData</span><span class="p">(</span>
+                <span class="n">X</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="n">index</span><span class="p">,</span> <span class="p">:]),</span>
+                <span class="n">Y</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">matrix</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="n">index</span><span class="p">,</span> <span class="p">:]),</span>
+            <span class="p">)</span>
         <span class="p">)</span>
         <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span><span class="n">matrices</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">nturns</span><span class="p">)</span></div>
