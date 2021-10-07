@@ -1,4 +1,4 @@
-# TFS-Pandas
+# Turn-By-Turn
 
 [![Cron Testing](https://github.com/pylhc/turn_by_turn/workflows/Cron%20Testing/badge.svg)](https://github.com/pylhc/turn_by_turn/actions?query=workflow%3A%22Cron+Testing%22)
 [![Code Climate coverage](https://img.shields.io/codeclimate/coverage/pylhc/turn_by_turn.svg?style=popout)](https://codeclimate.com/github/pylhc/turn_by_turn)
