@@ -1,6 +1,6 @@
 """
-Trackone TbT Data Handler
--------------------------
+Trackone
+--------
 
 Data handling for turn-by-turn measurement files from the ``MAD-X`` code.
 """

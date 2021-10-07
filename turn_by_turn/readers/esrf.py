@@ -1,6 +1,6 @@
 """
-ESRF TbT Data Handler
----------------------
+ESRF
+----
 
 Data handling for turn-by-turn measurement files from ``ESRF`` (files in matlab format).
 This module is untested and should be considered experimental at the moment.

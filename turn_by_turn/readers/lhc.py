@@ -1,6 +1,6 @@
 """
-LHC TbT Data Handler
---------------------
+LHC
+---
 
 Data handling for turn-by-turn measurement files from the ``LHC`` (files in SDDS format).
 """

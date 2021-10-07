@@ -1,6 +1,6 @@
 """
-Iota TbT Data Handler
----------------------
+Iota
+----
 
 Data handling for turn-by-turn measurement files from ``Iota`` (files in hdf5 format).
 """
