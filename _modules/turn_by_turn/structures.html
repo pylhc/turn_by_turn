@@ -97,7 +97,8 @@
 <div class="viewcode-block" id="TbtData"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.structures.TbtData">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">TbtData</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Object holding a representation of a Turn-by-Turn Data.</span>
+<span class="sd">    Object holding a representation of a Turn-by-Turn data measurement. The date of the measurement,</span>
+<span class="sd">    the transverse data, number of turns and bunches as well as the bunch IDs are encapsulated in this object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">matrices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]]</span>
