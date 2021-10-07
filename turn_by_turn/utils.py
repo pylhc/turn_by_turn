@@ -62,7 +62,7 @@ def get_averaged_data(
     bpm_data.fill(np.nan)
 
     for index, bpm in enumerate(bpm_names):
-        for i in range(len(matrices)):
+        for i, _ in enumerate(matrices):
             bpm_data[index, i, : len(matrices[i][plane].loc[bpm])] = matrices[i][plane].loc[bpm]
 
     return np.nanmean(bpm_data, axis=1)
@@ -106,7 +106,7 @@ def numpy_to_tbts(names: np.ndarray, matrix: np.ndarray) -> TbtData:
         A ``TbtData`` object loaded with the matrices in the provided numpy arrays.
     """
     # get list of TbTFile from 4D matrix ...
-    _, nbpms, nbunches, nturns = matrix.shape
+    _, _, nbunches, nturns = matrix.shape
     matrices = []
     indices = []
     for index in range(nbunches):
