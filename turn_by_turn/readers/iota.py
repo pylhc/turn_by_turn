@@ -2,7 +2,7 @@
 Iota
 ----
 
-Data handling for turn-by-turn measurement files from ``Iota`` (files in hdf5 format).
+Data handling for turn-by-turn measurement files from ``Iota`` (files in **hdf5** format).
 """
 import logging
 from datetime import datetime

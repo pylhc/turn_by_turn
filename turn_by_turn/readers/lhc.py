@@ -2,7 +2,7 @@
 LHC
 ---
 
-Data handling for turn-by-turn measurement files from the ``LHC`` (files in SDDS format).
+Data handling for turn-by-turn measurement files from the ``LHC`` (files in **SDDS** format).
 """
 import logging
 from datetime import datetime

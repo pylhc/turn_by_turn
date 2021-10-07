@@ -2,7 +2,10 @@
 PTC
 ---
 
-Data handling for turn-by-turn measurement files from the ``PTC`` code.
+Data handling for turn-by-turn measurement files from the ``PTC`` code, which can be obtained by performing
+particle tracking of your machine through the ``MAD-X PTC`` interface. The files are very close in
+structure to **TFS** files, with the difference that the data part is split into "segments" relating
+containing data for a given observation point.
 """
 import copy
 import logging

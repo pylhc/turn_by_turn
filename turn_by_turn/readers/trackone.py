@@ -2,7 +2,10 @@
 Trackone
 --------
 
-Data handling for turn-by-turn measurement files from the ``MAD-X`` code.
+Data handling for turn-by-turn measurement files from the ``MAD-X`` code, which can be obtained by performing
+particle tracking of your machine through in ``MAD-X``. The files are very close in structure to **TFS**
+files, with the difference that the data part is split into "segments" relating containing data for a given
+observation point.
 """
 import logging
 from pathlib import Path
