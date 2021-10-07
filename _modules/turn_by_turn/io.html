@@ -97,6 +97,7 @@
 <span class="kn">import</span> <span class="nn">sdds</span>
 
 <span class="kn">from</span> <span class="nn">turn_by_turn.constants</span> <span class="kn">import</span> <span class="n">FORMAT_STRING</span><span class="p">,</span> <span class="n">PLANE_TO_NUM</span><span class="p">,</span> <span class="n">PLANES</span>
+<span class="kn">from</span> <span class="nn">turn_by_turn.errors</span> <span class="kn">import</span> <span class="n">DataTypeError</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.readers</span> <span class="kn">import</span> <span class="n">esrf</span><span class="p">,</span> <span class="n">iota</span><span class="p">,</span> <span class="n">lhc</span><span class="p">,</span> <span class="n">ptc</span><span class="p">,</span> <span class="n">trackone</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.structures</span> <span class="kn">import</span> <span class="n">TbtData</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.utils</span> <span class="kn">import</span> <span class="n">add_noise</span>
@@ -133,7 +134,7 @@
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Unsupported datatype &#39;</span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">&#39; was provided, should be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">DATA_READERS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The provided datatype is not supported by this package&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span></div>
+        <span class="k">raise</span> <span class="n">DataTypeError</span><span class="p">(</span><span class="n">datatype</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span></div>
 
 
 <div class="viewcode-block" id="write_tbt"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.io.write_tbt">[docs]</a><span class="k">def</span> <span class="nf">write_tbt</span><span class="p">(</span><span class="n">output_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
