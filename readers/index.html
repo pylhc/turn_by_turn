@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ESRF TbT Data Handler &mdash; turn-by-turn 0.1.0 documentation</title>
+  <title>ESRF &mdash; turn-by-turn 0.1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -50,11 +50,11 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Readers</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">ESRF TbT Data Handler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#iota-tbt-data-handler">Iota TbT Data Handler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#lhc-tbt-data-handler">LHC TbT Data Handler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#ptc-tbt-data-handler">PTC TbT Data Handler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#trackone-tbt-data-handler">Trackone TbT Data Handler</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ESRF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#iota">Iota</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#lhc">LHC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#ptc">PTC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#trackone">Trackone</a></li>
 </ul>
 
         </div>
@@ -71,7 +71,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>ESRF TbT Data Handler</li>
+      <li>ESRF</li>
       <li class="wy-breadcrumbs-aside">
               <!-- User defined GitHub URL -->
               <a href="https://github.com/pylhc/turn-by-turn" class="fa fa-github"> Edit on GitHub</a>
@@ -82,8 +82,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-turn_by_turn.readers.esrf"></span><section id="esrf-tbt-data-handler">
-<h1>ESRF TbT Data Handler<a class="headerlink" href="#esrf-tbt-data-handler" title="Permalink to this headline"></a></h1>
+  <span class="target" id="module-turn_by_turn.readers.esrf"></span><section id="esrf">
+<h1>ESRF<a class="headerlink" href="#esrf" title="Permalink to this headline"></a></h1>
 <p>Data handling for turn-by-turn measurement files from <code class="docutils literal notranslate"><span class="pre">ESRF</span></code> (files in matlab format).
 This module is untested and should be considered experimental at the moment.</p>
 <dl class="py function">
@@ -116,8 +116,8 @@ turn No.] quantities in order [x, y]</p>
 </dd></dl>
 
 </section>
-<span class="target" id="module-turn_by_turn.readers.iota"></span><section id="iota-tbt-data-handler">
-<h1>Iota TbT Data Handler<a class="headerlink" href="#iota-tbt-data-handler" title="Permalink to this headline"></a></h1>
+<span class="target" id="module-turn_by_turn.readers.iota"></span><section id="iota">
+<h1>Iota<a class="headerlink" href="#iota" title="Permalink to this headline"></a></h1>
 <p>Data handling for turn-by-turn measurement files from <code class="docutils literal notranslate"><span class="pre">Iota</span></code> (files in hdf5 format).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="turn_by_turn.readers.iota.read_tbt">
@@ -135,8 +135,8 @@ As there are 2 possible versions of the HDF5 format, this will try them both suc
 </dd></dl>
 
 </section>
-<span class="target" id="module-turn_by_turn.readers.lhc"></span><section id="lhc-tbt-data-handler">
-<h1>LHC TbT Data Handler<a class="headerlink" href="#lhc-tbt-data-handler" title="Permalink to this headline"></a></h1>
+<span class="target" id="module-turn_by_turn.readers.lhc"></span><section id="lhc">
+<h1>LHC<a class="headerlink" href="#lhc" title="Permalink to this headline"></a></h1>
 <p>Data handling for turn-by-turn measurement files from the <code class="docutils literal notranslate"><span class="pre">LHC</span></code> (files in SDDS format).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="turn_by_turn.readers.lhc.read_tbt">
@@ -154,8 +154,8 @@ format to figure out which reading method to use.</p>
 </dd></dl>
 
 </section>
-<span class="target" id="module-turn_by_turn.readers.ptc"></span><section id="ptc-tbt-data-handler">
-<h1>PTC TbT Data Handler<a class="headerlink" href="#ptc-tbt-data-handler" title="Permalink to this headline"></a></h1>
+<span class="target" id="module-turn_by_turn.readers.ptc"></span><section id="ptc">
+<h1>PTC<a class="headerlink" href="#ptc" title="Permalink to this headline"></a></h1>
 <p>Data handling for turn-by-turn measurement files from the <code class="docutils literal notranslate"><span class="pre">PTC</span></code> code.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="turn_by_turn.readers.ptc.Segment">
@@ -207,8 +207,8 @@ format to figure out which reading method to use.</p>
 </dd></dl>
 
 </section>
-<span class="target" id="module-turn_by_turn.readers.trackone"></span><section id="trackone-tbt-data-handler">
-<h1>Trackone TbT Data Handler<a class="headerlink" href="#trackone-tbt-data-handler" title="Permalink to this headline"></a></h1>
+<span class="target" id="module-turn_by_turn.readers.trackone"></span><section id="trackone">
+<h1>Trackone<a class="headerlink" href="#trackone" title="Permalink to this headline"></a></h1>
 <p>Data handling for turn-by-turn measurement files from the <code class="docutils literal notranslate"><span class="pre">MAD-X</span></code> code.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="turn_by_turn.readers.trackone.get_structure_from_trackone">
