@@ -26,17 +26,19 @@ pip install turn_by_turn
 ```python
 import turn_by_turn as tbt
 
-# Loading a file is simple
+# Loading a file is simple and returns a custom dataclass named TbtData
 data: tbt.TbtData = tbt.read("Beam2@BunchTurn@2018_12_02@20_08_49_739.sdds", datatype="lhc")
 
-# Easily access relevant information from the loaded data
-measurement_date = data.date
-horizontal_data = data.matrices["X"]
+# Easily access relevant information from the loaded data: transverse data, measurement date, 
+# number of turns, bunches and IDs of the recorded bunches
+measurement_date = data.date  # a datetime.datetime object
+first_bunch_horizontal_positions = data.matrices[0]["X"].copy()  # a pandas.DataFrame
+second_bunch_vertical_positions = data.matrices[1]["Y"].copy()  # a pandas DataFrame
 
 # Average over all bunches/particles at all used BPMs from the measurement
 averaged_tbt: tbt.TbtData = tbt.utils.generate_average_tbtdata(data)
 
-# Writing out to disk is simple too, potentially with added noise
+# Writing out to disk (in the LHC's SDDS format) is simple too, potentially with added noise
 tbt.write("path_to_output.sdds", averaged_tbt, noise=1e-5)
 ```
 

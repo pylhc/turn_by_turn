@@ -15,7 +15,8 @@ from dateutil import tz
 @dataclass
 class TbtData:
     """
-    Object holding a representation of a Turn-by-Turn Data.
+    Object holding a representation of a Turn-by-Turn data measurement. The date of the measurement,
+    the transverse data, number of turns and bunches as well as the bunch IDs are encapsulated in this object.
     """
 
     matrices: Sequence[Dict[str, pd.DataFrame]]
