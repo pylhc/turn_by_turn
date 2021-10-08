@@ -48,7 +48,7 @@ setuptools.setup(
     author=ABOUT_TBT["__author__"],
     author_email=ABOUT_TBT["__author_email__"],
     url=ABOUT_TBT["__url__"],
-    packages=setuptools.find_packages(include=(MODULE_NAME)),
+    packages=setuptools.find_packages(include=(MODULE_NAME,)),
     include_package_data=True,
     python_requires=">=3.7",
     license=ABOUT_TBT["__license__"],
