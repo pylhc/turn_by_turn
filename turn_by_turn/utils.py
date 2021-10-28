@@ -49,14 +49,14 @@ def generate_average_tbtdata(tbtdata: TbtData) -> TbtData:
 
 
 def get_averaged_data(
-    bpm_names: Sequence[str], matrices: Sequence[Dict[str, pd.DataFrame]], plane: str, turns: int
+    bpm_names: Sequence[str], matrices: Sequence[TransverseData], plane: str, turns: int
 ) -> np.ndarray:
     """
     Average data from a given plane from the matrices of a ``TbtData``.
 
     Args:
         bpm_names (Sequence[str]):
-        matrices (Sequence[Dict[str, pd.DataFrame]]): matrices from a ``TbtData`` object.
+        matrices (Sequence[TransverseData]): matrices from a ``TbtData`` object.
         plane (str): name of the given plane to average in.
         turns (int): number of turns in the provided data.
 

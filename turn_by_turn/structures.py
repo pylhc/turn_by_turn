@@ -41,7 +41,7 @@ class TbtData:
     date: datetime = datetime.today().replace(tzinfo=tz.tzutc())  # defaults to today, UTC
     bunch_ids: List[int] = None
     nturns: int = 0
-    nbunches: List[int] = field(init=False)
+    nbunches: int = field(init=False)
 
     def __post_init__(self):
         self.nbunches = len(self.bunch_ids)

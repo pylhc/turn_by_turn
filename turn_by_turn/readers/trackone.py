@@ -9,7 +9,7 @@ observation point.
 """
 import logging
 from pathlib import Path
-from typing import Tuple, Union
+from typing import Dict, Tuple, Union
 
 import numpy as np
 
@@ -93,7 +93,7 @@ def get_structure_from_trackone(
         A numpy array of BPM names and a 4D Numpy array [quantity, BPM, particle/bunch No.,
         turn No.] quantities in order [x, px, y, py, t, pt, s, E].
     """
-    bpms = dict()
+    bpms: Dict[str, np.ndarray] = dict()
     with Path(file_path).open("r") as input_file:
         for line in input_file:
             if len(line.strip()) == 0:

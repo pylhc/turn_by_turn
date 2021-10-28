@@ -3,9 +3,11 @@ from .io import read_tbt, write_tbt
 from .structures import TbtData, TransverseData
 
 __title__ = "turn_by_turn"
-__description__ = "Read and write turn-by-turn measurement files from different particle accelerator formats."
+__description__ = (
+    "Read and write turn-by-turn measurement files from different particle accelerator formats."
+)
 __url__ = "https://github.com/pylhc/turn_by_turn"
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 __author__ = "pylhc"
 __author_email__ = "pylhc@github.com"
 __license__ = "MIT"
