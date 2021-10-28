@@ -62,9 +62,7 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     bpms, particles, column_indices, n_turns, n_particles = _read_from_first_turn(lines)
 
     # read into dict first for speed then convert to DFs
-    matrices = [
-        {p: {bpm: np.zeros(n_turns) for bpm in bpms} for p in PLANES} for _ in range(n_particles)
-    ]
+    matrices = [{p: {bpm: np.zeros(n_turns) for bpm in bpms} for p in PLANES} for _ in range(n_particles)]
     matrices = _read_data(lines, matrices, column_indices)
     for bunch in range(n_particles):
         matrices[bunch] = TransverseData(
@@ -98,7 +96,9 @@ def _read_header(lines: Sequence[str]) -> Tuple[datetime, int]:
     return datetime.strptime(f"{date_str[DATE]} {date_str[TIME]}", TIME_FORMAT), idx_line
 
 
-def _read_from_first_turn(lines: Sequence[str]) -> Tuple[List[str], List[int], Dict[Any, Any], int, int]:
+def _read_from_first_turn(
+    lines: Sequence[str],
+) -> Tuple[List[str], List[int], Dict[Any, Any], int, int]:
     """
     Reads the BPMs, particles, column indices and number of turns and particles from the matrices of
     the first turn.

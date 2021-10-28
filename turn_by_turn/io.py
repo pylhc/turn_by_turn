@@ -142,9 +142,7 @@ def _write_header(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> None
         f"#Created: {datetime.now().strftime('%Y-%m-%d at %H:%M:%S')} By: Python turn_by_turn Package\n"
     )
     output_file.write(f"#Number of turns: {tbt_data.nturns}\n")
-    output_file.write(
-        f"#Number of horizontal monitors: {tbt_data.matrices[bunch_id].X.index.size}\n"
-    )
+    output_file.write(f"#Number of horizontal monitors: {tbt_data.matrices[bunch_id].X.index.size}\n")
     output_file.write(f"#Number of vertical monitors: {tbt_data.matrices[bunch_id].Y.index.size}\n")
     output_file.write(f"#Acquisition date: {tbt_data.date.strftime('%Y-%m-%d at %H:%M:%S')}\n")
 
