@@ -16,7 +16,7 @@ import sdds
 
 from turn_by_turn.constants import FORMAT_STRING, PLANE_TO_NUM, PLANES
 from turn_by_turn.errors import DataTypeError
-from turn_by_turn.readers import esrf, iota, lhc, ptc, trackone
+from turn_by_turn import esrf, iota, lhc, ptc, trackone
 from turn_by_turn.structures import TbtData
 from turn_by_turn.utils import add_noise
 
