@@ -12,7 +12,7 @@ import logging
 from collections import namedtuple
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Sequence, Tuple, Union
+from typing import Any, Dict, List, Sequence, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -62,9 +62,7 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     bpms, particles, column_indices, n_turns, n_particles = _read_from_first_turn(lines)
 
     # read into dict first for speed then convert to DFs
-    matrices = [
-        {p: {bpm: np.zeros(n_turns) for bpm in bpms} for p in PLANES} for _ in range(n_particles)
-    ]
+    matrices = [{p: {bpm: np.zeros(n_turns) for bpm in bpms} for p in PLANES} for _ in range(n_particles)]
     matrices = _read_data(lines, matrices, column_indices)
     for bunch in range(n_particles):
         matrices[bunch] = TransverseData(
@@ -76,7 +74,7 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     return TbtData(matrices, date, particles, n_turns)
 
 
-def _read_header(lines: Sequence[str]) -> datetime:
+def _read_header(lines: Sequence[str]) -> Tuple[datetime, int]:
     """Reads header length and datetime from header."""
     idx_line = 0
     date_str = {k: None for k in [DATE, TIME]}
@@ -98,7 +96,9 @@ def _read_header(lines: Sequence[str]) -> datetime:
     return datetime.strptime(f"{date_str[DATE]} {date_str[TIME]}", TIME_FORMAT), idx_line
 
 
-def _read_from_first_turn(lines: Sequence[str]) -> Tuple[List[str], List[int], dict, int, int]:
+def _read_from_first_turn(
+    lines: Sequence[str],
+) -> Tuple[List[str], List[int], Dict[Any, Any], int, int]:
     """
     Reads the BPMs, particles, column indices and number of turns and particles from the matrices of
     the first turn.

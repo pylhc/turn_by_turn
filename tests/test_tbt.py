@@ -9,7 +9,7 @@ import pytest
 from turn_by_turn.constants import PLANES, PRINT_PRECISION
 from turn_by_turn.errors import DataTypeError, ExclusiveArgumentsError, HDF5VersionError, PTCFormatError
 from turn_by_turn.io import read_tbt, write_lhc_ascii, write_tbt
-from turn_by_turn.readers import iota, ptc, trackone
+from turn_by_turn import iota, ptc, trackone
 from turn_by_turn.structures import TbtData, TransverseData
 from turn_by_turn.utils import add_noise, generate_average_tbtdata
 

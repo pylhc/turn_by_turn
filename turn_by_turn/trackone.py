@@ -9,7 +9,7 @@ observation point.
 """
 import logging
 from pathlib import Path
-from typing import Tuple, Union
+from typing import Dict, Tuple, Union
 
 import numpy as np
 
@@ -93,7 +93,7 @@ def get_structure_from_trackone(
         A numpy array of BPM names and a 4D Numpy array [quantity, BPM, particle/bunch No.,
         turn No.] quantities in order [x, px, y, py, t, pt, s, E].
     """
-    bpms = dict()
+    bpms: Dict[str, np.ndarray] = dict()
     with Path(file_path).open("r") as input_file:
         for line in input_file:
             if len(line.strip()) == 0:
@@ -108,9 +108,7 @@ def get_structure_from_trackone(
                 ):
                     bpms[bpm_name] = np.empty([npart, nturns, 8], dtype=float)
             elif np.all([k not in bpm_name.lower() for k in ["start", "end"]]):
-                bpms[bpm_name][
-                    np.abs(int(float(parts[0]))) - 1, int(float(parts[1])) - 1, :
-                ] = np.array(parts[2:])
-    return np.array(list(bpms.keys())), np.transpose(
-        np.array(list(bpms.values())), axes=[3, 0, 1, 2]
-    )
+                bpms[bpm_name][np.abs(int(float(parts[0]))) - 1, int(float(parts[1])) - 1, :] = np.array(
+                    parts[2:]
+                )
+    return np.array(list(bpms.keys())), np.transpose(np.array(list(bpms.values())), axes=[3, 0, 1, 2])

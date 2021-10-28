@@ -7,7 +7,7 @@ Data handling for turn-by-turn measurement files from the ``LHC`` (files in **SD
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -98,7 +98,7 @@ def _is_ascii_file(file_path: Union[str, Path]) -> bool:
     return False
 
 
-def _read_ascii(file_path: Union[str, Path]) -> Tuple[List[Dict[str, pd.DataFrame]], datetime]:
+def _read_ascii(file_path: Union[str, Path]) -> Tuple[List[TransverseData], Optional[datetime]]:
     """
     Reads turn-by-turn data from an **LHC**'s ASCII SDDS format file, and return the date as well as
     parsed matrices for construction of a ``TbtData`` object.
