@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.iota &mdash; turn_by_turn 0.2.0 documentation</title>
+  <title>turn_by_turn.iota &mdash; turn_by_turn 0.2.1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
@@ -125,7 +125,6 @@
     <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reading Iota file at path: &#39;</span><span class="si">{</span><span class="n">file_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
     <span class="n">hdf_file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
     <span class="n">bunch_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 
     <span class="n">bpm_names</span> <span class="o">=</span> <span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_bpm_names&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">)</span>
     <span class="n">nturns</span> <span class="o">=</span> <span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_nturns&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">,</span> <span class="n">hdf5_version</span><span class="p">)</span>
@@ -143,7 +142,7 @@
             <span class="p">),</span>
         <span class="p">)</span>
     <span class="p">]</span>
-    <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span><span class="n">matrices</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">bunch_ids</span><span class="p">,</span> <span class="n">nturns</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span><span class="n">matrices</span><span class="o">=</span><span class="n">matrices</span><span class="p">,</span> <span class="n">bunch_ids</span><span class="o">=</span><span class="n">bunch_ids</span><span class="p">,</span> <span class="n">nturns</span><span class="o">=</span><span class="n">nturns</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_get_turn_by_turn_data_v1</span><span class="p">(</span><span class="n">hdf5_v1_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">plane</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
