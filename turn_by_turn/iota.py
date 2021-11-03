@@ -6,7 +6,6 @@ Data handling for turn-by-turn measurement files from ``Iota`` (files in **hdf5*
 """
 import logging
 from datetime import datetime
-from dateutil import tz
 from pathlib import Path
 from typing import Callable, Dict, Union
 
@@ -44,7 +43,6 @@ def read_tbt(file_path: Union[str, Path], hdf5_version: int = 2) -> TbtData:
     LOGGER.debug(f"Reading Iota file at path: '{file_path.absolute()}'")
     hdf_file = h5py.File(file_path, "r")
     bunch_ids = [1]
-    date = datetime.today().replace(tzinfo=tz.tzutc())  # default here in case file has no time
 
     bpm_names = FUNCTIONS[hdf5_version]["get_bpm_names"](hdf_file)
     nturns = FUNCTIONS[hdf5_version]["get_nturns"](hdf_file, hdf5_version)
@@ -62,7 +60,7 @@ def read_tbt(file_path: Union[str, Path], hdf5_version: int = 2) -> TbtData:
             ),
         )
     ]
-    return TbtData(matrices=matrices, date=date, bunch_ids=bunch_ids, nturns=nturns)
+    return TbtData(matrices=matrices, bunch_ids=bunch_ids, nturns=nturns)
 
 
 def _get_turn_by_turn_data_v1(hdf5_v1_file: h5py.File, plane: str, version: int) -> np.ndarray:
