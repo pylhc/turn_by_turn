@@ -112,7 +112,7 @@ def _read_ascii(file_path: Union[str, Path]) -> Tuple[List[TransverseData], Opti
     data_lines = Path(file_path).read_text().splitlines()
     bpm_names = {"X": [], "Y": []}
     bpm_data = {"X": [], "Y": []}
-    date = datetime.today().replace(tzinfo=tz.tzutc())  # default here in case file has no time
+    date = datetime.today().replace(tzinfo=tz.tzutc())  # default here in case file has no time line
 
     for line in data_lines:
         line = line.strip()

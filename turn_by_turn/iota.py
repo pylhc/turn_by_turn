@@ -43,7 +43,7 @@ def read_tbt(file_path: Union[str, Path], hdf5_version: int = 2) -> TbtData:
     LOGGER.debug(f"Reading Iota file at path: '{file_path.absolute()}'")
     hdf_file = h5py.File(file_path, "r")
     bunch_ids = [1]
-    date = datetime.now()
+    date = datetime.today().replace(tzinfo=tz.tzutc())  # default here in case file has no time
 
     bpm_names = FUNCTIONS[hdf5_version]["get_bpm_names"](hdf_file)
     nturns = FUNCTIONS[hdf5_version]["get_nturns"](hdf_file, hdf5_version)
@@ -61,7 +61,7 @@ def read_tbt(file_path: Union[str, Path], hdf5_version: int = 2) -> TbtData:
             ),
         )
     ]
-    return TbtData(matrices, date, bunch_ids, nturns)
+    return TbtData(matrices=matrices, date=date, bunch_ids=bunch_ids, nturns=nturns)
 
 
 def _get_turn_by_turn_data_v1(hdf5_v1_file: h5py.File, plane: str, version: int) -> np.ndarray:

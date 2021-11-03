@@ -38,7 +38,7 @@ class TbtData:
     """
 
     matrices: Sequence[TransverseData]  # each entry corresponds to a bunch
-    date: datetime = datetime.today().replace(tzinfo=tz.tzutc())  # defaults to today, UTC
+    date: datetime = datetime.today().replace(tzinfo=tz.tzutc())  # defaults to today, UTC if nothing is given
     bunch_ids: List[int] = None
     nturns: int = 0
     nbunches: int = field(init=False)
