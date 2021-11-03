@@ -38,10 +38,14 @@ class TbtData:
     """
 
     matrices: Sequence[TransverseData]  # each entry corresponds to a bunch
-    date: datetime = datetime.today().replace(tzinfo=tz.tzutc())  # defaults to today, UTC if nothing is given
-    bunch_ids: List[int] = None
+    date: datetime = None  # will default in post_init
+    bunch_ids: List[int] = None  # will default in post_init
     nturns: int = 0
     nbunches: int = field(init=False)
 
     def __post_init__(self):
         self.nbunches = len(self.bunch_ids)
+        if self.date is None:
+            self.date = datetime.today().replace(tzinfo=tz.tzutc())  # to today, UTC if nothing is given
+        if self.bunch_ids is None:
+            self.bunch_ids = []

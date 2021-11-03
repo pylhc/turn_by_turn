@@ -112,14 +112,14 @@ def _read_ascii(file_path: Union[str, Path]) -> Tuple[List[TransverseData], Opti
     data_lines = Path(file_path).read_text().splitlines()
     bpm_names = {"X": [], "Y": []}
     bpm_data = {"X": [], "Y": []}
-    date = datetime.today().replace(tzinfo=tz.tzutc())  # default here in case file has no time line
+    date = None  # will switch to TbtData.date's default if not found in file
 
     for line in data_lines:
         line = line.strip()
 
         if _ACQ_DATE_PREFIX in line:
             LOGGER.debug("Acquiring date from file")
-            date = _parse_date(line)  # does not trigger if there is no time in the file!
+            date = _parse_date(line)
             continue
 
         elif line == "" or line.startswith(_ASCII_COMMENT):  # empty or comment line

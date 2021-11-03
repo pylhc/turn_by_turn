@@ -6,7 +6,6 @@ Data handling for turn-by-turn measurement files from ``Iota`` (files in **hdf5*
 """
 import logging
 from datetime import datetime
-from dateutil import tz
 from pathlib import Path
 from typing import Callable, Dict, Union
 

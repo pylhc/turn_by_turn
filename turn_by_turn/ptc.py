@@ -56,7 +56,6 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
 
     LOGGER.debug("Reading header from file")
     date, header_length = _read_header(lines)
-    date = datetime.today().replace(tzinfo=tz.tzutc()) if date is None else date  # safeguard
     lines = lines[header_length:]
 
     # parameters
