@@ -122,4 +122,4 @@ def numpy_to_tbts(names: np.ndarray, matrix: np.ndarray) -> TbtData:
             )
         )
         indices.append(index)
-    return TbtData(matrices, None, indices, nturns)
+    return TbtData(matrices=matrices, bunch_ids=indices, nturns=nturns)

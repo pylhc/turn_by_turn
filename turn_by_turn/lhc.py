@@ -112,7 +112,7 @@ def _read_ascii(file_path: Union[str, Path]) -> Tuple[List[TransverseData], Opti
     data_lines = Path(file_path).read_text().splitlines()
     bpm_names = {"X": [], "Y": []}
     bpm_data = {"X": [], "Y": []}
-    date = None
+    date = None  # will switch to TbtData.date's default if not found in file
 
     for line in data_lines:
         line = line.strip()
@@ -167,5 +167,5 @@ def _parse_date(line: str) -> datetime:
     try:
         return datetime.strptime(date_str, _ACQ_DATE_FORMAT)
     except ValueError:
-        LOGGER.warning("No date found in file, defaulting to today")
+        LOGGER.error("Could not parse date in file, defaulting to: Today, UTC")
         return datetime.today().replace(tzinfo=tz.tzutc())

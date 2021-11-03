@@ -71,7 +71,7 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
         )
 
     LOGGER.debug(f"Read Tbt matrices from: '{file_path.absolute()}'")
-    return TbtData(matrices, date, particles, n_turns)
+    return TbtData(matrices=matrices, date=date, bunch_ids=particles, nturns=n_turns)
 
 
 def _read_header(lines: Sequence[str]) -> Tuple[datetime, int]:
