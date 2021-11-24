@@ -3,11 +3,11 @@
 [![Cron Testing](https://github.com/pylhc/turn_by_turn/workflows/Cron%20Testing/badge.svg)](https://github.com/pylhc/turn_by_turn/actions?query=workflow%3A%22Cron+Testing%22)
 [![Code Climate coverage](https://img.shields.io/codeclimate/coverage/pylhc/turn_by_turn.svg?style=popout)](https://codeclimate.com/github/pylhc/turn_by_turn)
 [![Code Climate maintainability (percentage)](https://img.shields.io/codeclimate/maintainability-percentage/pylhc/turn_by_turn.svg?style=popout)](https://codeclimate.com/github/pylhc/turn_by_turn)
-[![GitHub last commit](https://img.shields.io/github/last-commit/pylhc/turn_by_turn.svg?style=popout)](https://github.com/pylhc/turn_by_turn/)
-[![GitHub release](https://img.shields.io/github/release/pylhc/turn_by_turn.svg?style=popout)](https://github.com/pylhc/turn_by_turn/)
-
-[comment]: <> (TODO: uncomment below once we give turn_by_turn its zenodo releases)
-[comment]: <> ([![DOI]&#40;https://zenodo.org/badge/DOI/10.5281/zenodo.5070986.svg&#41;]&#40;https://doi.org/10.5281/zenodo.5070986&#41;)
+<!-- [![GitHub last commit](https://img.shields.io/github/last-commit/pylhc/turn_by_turn.svg?style=popout)](https://github.com/pylhc/turn_by_turn/) -->
+[![PyPI Version](https://img.shields.io/pypi/v/turn_by_turn?label=PyPI&logo=pypi)](https://pypi.org/project/turn_by_turn/)
+[![GitHub release](https://img.shields.io/github/v/release/pylhc/turn_by_turn?logo=github)](https://github.com/pylhc/turn_by_turn/)
+[![Conda-forge Version](https://img.shields.io/conda/vn/conda-forge/turn_by_turn?color=orange&logo=anaconda)](https://anaconda.org/conda-forge/turn_by_turn)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5554916.svg)](https://doi.org/10.5281/zenodo.5554916)
 
 This package provides reading functionality for turn-by-turn BPM measurements data from different particle accelerators.
 It also provides writing functionality in the `LHC`'s own SDDS format, through our `sdds` package.
