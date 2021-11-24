@@ -16,8 +16,13 @@ Files are read into a custom-made `TbtData` dataclass encompassing the relevant 
 ## Installing
 
 Installation is easily done via `pip`:
+```bash
+python -m pip install turn_by_turn
 ```
-pip install turn_by_turn
+
+One can also install in a `conda` environment via the `conda-forge` channel with:
+```bash
+conda install -c conda-forge turn_by_turn
 ```
 
 ## Example Usage
