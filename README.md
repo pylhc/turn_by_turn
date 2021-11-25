@@ -13,6 +13,8 @@ This package provides reading functionality for turn-by-turn BPM measurements da
 It also provides writing functionality in the `LHC`'s own SDDS format, through our `sdds` package.
 Files are read into a custom-made `TbtData` dataclass encompassing the relevant information.
 
+See the [API documentation](https://pylhc.github.io/turn_by_turn/) for details.
+
 ## Installing
 
 Installation is easily done via `pip`:
@@ -52,8 +54,6 @@ averaged_tbt: tbt.TbtData = tbt.utils.generate_average_tbtdata(data)
 # Writing out to disk (in the LHC's SDDS format) is simple too, potentially with added noise
 tbt.write("path_to_output.sdds", averaged_tbt, noise=1e-5)
 ```
-
-See the [API documentation](https://pylhc.github.io/turn_by_turn/) for details.
 
 ## License
 
