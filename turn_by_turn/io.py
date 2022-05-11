@@ -7,6 +7,7 @@ formats. While data can be loaded from the formats of different machines / codes
 own reader module, writing functionality is at the moment always done in the ``LHC``'s **SDDS** format.
 """
 import logging
+
 from datetime import datetime
 from pathlib import Path
 from typing import TextIO, Union
@@ -14,9 +15,9 @@ from typing import TextIO, Union
 import numpy as np
 import sdds
 
+from turn_by_turn import esrf, iota, lhc, ptc, trackone
 from turn_by_turn.constants import FORMAT_STRING, PLANE_TO_NUM, PLANES
 from turn_by_turn.errors import DataTypeError
-from turn_by_turn import esrf, iota, lhc, ptc, trackone
 from turn_by_turn.structures import TbtData
 from turn_by_turn.utils import add_noise
 
@@ -63,7 +64,7 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = N
         output_path (Union[str, Path]): path to a the disk location where to write the data.
         tbt_data (TbtData): the ``TbtData`` object to write to disk.
         noise (float): optional noise to add to the data.
-        seed (int or None): seed to initialise the RNG.
+        seed (int): seed to initialise the RNG.
         Can be used for refined control over the random number generation, like recreating the exact same state.
     """
     output_path = Path(output_path)
@@ -140,9 +141,7 @@ def _write_header(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> None
     Write the appropriate headers for a ``TbtData`` object's given bunch_id in the ASCII **SDDS**  format.
     """
     output_file.write("#SDDSASCIIFORMAT v1\n")
-    output_file.write(
-        f"#Created: {datetime.now().strftime('%Y-%m-%d at %H:%M:%S')} By: Python turn_by_turn Package\n"
-    )
+    output_file.write(f"#Created: {datetime.now().strftime('%Y-%m-%d at %H:%M:%S')} By: Python turn_by_turn Package\n")
     output_file.write(f"#Number of turns: {tbt_data.nturns}\n")
     output_file.write(f"#Number of horizontal monitors: {tbt_data.matrices[bunch_id].X.index.size}\n")
     output_file.write(f"#Number of vertical monitors: {tbt_data.matrices[bunch_id].Y.index.size}\n")
