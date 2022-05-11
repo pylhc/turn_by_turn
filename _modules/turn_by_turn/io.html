@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.io &mdash; turn_by_turn 0.2.1 documentation</title>
+  <title>turn_by_turn.io &mdash; turn_by_turn 0.3.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
@@ -29,7 +29,7 @@
             <img src="../../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2
+                0.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -89,6 +89,7 @@
 <span class="sd">own reader module, writing functionality is at the moment always done in the ``LHC``&#39;s **SDDS** format.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Union</span>
@@ -96,9 +97,9 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">sdds</span>
 
+<span class="kn">from</span> <span class="nn">turn_by_turn</span> <span class="kn">import</span> <span class="n">esrf</span><span class="p">,</span> <span class="n">iota</span><span class="p">,</span> <span class="n">lhc</span><span class="p">,</span> <span class="n">ptc</span><span class="p">,</span> <span class="n">trackone</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.constants</span> <span class="kn">import</span> <span class="n">FORMAT_STRING</span><span class="p">,</span> <span class="n">PLANE_TO_NUM</span><span class="p">,</span> <span class="n">PLANES</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.errors</span> <span class="kn">import</span> <span class="n">DataTypeError</span>
-<span class="kn">from</span> <span class="nn">turn_by_turn</span> <span class="kn">import</span> <span class="n">esrf</span><span class="p">,</span> <span class="n">iota</span><span class="p">,</span> <span class="n">lhc</span><span class="p">,</span> <span class="n">ptc</span><span class="p">,</span> <span class="n">trackone</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.structures</span> <span class="kn">import</span> <span class="n">TbtData</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.utils</span> <span class="kn">import</span> <span class="n">add_noise</span>
 
@@ -137,7 +138,7 @@
         <span class="k">raise</span> <span class="n">DataTypeError</span><span class="p">(</span><span class="n">datatype</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span></div>
 
 
-<div class="viewcode-block" id="write_tbt"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.io.write_tbt">[docs]</a><span class="k">def</span> <span class="nf">write_tbt</span><span class="p">(</span><span class="n">output_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="write_tbt"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.io.write_tbt">[docs]</a><span class="k">def</span> <span class="nf">write_tbt</span><span class="p">(</span><span class="n">output_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write a ``TbtData`` object&#39;s data to file, in the ``LHC``&#39;s **SDDS** format.</span>
 
@@ -145,6 +146,9 @@
 <span class="sd">        output_path (Union[str, Path]): path to a the disk location where to write the data.</span>
 <span class="sd">        tbt_data (TbtData): the ``TbtData`` object to write to disk.</span>
 <span class="sd">        noise (float): optional noise to add to the data.</span>
+<span class="sd">        seed (int): A given seed to initialise the RNG if one chooses to add noise. This is useful</span>
+<span class="sd">            to ensure the exact same RNG state across operations. Defaults to `None`, which means</span>
+<span class="sd">            any new RNG operation in noise addition will pull fresh entropy from the OS.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
     <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Writing TbTdata in binary SDDS (LHC) format at &#39;</span><span class="si">{</span><span class="n">output_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
@@ -152,7 +156,7 @@
     <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">_matrices_to_array</span><span class="p">(</span><span class="n">tbt_data</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">noise</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">add_noise</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">noise</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">add_noise</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
 
     <span class="n">definitions</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">lhc</span><span class="o">.</span><span class="n">ACQ_STAMP</span><span class="p">,</span> <span class="s2">&quot;llong&quot;</span><span class="p">),</span>
@@ -220,9 +224,7 @@
 <span class="sd">    Write the appropriate headers for a ``TbtData`` object&#39;s given bunch_id in the ASCII **SDDS**  format.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#SDDSASCIIFORMAT v1</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;#Created: </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> at %H:%M:%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> By: Python turn_by_turn Package</span><span class="se">\n</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
+    <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#Created: </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> at %H:%M:%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> By: Python turn_by_turn Package</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#Number of turns: </span><span class="si">{</span><span class="n">tbt_data</span><span class="o">.</span><span class="n">nturns</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#Number of horizontal monitors: </span><span class="si">{</span><span class="n">tbt_data</span><span class="o">.</span><span class="n">matrices</span><span class="p">[</span><span class="n">bunch_id</span><span class="p">]</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">output_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#Number of vertical monitors: </span><span class="si">{</span><span class="n">tbt_data</span><span class="o">.</span><span class="n">matrices</span><span class="p">[</span><span class="n">bunch_id</span><span class="p">]</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
