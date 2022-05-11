@@ -73,7 +73,7 @@ def get_averaged_data(
     return np.nanmean(bpm_data, axis=1)
 
 
-def add_noise(data: np.ndarray, noise: float = None, sigma: float = None) -> np.ndarray:
+def add_noise(data: np.ndarray, noise: float = None, sigma: float = None, seed=None) -> np.ndarray:
     """
     Returns the given data with added noise. Noise is generated as a standard normal distribution (mean=0,
     standard_deviation=1) with the size of the input data, and scaled by the a factor before being added to
@@ -95,7 +95,7 @@ def add_noise(data: np.ndarray, noise: float = None, sigma: float = None) -> np.
         scaling = sigma * np.std(data, dtype=np.float64)
     elif (noise is None and sigma is None) or (noise is not None and sigma is not None):
         raise ExclusiveArgumentsError("noise", "sigma")
-    return np.array(data + scaling * np.random.default_rng().standard_normal(data.shape))
+    return np.array(data + scaling * np.random.default_rng(seed).standard_normal(data.shape))
 
 
 def numpy_to_tbts(names: np.ndarray, matrix: np.ndarray) -> TbtData:

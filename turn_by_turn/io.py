@@ -55,7 +55,7 @@ def read_tbt(file_path: Union[str, Path], datatype: str = "lhc") -> TbtData:
         raise DataTypeError(datatype) from error
 
 
-def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = None) -> None:
+def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = None, seed=None) -> None:
     """
     Write a ``TbtData`` object's data to file, in the ``LHC``'s **SDDS** format.
 
@@ -70,7 +70,7 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = N
     data: np.ndarray = _matrices_to_array(tbt_data)
 
     if noise is not None:
-        data = add_noise(data, noise)
+        data = add_noise(data, noise, seed=seed)
 
     definitions = [
         sdds.classes.Parameter(lhc.ACQ_STAMP, "llong"),
