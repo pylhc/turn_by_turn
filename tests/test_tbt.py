@@ -1,3 +1,4 @@
+from audioop import add
 from datetime import datetime
 from pathlib import Path
 
@@ -6,10 +7,10 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from turn_by_turn import iota, ptc, trackone
 from turn_by_turn.constants import PLANES, PRINT_PRECISION
 from turn_by_turn.errors import DataTypeError, ExclusiveArgumentsError, HDF5VersionError, PTCFormatError
 from turn_by_turn.io import read_tbt, write_lhc_ascii, write_tbt
-from turn_by_turn import iota, ptc, trackone
 from turn_by_turn.structures import TbtData, TransverseData
 from turn_by_turn.utils import add_noise, generate_average_tbtdata
 
@@ -43,7 +44,6 @@ def test_tbt_write_read_sdds_binary_with_noise(_sdds_file, _test_file):
 
 
 def test_tbt_read_hdf5(_hdf5_file):
-
     origin = TbtData(
         matrices=[
             TransverseData(
@@ -68,7 +68,6 @@ def test_tbt_read_hdf5(_hdf5_file):
 
 
 def test_tbt_read_hdf5_v2(_hdf5_file_v2):
-
     origin = TbtData(
         matrices=[
             TransverseData(
@@ -219,6 +218,19 @@ def test_noise_addition():
     assert np.std(array) != np.std(noised)
     with pytest.raises(AssertionError):
         np.testing.assert_array_equal(array, noised)
+
+
+@pytest.mark.parametrize("seed", [1236, 6749, 23495564])
+def test_noise_addition_with_seed(seed):
+    array = _create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin).flatten()
+
+    noised_1 = add_noise(array, sigma=5, seed=seed)
+    noised_2 = add_noise(array, sigma=5, seed=seed)
+    np.testing.assert_array_equal(noised_1, noised_2)  # should be equal with same noise seed
+
+    noised_3 = add_noise(array, noise=5, seed=seed * 5)
+    with pytest.raises(AssertionError):  # Should be different with different seeds
+        np.testing.assert_array_equal(noised_1, noised_3)
 
 
 def test_add_noise_raises_on_both_arguments():

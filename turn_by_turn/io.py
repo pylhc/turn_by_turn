@@ -7,6 +7,7 @@ formats. While data can be loaded from the formats of different machines / codes
 own reader module, writing functionality is at the moment always done in the ``LHC``'s **SDDS** format.
 """
 import logging
+
 from datetime import datetime
 from pathlib import Path
 from typing import TextIO, Union
@@ -14,9 +15,9 @@ from typing import TextIO, Union
 import numpy as np
 import sdds
 
+from turn_by_turn import esrf, iota, lhc, ptc, trackone
 from turn_by_turn.constants import FORMAT_STRING, PLANE_TO_NUM, PLANES
 from turn_by_turn.errors import DataTypeError
-from turn_by_turn import esrf, iota, lhc, ptc, trackone
 from turn_by_turn.structures import TbtData
 from turn_by_turn.utils import add_noise
 
@@ -55,7 +56,7 @@ def read_tbt(file_path: Union[str, Path], datatype: str = "lhc") -> TbtData:
         raise DataTypeError(datatype) from error
 
 
-def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = None) -> None:
+def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = None, seed: int = None) -> None:
     """
     Write a ``TbtData`` object's data to file, in the ``LHC``'s **SDDS** format.
 
@@ -63,6 +64,9 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = N
         output_path (Union[str, Path]): path to a the disk location where to write the data.
         tbt_data (TbtData): the ``TbtData`` object to write to disk.
         noise (float): optional noise to add to the data.
+        seed (int): A given seed to initialise the RNG if one chooses to add noise. This is useful
+            to ensure the exact same RNG state across operations. Defaults to `None`, which means
+            any new RNG operation in noise addition will pull fresh entropy from the OS.
     """
     output_path = Path(output_path)
     LOGGER.info(f"Writing TbTdata in binary SDDS (LHC) format at '{output_path.absolute()}'")
@@ -70,7 +74,7 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = N
     data: np.ndarray = _matrices_to_array(tbt_data)
 
     if noise is not None:
-        data = add_noise(data, noise)
+        data = add_noise(data, noise, seed=seed)
 
     definitions = [
         sdds.classes.Parameter(lhc.ACQ_STAMP, "llong"),
@@ -138,9 +142,7 @@ def _write_header(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> None
     Write the appropriate headers for a ``TbtData`` object's given bunch_id in the ASCII **SDDS**  format.
     """
     output_file.write("#SDDSASCIIFORMAT v1\n")
-    output_file.write(
-        f"#Created: {datetime.now().strftime('%Y-%m-%d at %H:%M:%S')} By: Python turn_by_turn Package\n"
-    )
+    output_file.write(f"#Created: {datetime.now().strftime('%Y-%m-%d at %H:%M:%S')} By: Python turn_by_turn Package\n")
     output_file.write(f"#Number of turns: {tbt_data.nturns}\n")
     output_file.write(f"#Number of horizontal monitors: {tbt_data.matrices[bunch_id].X.index.size}\n")
     output_file.write(f"#Number of vertical monitors: {tbt_data.matrices[bunch_id].Y.index.size}\n")
