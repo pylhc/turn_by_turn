@@ -64,8 +64,9 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = N
         output_path (Union[str, Path]): path to a the disk location where to write the data.
         tbt_data (TbtData): the ``TbtData`` object to write to disk.
         noise (float): optional noise to add to the data.
-        seed (int): seed to initialise the RNG.
-        Can be used for refined control over the random number generation, like recreating the exact same state.
+        seed (int): A given seed to initialise the RNG if one chooses to add noise. This is useful
+            to ensure the exact same RNG state across operations. Defaults to `None`, which means
+            any new RNG operation in noise addition will pull fresh entropy from the OS.
     """
     output_path = Path(output_path)
     LOGGER.info(f"Writing TbTdata in binary SDDS (LHC) format at '{output_path.absolute()}'")

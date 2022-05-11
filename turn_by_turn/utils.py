@@ -5,6 +5,7 @@ Utils
 Utility functions for convenience operations on turn-by-turn data objects in this package.
 """
 import logging
+
 from typing import Dict, Sequence
 
 import numpy as np
@@ -85,7 +86,7 @@ def add_noise(data: np.ndarray, noise: float = None, sigma: float = None, seed: 
         noise (float): the scaling factor applied to the generated noise.
         sigma (float): if provided, then that number times the standard deviation of the input data will
             be used as scaling factor for the generated noise.
-        seed(int): seed to initialise the RNG
+        seed(int): a given seed to initialise the RNG.
 
     Returns:
         A new numpy array with added noise to the provided data.
