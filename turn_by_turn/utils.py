@@ -73,7 +73,7 @@ def get_averaged_data(
     return np.nanmean(bpm_data, axis=1)
 
 
-def add_noise(data: np.ndarray, noise: float = None, sigma: float = None, seed=None) -> np.ndarray:
+def add_noise(data: np.ndarray, noise: float = None, sigma: float = None, seed: int = None) -> np.ndarray:
     """
     Returns the given data with added noise. Noise is generated as a standard normal distribution (mean=0,
     standard_deviation=1) with the size of the input data, and scaled by the a factor before being added to
@@ -85,6 +85,7 @@ def add_noise(data: np.ndarray, noise: float = None, sigma: float = None, seed=N
         noise (float): the scaling factor applied to the generated noise.
         sigma (float): if provided, then that number times the standard deviation of the input data will
             be used as scaling factor for the generated noise.
+        seed(int): seed to initialise the RNG
 
     Returns:
         A new numpy array with added noise to the provided data.
