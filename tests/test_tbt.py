@@ -1,4 +1,3 @@
-from audioop import add
 from datetime import datetime
 from pathlib import Path
 
@@ -131,8 +130,16 @@ def test_compare_average_Tbtdata():
     new = TbtData(
         matrices=[
             TransverseData(
-                X=pd.DataFrame(index=["IBPMA1C", "IBPME2R"], data=np.mean(data["X"], axis=0), dtype=float),
-                Y=pd.DataFrame(index=["IBPMA1C", "IBPME2R"], data=np.mean(data["Y"], axis=0), dtype=float),
+                X=pd.DataFrame(
+                    index=["IBPMA1C", "IBPME2R"],
+                    data=np.mean(data["X"], axis=0),
+                    dtype=float,
+                ),
+                Y=pd.DataFrame(
+                    index=["IBPMA1C", "IBPME2R"],
+                    data=np.mean(data["Y"], axis=0),
+                    dtype=float,
+                ),
             )
         ],
         date=datetime.now(),
