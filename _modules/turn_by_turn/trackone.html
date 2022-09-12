@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.trackone &mdash; turn_by_turn 0.3.0 documentation</title>
+  <title>turn_by_turn.trackone &mdash; turn_by_turn 0.4.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -29,7 +30,7 @@
             <img src="../../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.3
+                0.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -96,7 +97,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">turn_by_turn.structures</span> <span class="kn">import</span> <span class="n">TbtData</span>
-<span class="kn">from</span> <span class="nn">turn_by_turn.utils</span> <span class="kn">import</span> <span class="n">numpy_to_tbts</span>
+<span class="kn">from</span> <span class="nn">turn_by_turn.utils</span> <span class="kn">import</span> <span class="n">numpy_to_tbt</span>
 
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
 
@@ -114,7 +115,7 @@
     <span class="n">nturns</span><span class="p">,</span> <span class="n">npart</span> <span class="o">=</span> <span class="n">get_trackone_stats</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="n">names</span><span class="p">,</span> <span class="n">matrix</span> <span class="o">=</span> <span class="n">get_structure_from_trackone</span><span class="p">(</span><span class="n">nturns</span><span class="p">,</span> <span class="n">npart</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
     <span class="c1"># matrix[0, 2] contains just (x, y) samples.</span>
-    <span class="k">return</span> <span class="n">numpy_to_tbts</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">matrix</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span></div>
+    <span class="k">return</span> <span class="n">numpy_to_tbt</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">matrix</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span></div>
 
 
 <div class="viewcode-block" id="get_trackone_stats"><a class="viewcode-back" href="../../readers/index.html#turn_by_turn.trackone.get_trackone_stats">[docs]</a><span class="k">def</span> <span class="nf">get_trackone_stats</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">write_out</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>

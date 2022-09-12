@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.utils &mdash; turn_by_turn 0.3.0 documentation</title>
+  <title>turn_by_turn.utils &mdash; turn_by_turn 0.4.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -29,7 +30,7 @@
             <img src="../../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.3
+                0.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -93,7 +94,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="kn">from</span> <span class="nn">turn_by_turn.constants</span> <span class="kn">import</span> <span class="n">PLANES</span>
+<span class="kn">from</span> <span class="nn">turn_by_turn.constants</span> <span class="kn">import</span> <span class="n">PLANES</span><span class="p">,</span> <span class="n">PLANE_TO_NUM</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.errors</span> <span class="kn">import</span> <span class="n">ExclusiveArgumentsError</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.structures</span> <span class="kn">import</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">TransverseData</span>
 
@@ -156,6 +157,27 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">bpm_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="matrices_to_array"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.matrices_to_array">[docs]</a><span class="k">def</span> <span class="nf">matrices_to_array</span><span class="p">(</span><span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert  the matrices of a ``TbtData`` object to a numpy array.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tbt_data (TbtData): ``TbtData`` object to convert the data from.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A numpy array with the matrices data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Getting number of BPMs from the measurement data.&quot;</span><span class="p">)</span>
+    <span class="n">n_bpms</span> <span class="o">=</span> <span class="n">tbt_data</span><span class="o">.</span><span class="n">matrices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_bpms</span><span class="p">,</span> <span class="n">tbt_data</span><span class="o">.</span><span class="n">nbunches</span><span class="p">,</span> <span class="n">tbt_data</span><span class="o">.</span><span class="n">nturns</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Converting matrices data &quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tbt_data</span><span class="o">.</span><span class="n">nbunches</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">PLANES</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">PLANE_TO_NUM</span><span class="p">[</span><span class="n">plane</span><span class="p">],</span> <span class="p">:,</span> <span class="n">index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">tbt_data</span><span class="o">.</span><span class="n">matrices</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="n">plane</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
 <div class="viewcode-block" id="add_noise"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.add_noise">[docs]</a><span class="k">def</span> <span class="nf">add_noise</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the given data with added noise. Noise is generated as a standard normal distribution (mean=0,</span>
@@ -173,16 +195,46 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        A new numpy array with added noise to the provided data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">noise</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">scaling</span> <span class="o">=</span> <span class="n">noise</span>
-    <span class="k">elif</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">noise</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">scaling</span> <span class="o">=</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="p">(</span><span class="n">noise</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">noise</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">noise</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">noise</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">ExclusiveArgumentsError</span><span class="p">(</span><span class="s2">&quot;noise&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">scaling</span> <span class="o">=</span> <span class="n">noise</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">scaling</span> <span class="o">=</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span> <span class="o">+</span> <span class="n">scaling</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="numpy_to_tbts"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.numpy_to_tbts">[docs]</a><span class="k">def</span> <span class="nf">numpy_to_tbts</span><span class="p">(</span><span class="n">names</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+<div class="viewcode-block" id="add_noise_to_tbt"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.add_noise_to_tbt">[docs]</a><span class="k">def</span> <span class="nf">add_noise_to_tbt</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a new copy of the given TbT data with added noise.</span>
+<span class="sd">    The noise is generated by :func:`turn_by_turn.utils.add_noise` from a single rng,</span>
+<span class="sd">    i.e. the noise is not repeated on each dataframe.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data (TbtData): your input TbT-data.</span>
+<span class="sd">        noise (float): the scaling factor applied to the generated noise.</span>
+<span class="sd">        sigma (float): if provided, then that number times the standard deviation of the input data will</span>
+<span class="sd">            be used as scaling factor for the generated noise.</span>
+<span class="sd">        seed(int): a given seed to initialise the RNG.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A copy of the TbtData with noised data on all matrices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>  <span class="c1"># as we don&#39;t want to use the same noise on all dataframes</span>
+    <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span>
+        <span class="n">matrices</span><span class="o">=</span><span class="p">[</span><span class="n">TransverseData</span><span class="p">(</span>
+            <span class="n">X</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">add_noise</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">noise</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">rng</span><span class="p">)),</span>
+            <span class="n">Y</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">add_noise</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">noise</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">rng</span><span class="p">))</span>
+        <span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">matrices</span><span class="p">],</span>
+        <span class="n">date</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">date</span><span class="p">,</span>
+        <span class="n">bunch_ids</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">bunch_ids</span><span class="p">,</span>
+        <span class="n">nturns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">nturns</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="numpy_to_tbt"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.numpy_to_tbt">[docs]</a><span class="k">def</span> <span class="nf">numpy_to_tbt</span><span class="p">(</span><span class="n">names</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts turn by turn matrices and names into a ``TbTData`` object.</span>
 
