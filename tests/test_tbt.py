@@ -14,7 +14,7 @@ from turn_by_turn.structures import TbtData, TransverseData
 from turn_by_turn.utils import add_noise, generate_average_tbtdata
 
 INPUTS_DIR = Path(__file__).parent / "inputs"
-ASCII_PRECISION = 0.5 / np.power(10, PRINT_PRECISION)
+ASCII_PRECISION = 0.6 / np.power(10, PRINT_PRECISION)  # not 0.5 due to rounding issues
 
 
 @pytest.mark.parametrize("datatype", ["invalid", "not_supported"])
@@ -203,8 +203,8 @@ def test_tbt_read_trackone_looseparticles(_ptc_file_losses):
 
 def test_sps_tbt_read_and_write_ascii(_sps_file, _test_file):
     origin = read_tbt(_sps_file, datatype='sps')
-    origin.matrices[0].X.fillna(0, inplace=True)
-    origin.matrices[0].Y.fillna(0, inplace=True)
+    origin.matrices[0].X = origin.matrices[0].X.fillna(0)
+    origin.matrices[0].Y = origin.matrices[0].Y.fillna(0)
     write_lhc_ascii(_test_file, origin)
     new = read_tbt(_test_file, datatype='sps')
     _compare_tbt(origin, new, True)
