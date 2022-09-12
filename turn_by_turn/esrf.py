@@ -15,7 +15,7 @@ import numpy as np
 from scipy.io import loadmat
 
 from turn_by_turn.structures import TbtData
-from turn_by_turn.utils import numpy_to_tbts
+from turn_by_turn.utils import numpy_to_tbt
 
 BPM_NAMES_FILE: str = "bpm_names.json"
 LOGGER = logging.getLogger()
@@ -34,7 +34,7 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     file_path = Path(file_path)
     LOGGER.debug(f"Reading ESRF file at path: '{file_path.absolute()}'")
     names, matrix = load_esrf_mat_file(file_path)
-    return numpy_to_tbts(names, matrix)
+    return numpy_to_tbt(names, matrix)
 
 
 def load_esrf_mat_file(infile: Union[str, Path]) -> Tuple[np.ndarray, np.ndarray]:

@@ -40,12 +40,19 @@ class TbtData:
     matrices: Sequence[TransverseData]  # each entry corresponds to a bunch
     date: datetime = None  # will default in post_init
     bunch_ids: List[int] = None  # will default in post_init
-    nturns: int = 0
+    nturns: int = None
     nbunches: int = field(init=False)
 
     def __post_init__(self):
-        self.nbunches = len(self.bunch_ids)
+        self.nbunches = len(self.matrices)
+
+        if self.nturns is None or self.nturns < 1:
+            # should have no default value, but breaks backwards compatibility to move
+            # up in dataclass definition
+            raise ValueError("Number of turns need to be specified and larger than zero.")
+
         if self.date is None:
             self.date = datetime.today().replace(tzinfo=tz.tzutc())  # to today, UTC if nothing is given
+
         if self.bunch_ids is None:
-            self.bunch_ids = []
+            self.bunch_ids = list(range(self.nbunches))  # we always need bunch-ids
