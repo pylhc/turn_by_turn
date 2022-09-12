@@ -12,49 +12,13 @@ from turn_by_turn.structures import TbtData, TransverseData
 
 
 def test_tbt_read_hdf5(_hdf5_file):
-    origin = TbtData(
-        matrices=[
-            TransverseData(
-                X=pd.DataFrame(
-                    index=["IBPMA1C", "IBPME2R"],
-                    data=create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 2, np.sin),
-                    dtype=float,
-                ),
-                Y=pd.DataFrame(
-                    index=["IBPMA1C", "IBPME2R"],
-                    data=create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 2, np.cos),
-                    dtype=float,
-                ),
-            )
-        ],
-        date=datetime.now(),
-        bunch_ids=[1],
-        nturns=2000,
-    )
+    origin = _hdf5_file_content()
     new = iota.read_tbt(_hdf5_file, hdf5_version=1)
     compare_tbt(origin, new, False)
 
 
 def test_tbt_read_hdf5_v2(_hdf5_file_v2):
-    origin = TbtData(
-        matrices=[
-            TransverseData(
-                X=pd.DataFrame(
-                    index=["IBPMA1C", "IBPME2R"],
-                    data=create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 2, np.sin),
-                    dtype=float,
-                ),
-                Y=pd.DataFrame(
-                    index=["IBPMA1C", "IBPME2R"],
-                    data=create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 2, np.cos),
-                    dtype=float,
-                ),
-            )
-        ],
-        date=datetime.now(),
-        bunch_ids=[1],
-        nturns=2000,
-    )
+    origin = _hdf5_file_content()
     new = iota.read_tbt(_hdf5_file_v2)
     compare_tbt(origin, new, False)
 
@@ -62,6 +26,29 @@ def test_tbt_read_hdf5_v2(_hdf5_file_v2):
 def test_tbt_raises_on_wrong_hdf5_version(_hdf5_file):
     with pytest.raises(HDF5VersionError):
         new = iota.read_tbt(_hdf5_file, hdf5_version=2)
+
+
+def _hdf5_file_content() -> TbtData:
+    """ TbT data as had been written out to hdf5 files (see below). """
+    return TbtData(
+        matrices=[
+            TransverseData(
+                X=pd.DataFrame(
+                    index=["IBPMA1C", "IBPME2R"],
+                    data=create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 2, np.sin),
+                    dtype=float,
+                ),
+                Y=pd.DataFrame(
+                    index=["IBPMA1C", "IBPME2R"],
+                    data=create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 2, np.cos),
+                    dtype=float,
+                ),
+            )
+        ],
+        date=datetime.now(),
+        bunch_ids=[1],
+        nturns=2000,
+    )
 
 
 @pytest.fixture()

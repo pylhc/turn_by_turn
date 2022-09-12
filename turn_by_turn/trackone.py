@@ -14,7 +14,7 @@ from typing import Dict, Tuple, Union
 import numpy as np
 
 from turn_by_turn.structures import TbtData
-from turn_by_turn.utils import numpy_to_tbts
+from turn_by_turn.utils import numpy_to_tbt
 
 LOGGER = logging.getLogger()
 
@@ -32,7 +32,7 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     nturns, npart = get_trackone_stats(file_path)
     names, matrix = get_structure_from_trackone(nturns, npart, file_path)
     # matrix[0, 2] contains just (x, y) samples.
-    return numpy_to_tbts(names, matrix[[0, 2]])
+    return numpy_to_tbt(names, matrix[[0, 2]])
 
 
 def get_trackone_stats(file_path: Union[str, Path], write_out: bool = False) -> Tuple[int, int]:

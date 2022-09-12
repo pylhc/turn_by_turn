@@ -46,8 +46,6 @@ def test_tbt_write_read_sdds_binary_with_noise(_sdds_file, _test_file):
         compare_tbt(origin, new, False)
 
 
-
-
 def test_tbt_write_read_ascii(_sdds_file, _test_file):
     origin = read_tbt(_sdds_file)
     write_lhc_ascii(_test_file, origin)

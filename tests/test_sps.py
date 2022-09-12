@@ -44,5 +44,3 @@ def test_write_read(tmp_path):
 @pytest.fixture()
 def _sps_file() -> Path:
     return INPUTS_DIR / "test_sps.sdds"
-
-

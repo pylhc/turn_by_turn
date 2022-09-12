@@ -15,9 +15,7 @@ import sdds
 from dateutil import tz
 
 from turn_by_turn.ascii import is_ascii_file, read_ascii
-from turn_by_turn.constants import PLANE_TO_NUM
 from turn_by_turn.structures import TbtData, TransverseData
-from turn_by_turn.utils import matrices_to_array, add_noise
 
 LOGGER = logging.getLogger()
 

@@ -112,12 +112,14 @@ def add_noise(data: np.ndarray, noise: float = None, sigma: float = None, seed: 
     Returns:
         A new numpy array with added noise to the provided data.
     """
-    if noise is not None and sigma is None:
-        scaling = noise
-    elif sigma is not None and noise is None:
-        scaling = sigma * np.std(data, dtype=np.float64)
-    elif (noise is None and sigma is None) or (noise is not None and sigma is not None):
+    if (noise is None and sigma is None) or (noise is not None and sigma is not None):
         raise ExclusiveArgumentsError("noise", "sigma")
+
+    if sigma is None:
+        scaling = noise
+    else:
+        scaling = sigma * np.std(data, dtype=np.float64)
+
     return np.array(data + scaling * np.random.default_rng(seed).standard_normal(data.shape))
 
 
@@ -149,7 +151,7 @@ def add_noise_to_tbt(data: TbtData, noise: float = None, sigma: float = None, se
     )
 
 
-def numpy_to_tbts(names: np.ndarray, matrix: np.ndarray) -> TbtData:
+def numpy_to_tbt(names: np.ndarray, matrix: np.ndarray) -> TbtData:
     """
     Converts turn by turn matrices and names into a ``TbTData`` object.
 

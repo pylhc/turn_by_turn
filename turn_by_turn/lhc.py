@@ -16,9 +16,8 @@ from dateutil import tz
 
 from turn_by_turn.ascii import is_ascii_file, read_ascii
 from turn_by_turn.constants import PLANES, PLANE_TO_NUM
-
 from turn_by_turn.structures import TbtData, TransverseData
-from turn_by_turn.utils import add_noise, matrices_to_array
+from turn_by_turn.utils import matrices_to_array
 
 LOGGER = logging.getLogger()
 
