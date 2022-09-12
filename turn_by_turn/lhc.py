@@ -57,16 +57,23 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
 
     sdds_file = sdds.read(file_path)
     nbunches = sdds_file.values[N_BUNCHES]
-    bunch_ids = sdds_file.values[BUNCH_ID if BUNCH_ID in sdds_file.values else HOR_BUNCH_ID]
+    bunch_ids = sdds_file.values[
+        BUNCH_ID if BUNCH_ID in sdds_file.values else HOR_BUNCH_ID
+    ]
 
     if len(bunch_ids) > nbunches:
         bunch_ids = bunch_ids[:nbunches]
 
     nturns = sdds_file.values[N_TURNS]
-    date = datetime.utcfromtimestamp(sdds_file.values[ACQ_STAMP] / 1e9).replace(tzinfo=tz.tzutc())
+    date = datetime.utcfromtimestamp(sdds_file.values[ACQ_STAMP] / 1e9).replace(
+        tzinfo=tz.tzutc()
+    )
     bpm_names = sdds_file.values[BPM_NAMES]
     nbpms = len(bpm_names)
-    data = {k: sdds_file.values[POSITIONS[k]].reshape((nbpms, nbunches, nturns)) for k in PLANES}
+    data = {
+        k: sdds_file.values[POSITIONS[k]].reshape((nbpms, nbunches, nturns))
+        for k in PLANES
+    }
     matrices = [
         TransverseData(
             X=pd.DataFrame(index=bpm_names, data=data["X"][:, idx, :], dtype=float),
@@ -98,9 +105,11 @@ def _is_ascii_file(file_path: Union[str, Path]) -> bool:
     return False
 
 
-def _read_ascii(file_path: Union[str, Path]) -> Tuple[List[TransverseData], Optional[datetime]]:
+def _read_ascii(
+    file_path: Union[str, Path]
+) -> Tuple[List[TransverseData], Optional[datetime]]:
     """
-    Reads turn-by-turn data from an **LHC**'s ASCII SDDS format file, and return the date as well as
+    Reads turn-by-turn data from an **LHC**'s ASCII turn-by-turn format file, and return the date as well as
     parsed matrices for construction of a ``TbtData`` object.
 
     Args:
