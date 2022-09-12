@@ -76,7 +76,7 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = N
         output_path = output_path.with_name(f"{output_path.name}.sdds")
 
     if not datatype.lower() in WRITERS:
-        raise NotImplementedError(f"Only {','.join(WRITERS)} writers are implemented for now.")
+        raise DataTypeError(f"Only {','.join(WRITERS)} writers are implemented for now.")
 
     try:
         module = TBT_MODULES[datatype.lower()]

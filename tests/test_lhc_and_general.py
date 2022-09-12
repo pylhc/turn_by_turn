@@ -24,7 +24,7 @@ def test_tbt_read_raises_on_invalid_datatype(_sdds_file, caplog, datatype):
 @pytest.mark.parametrize("datatype", ["invalid", "not_supported"])
 def test_tbt_write_raises_on_invalid_datatype(_sdds_file, caplog, datatype):
     with pytest.raises(DataTypeError):
-        write_tbt(_sdds_file, datatype=datatype)
+        write_tbt(_sdds_file, tbt_data=None, datatype=datatype)
 
     for record in caplog.records:
         assert record.levelname == "ERROR"
