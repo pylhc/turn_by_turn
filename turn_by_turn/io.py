@@ -75,7 +75,7 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = N
     if output_path.suffix != ".sdds":
         output_path = output_path.with_name(f"{output_path.name}.sdds")
 
-    if not datatype.lower() in WRITERS:
+    if datatype.lower() not in WRITERS:
         raise DataTypeError(f"Only {','.join(WRITERS)} writers are implemented for now.")
 
     try:
