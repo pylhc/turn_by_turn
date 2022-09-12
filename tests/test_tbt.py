@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from turn_by_turn import iota, ptc, trackone
+from turn_by_turn import iota, ptc, trackone, sps
 from turn_by_turn.constants import PLANES, PRINT_PRECISION
 from turn_by_turn.errors import DataTypeError, ExclusiveArgumentsError, HDF5VersionError, PTCFormatError
 from turn_by_turn.io import read_tbt, write_lhc_ascii, write_tbt
@@ -201,6 +201,15 @@ def test_tbt_read_trackone_looseparticles(_ptc_file_losses):
     assert not new.matrices[0].X.isna().any().any()
 
 
+def test_sps_tbt_read_and_write_ascii(_sps_file, _test_file):
+    origin = read_tbt(_sps_file, datatype='sps')
+    origin.matrices[0].X.fillna(0, inplace=True)
+    origin.matrices[0].Y.fillna(0, inplace=True)
+    write_lhc_ascii(_test_file, origin)
+    new = read_tbt(_test_file, datatype='sps')
+    _compare_tbt(origin, new, True)
+
+
 def test_tbt_write_read_ascii(_sdds_file, _test_file):
     origin = read_tbt(_sdds_file)
     write_lhc_ascii(_test_file, origin)
@@ -351,6 +360,11 @@ def _hdf5_file_v2(tmp_path) -> h5py.File:
 @pytest.fixture()
 def _test_file(tmp_path) -> Path:
     yield tmp_path / "test_file"
+
+
+@pytest.fixture()
+def _sps_file() -> Path:
+    return INPUTS_DIR / "test_sps.sdds"
 
 
 @pytest.fixture()

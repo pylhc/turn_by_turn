@@ -15,7 +15,7 @@ from typing import TextIO, Union
 import numpy as np
 import sdds
 
-from turn_by_turn import esrf, iota, lhc, ptc, trackone
+from turn_by_turn import esrf, iota, lhc, ptc, trackone, sps
 from turn_by_turn.constants import FORMAT_STRING, PLANE_TO_NUM, PLANES
 from turn_by_turn.errors import DataTypeError
 from turn_by_turn.structures import TbtData
@@ -25,6 +25,7 @@ LOGGER = logging.getLogger()
 
 DATA_READERS = dict(
     lhc=lhc,
+    sps=sps,
     iota=iota,
     esrf=esrf,
     ptc=ptc,
