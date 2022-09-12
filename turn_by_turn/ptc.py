@@ -18,26 +18,27 @@ import numpy as np
 import pandas as pd
 from dateutil import tz
 
-from turn_by_turn.constants import (
-    COLPARTICLE,
-    COLTURN,
-    COLX,
-    COLY,
-    DATE,
-    HEADER,
-    NAMES,
-    PLANES,
-    SEGMENT_MARKER,
-    SEGMENTS,
-    TIME,
-    TIME_FORMAT,
-    TYPES,
-)
+from turn_by_turn.constants import PLANES
 from turn_by_turn.errors import PTCFormatError
 from turn_by_turn.structures import TbtData, TransverseData
 
 LOGGER = logging.getLogger()
 Segment = namedtuple("Segment", ["number", "turns", "particles", "element", "name"])
+
+# IDs ---
+
+HEADER: str = "@"
+NAMES: str = "*"
+TYPES: str = "$"
+SEGMENTS: str = "#segment"
+SEGMENT_MARKER: Tuple[str, str] = ("start", "end")
+COLX: str = "X"
+COLY: str = "Y"
+COLTURN: str = "TURN"
+COLPARTICLE: str = "NUMBER"
+DATE: str = "DATE"
+TIME: str = "TIME"
+TIME_FORMAT: str = "%d/%m/%y %H.%M.%S"
 
 
 def read_tbt(file_path: Union[str, Path]) -> TbtData:

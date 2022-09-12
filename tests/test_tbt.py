@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from turn_by_turn import iota, ptc, trackone, sps
+from turn_by_turn import iota, ptc, trackone
 from turn_by_turn.constants import PLANES, PRINT_PRECISION
 from turn_by_turn.errors import DataTypeError, ExclusiveArgumentsError, HDF5VersionError, PTCFormatError
 from turn_by_turn.io import read_tbt, write_lhc_ascii, write_tbt

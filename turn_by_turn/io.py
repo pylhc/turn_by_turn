@@ -7,22 +7,22 @@ formats. While data can be loaded from the formats of different machines / codes
 own reader module, writing functionality is at the moment always done in the ``LHC``'s **SDDS** format.
 """
 import logging
-
-from datetime import datetime
 from pathlib import Path
-from typing import TextIO, Union
+from typing import Union
 
 import numpy as np
 import sdds
 
 from turn_by_turn import esrf, iota, lhc, ptc, trackone, sps
-from turn_by_turn.constants import FORMAT_STRING, PLANE_TO_NUM, PLANES
+from turn_by_turn.constants import PLANE_TO_NUM, PLANES
 from turn_by_turn.errors import DataTypeError
 from turn_by_turn.structures import TbtData
 from turn_by_turn.utils import add_noise
+from turn_by_turn.ascii import write_ascii
 
 LOGGER = logging.getLogger()
 
+write_lhc_ascii = write_ascii  # Backwards compatibility <0.4
 DATA_READERS = dict(
     lhc=lhc,
     sps=sps,
@@ -98,25 +98,6 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = N
     sdds.write(sdds.SddsFile("SDDS1", None, definitions, values), f"{output_path}.sdds")
 
 
-def write_lhc_ascii(output_path: Union[str, Path], tbt_data: TbtData) -> None:
-    """
-    Write a ``TbtData`` object's data to file, in the ASCII **SDDS** format.
-
-    Args:
-        output_path (Union[str, Path]): path to a the disk locatino where to write the data.
-        tbt_data (TbtData): the ``TbtData`` object to write to disk.
-    """
-    output_path = Path(output_path)
-    LOGGER.info(f"Writing TbTdata in ASCII SDDS (LHC) format at '{output_path.absolute()}'")
-
-    for bunch_id in range(tbt_data.nbunches):
-        LOGGER.debug(f"Writing data for bunch {bunch_id}")
-        suffix = f"_{tbt_data.bunch_ids[bunch_id]}" if tbt_data.nbunches > 1 else ""
-        with output_path.with_suffix(suffix).open("w") as output_file:
-            _write_header(tbt_data, bunch_id, output_file)
-            _write_tbt_data(tbt_data, bunch_id, output_file)
-
-
 def _matrices_to_array(tbt_data: TbtData) -> np.ndarray:
     """
     Convert  the matrices of a ``TbtData`` object to a numpy array.
@@ -136,24 +117,3 @@ def _matrices_to_array(tbt_data: TbtData) -> np.ndarray:
         for plane in PLANES:
             data[PLANE_TO_NUM[plane], :, index, :] = tbt_data.matrices[index][plane].to_numpy()
     return data
-
-
-def _write_header(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> None:
-    """
-    Write the appropriate headers for a ``TbtData`` object's given bunch_id in the ASCII **SDDS**  format.
-    """
-    output_file.write("#SDDSASCIIFORMAT v1\n")
-    output_file.write(f"#Created: {datetime.now().strftime('%Y-%m-%d at %H:%M:%S')} By: Python turn_by_turn Package\n")
-    output_file.write(f"#Number of turns: {tbt_data.nturns}\n")
-    output_file.write(f"#Number of horizontal monitors: {tbt_data.matrices[bunch_id].X.index.size}\n")
-    output_file.write(f"#Number of vertical monitors: {tbt_data.matrices[bunch_id].Y.index.size}\n")
-    output_file.write(f"#Acquisition date: {tbt_data.date.strftime('%Y-%m-%d at %H:%M:%S')}\n")
-
-
-def _write_tbt_data(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> None:
-    """Write a ``TbtData`` object's data for the given bunch_id to disk in the ASCII **SDDS** format."""
-    row_format = "{} {} {}  " + FORMAT_STRING * tbt_data.nturns + "\n"
-    for plane in PLANES:
-        for bpm_index, bpm_name in enumerate(tbt_data.matrices[bunch_id][plane].index):
-            samples = tbt_data.matrices[bunch_id][plane].loc[bpm_name, :].to_numpy()
-            output_file.write(row_format.format(PLANE_TO_NUM[plane], bpm_name, bpm_index, *samples))
