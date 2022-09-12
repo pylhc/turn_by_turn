@@ -84,7 +84,7 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     return TbtData(matrices, date, bunch_ids, nturns)
 
 
-def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = None, seed: int = None) -> None:
+def write_tbt(output_path: Union[str, Path], tbt_data: TbtData) -> None:
     """
     Write a ``TbtData`` object's data to file, in the ``LHC``'s **SDDS** format.
 
@@ -96,9 +96,6 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = N
     LOGGER.info(f"Writing TbTdata in binary SDDS (LHC) format at '{output_path.absolute()}'")
 
     data: np.ndarray = matrices_to_array(tbt_data)
-
-    if noise is not None:
-        data = add_noise(data, noise, seed=seed)
 
     definitions = [
         sdds.classes.Parameter(ACQ_STAMP, "llong"),
