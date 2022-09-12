@@ -84,9 +84,15 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData) -> None:
     LOGGER.info(f"Writing TbTdata in binary SDDS (SPS) format at '{output_path.absolute()}'")
 
     df_x, df_y = tbt_data.matrices[0].X, tbt_data.matrices[0].Y
+
+    # bpm names
     bpm_names_x, bpm_names_y = df_x.index.to_list(), df_y.index.to_list()
     bpm_names = bpm_names_x + bpm_names_y
-    bpm_planes = np.zeros(shape=[len(bpm_names_x)]).tolist() + np.ones(shape=[len(bpm_names_y)]).tolist()
+
+    # bpm planes
+    bpm_planes = np.zeros(shape=[len(bpm_names)])
+    bpm_planes[-len(bpm_names_y):] = 1
+
     list_of_data = [a for df in (df_x, df_y) for a in df.to_numpy()]
 
     definitions = [
