@@ -9,14 +9,16 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Union
 
+import numpy as np
 import pandas as pd
 import sdds
 from dateutil import tz
 
 from turn_by_turn.ascii import is_ascii_file, read_ascii
-from turn_by_turn.constants import PLANES
+from turn_by_turn.constants import PLANES, PLANE_TO_NUM
 
 from turn_by_turn.structures import TbtData, TransverseData
+from turn_by_turn.utils import add_noise, matrices_to_array
 
 LOGGER = logging.getLogger()
 
@@ -80,3 +82,40 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
         for idx in range(nbunches)
     ]
     return TbtData(matrices, date, bunch_ids, nturns)
+
+
+def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = None, seed: int = None) -> None:
+    """
+    Write a ``TbtData`` object's data to file, in the ``LHC``'s **SDDS** format.
+
+    Args:
+        output_path (Union[str, Path]): path to a the disk location where to write the data.
+        tbt_data (TbtData): the ``TbtData`` object to write to disk.
+    """
+    output_path = Path(output_path)
+    LOGGER.info(f"Writing TbTdata in binary SDDS (LHC) format at '{output_path.absolute()}'")
+
+    data: np.ndarray = matrices_to_array(tbt_data)
+
+    if noise is not None:
+        data = add_noise(data, noise, seed=seed)
+
+    definitions = [
+        sdds.classes.Parameter(ACQ_STAMP, "llong"),
+        sdds.classes.Parameter(N_BUNCHES, "long"),
+        sdds.classes.Parameter(N_TURNS, "long"),
+        sdds.classes.Array(BUNCH_ID, "long"),
+        sdds.classes.Array(BPM_NAMES, "string"),
+        sdds.classes.Array(POSITIONS["X"], "float"),
+        sdds.classes.Array(POSITIONS["Y"], "float"),
+    ]
+    values = [
+        tbt_data.date.timestamp() * 1e9,
+        tbt_data.nbunches,
+        tbt_data.nturns,
+        tbt_data.bunch_ids,
+        tbt_data.matrices[0].X.index.to_numpy(),
+        np.ravel(data[PLANE_TO_NUM["X"]]),
+        np.ravel(data[PLANE_TO_NUM["Y"]]),
+        ]
+    sdds.write(sdds.SddsFile("SDDS1", None, definitions, values), output_path)
