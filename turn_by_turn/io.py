@@ -10,7 +10,7 @@ import logging
 from pathlib import Path
 from typing import Union
 
-from turn_by_turn import esrf, iota, lhc, ptc, trackone, sps
+from turn_by_turn import esrf, iota, lhc, ptc, trackone, sps, ascii
 from turn_by_turn.ascii import write_ascii
 from turn_by_turn.errors import DataTypeError
 from turn_by_turn.structures import TbtData
@@ -25,8 +25,9 @@ TBT_MODULES = dict(
     esrf=esrf,
     ptc=ptc,
     trackone=trackone,
+    ascii=ascii,
 )
-WRITERS = ("lhc", "sps")  # implemented writers
+WRITERS = ("lhc", "sps", "ascii")  # implemented writers
 
 write_lhc_ascii = write_ascii  # Backwards compatibility <0.4
 

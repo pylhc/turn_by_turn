@@ -56,7 +56,9 @@ def is_ascii_file(file_path: Union[str, Path]) -> bool:
 
 # ----- Writer ----- #
 
-def write_ascii(output_path: Union[str, Path], tbt_data: TbtData) -> None:
+write_ascii = write_tbt   # backward compatibility
+
+def write_tbt(output_path: Union[str, Path], tbt_data: TbtData) -> None:
     """
     Write a ``TbtData`` object's data to file, in the TbT ASCII format.
 
@@ -98,7 +100,9 @@ def _write_tbt_data(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> No
 
 # ----- Reader ----- #
 
-def read_ascii(
+read_ascii = read_tbt  # backward compatibility
+
+def read_tbt(
         file_path: Union[str, Path]
 ) -> Tuple[List[TransverseData], Optional[datetime]]:
     """
