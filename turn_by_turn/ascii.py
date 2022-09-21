@@ -47,7 +47,8 @@ def is_ascii_file(file_path: Union[str, Path]) -> bool:
                 # skip empty lines
                 if line.strip() == "":
                     continue
-                return line.strip().startswith(f"#{ASCII_ID}")  # see _write_header
+                # return line.strip().startswith(f"#{ASCII_ID}")  # see _write_header
+                return line.strip().startswith(ASCII_COMMENT)  #  e.g. PS does not follow the rules
         except UnicodeDecodeError:
             return False
     return False
