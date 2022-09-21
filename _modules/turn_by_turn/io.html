@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.io &mdash; turn_by_turn 0.4.1 documentation</title>
+  <title>turn_by_turn.io &mdash; turn_by_turn 0.4.2 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
@@ -93,7 +93,7 @@
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
-<span class="kn">from</span> <span class="nn">turn_by_turn</span> <span class="kn">import</span> <span class="n">esrf</span><span class="p">,</span> <span class="n">iota</span><span class="p">,</span> <span class="n">lhc</span><span class="p">,</span> <span class="n">ptc</span><span class="p">,</span> <span class="n">trackone</span><span class="p">,</span> <span class="n">sps</span>
+<span class="kn">from</span> <span class="nn">turn_by_turn</span> <span class="kn">import</span> <span class="n">esrf</span><span class="p">,</span> <span class="n">iota</span><span class="p">,</span> <span class="n">lhc</span><span class="p">,</span> <span class="n">ptc</span><span class="p">,</span> <span class="n">trackone</span><span class="p">,</span> <span class="n">sps</span><span class="p">,</span> <span class="n">ascii</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.ascii</span> <span class="kn">import</span> <span class="n">write_ascii</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.errors</span> <span class="kn">import</span> <span class="n">DataTypeError</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.structures</span> <span class="kn">import</span> <span class="n">TbtData</span>
@@ -108,8 +108,9 @@
     <span class="n">esrf</span><span class="o">=</span><span class="n">esrf</span><span class="p">,</span>
     <span class="n">ptc</span><span class="o">=</span><span class="n">ptc</span><span class="p">,</span>
     <span class="n">trackone</span><span class="o">=</span><span class="n">trackone</span><span class="p">,</span>
+    <span class="n">ascii</span><span class="o">=</span><span class="n">ascii</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">WRITERS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;lhc&quot;</span><span class="p">,</span> <span class="s2">&quot;sps&quot;</span><span class="p">)</span>  <span class="c1"># implemented writers</span>
+<span class="n">WRITERS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;lhc&quot;</span><span class="p">,</span> <span class="s2">&quot;sps&quot;</span><span class="p">,</span> <span class="s2">&quot;ascii&quot;</span><span class="p">)</span>  <span class="c1"># implemented writers</span>
 
 <span class="n">write_lhc_ascii</span> <span class="o">=</span> <span class="n">write_ascii</span>  <span class="c1"># Backwards compatibility &lt;0.4</span>
 
