@@ -14,7 +14,7 @@ import pandas as pd
 import sdds
 from dateutil import tz
 
-from turn_by_turn.ascii import is_ascii_file, read_ascii
+from turn_by_turn.ascii import is_ascii_file, read_tbt as read_ascii
 from turn_by_turn.structures import TbtData, TransverseData
 
 LOGGER = logging.getLogger()

@@ -56,7 +56,7 @@ def is_ascii_file(file_path: Union[str, Path]) -> bool:
 
 # ----- Writer ----- #
 
-def write_ascii(output_path: Union[str, Path], tbt_data: TbtData) -> None:
+def write_tbt(output_path: Union[str, Path], tbt_data: TbtData) -> None:
     """
     Write a ``TbtData`` object's data to file, in the TbT ASCII format.
 
@@ -98,7 +98,7 @@ def _write_tbt_data(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> No
 
 # ----- Reader ----- #
 
-def read_ascii(
+def read_tbt(
         file_path: Union[str, Path]
 ) -> Tuple[List[TransverseData], Optional[datetime]]:
     """
@@ -170,3 +170,8 @@ def _parse_date(line: str) -> datetime:
     except ValueError:
         LOGGER.error("Could not parse date in file, defaulting to: Today, UTC")
         return datetime.today().replace(tzinfo=tz.tzutc())
+
+
+# For backwards compatibility <0.4.2:
+write_ascii = write_tbt
+read_ascii = read_tbt
