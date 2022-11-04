@@ -10,7 +10,7 @@ import logging
 from pathlib import Path
 from typing import Union
 
-from turn_by_turn import esrf, iota, lhc, ptc, trackone, sps, ascii
+from turn_by_turn import esrf, iota, lhc, ptc, trackone, sps, leir, ascii
 from turn_by_turn.ascii import write_ascii
 from turn_by_turn.errors import DataTypeError
 from turn_by_turn.structures import TbtData
@@ -21,6 +21,7 @@ LOGGER = logging.getLogger()
 TBT_MODULES = dict(
     lhc=lhc,
     sps=sps,
+    leir=leir,
     iota=iota,
     esrf=esrf,
     ptc=ptc,
