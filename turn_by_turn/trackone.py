@@ -14,12 +14,12 @@ from typing import Dict, Tuple, Union
 import numpy as np
 
 from turn_by_turn.structures import TbtData
-from turn_by_turn.utils import numpy_to_tbt
+from turn_by_turn.utils import numpy_to_tbt, numpy_to_sim_tbt
 
 LOGGER = logging.getLogger()
 
 
-def read_tbt(file_path: Union[str, Path]) -> TbtData:
+def read_tbt(file_path: Union[str, Path], full_sim_data=False) -> TbtData:
     """
     Reads turn-by-turn data from the ``MAD-X`` **trackone** format file.
 
@@ -31,8 +31,12 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     """
     nturns, npart = get_trackone_stats(file_path)
     names, matrix = get_structure_from_trackone(nturns, npart, file_path)
-    # matrix[0, 2] contains just (x, y) samples.
-    return numpy_to_tbt(names, matrix[[0, 2]])
+    if full_sim_data:
+        # Converts full tracking output to TbTData.
+        return numpy_to_sim_tbt(names, matrix)
+    else:
+        # matrix[0, 2] contains just (x, y) samples.
+        return numpy_to_tbt(names, matrix[[0, 2]])
 
 
 def get_trackone_stats(file_path: Union[str, Path], write_out: bool = False) -> Tuple[int, int]:

@@ -13,7 +13,7 @@ import pandas as pd
 
 from turn_by_turn.constants import PLANES, PLANE_TO_NUM
 from turn_by_turn.errors import ExclusiveArgumentsError
-from turn_by_turn.structures import TbtData, TransverseData
+from turn_by_turn.structures import TbtData, TransverseData, SimulationData
 
 LOGGER = logging.getLogger(__name__)
 
@@ -172,6 +172,39 @@ def numpy_to_tbt(names: np.ndarray, matrix: np.ndarray) -> TbtData:
             TransverseData(
                 X=pd.DataFrame(index=names, data=matrix[0, :, index, :]),
                 Y=pd.DataFrame(index=names, data=matrix[1, :, index, :]),
+            )
+        )
+        indices.append(index)
+    return TbtData(matrices=matrices, bunch_ids=indices, nturns=nturns)
+
+
+def numpy_to_sim_tbt(names: np.ndarray, matrix: np.ndarray) -> TbtData:
+    """
+    Converts turn by turn matrices and names into a ``TbTData`` object.
+
+    Args:
+        names (np.ndarray): Numpy array of BPM names.
+        matrix (np.ndarray): 4D Numpy array [quantity, BPM, particle/bunch No., turn No.]
+            quantities in order [x, px, y, py, t, pt, s, E].
+
+    Returns:
+        A ``TbtData`` object loaded with the matrices in the provided numpy arrays.
+    """
+    # get list of TbTFile from 4D matrix ...
+    _, _, nbunches, nturns = matrix.shape
+    matrices = []
+    indices = []
+    for index in range(nbunches):
+        matrices.append(
+            SimulationData(
+                X=pd.DataFrame(index=names, data=matrix[0, :, index, :]),
+                PX=pd.DataFrame(index=names, data=matrix[1, :, index, :]),
+                Y=pd.DataFrame(index=names, data=matrix[2, :, index, :]),
+                PY=pd.DataFrame(index=names, data=matrix[3, :, index, :]),
+                T=pd.DataFrame(index=names, data=matrix[4, :, index, :]),
+                PT=pd.DataFrame(index=names, data=matrix[5, :, index, :]),
+                S=pd.DataFrame(index=names, data=matrix[6, :, index, :]),
+                E=pd.DataFrame(index=names, data=matrix[7, :, index, :]),
             )
         )
         indices.append(index)

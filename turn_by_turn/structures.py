@@ -12,6 +12,7 @@ import pandas as pd
 from dateutil import tz
 
 
+
 @dataclass
 class TransverseData:
     """
@@ -20,6 +21,30 @@ class TransverseData:
 
     X: pd.DataFrame  # horizontal data
     Y: pd.DataFrame  # vertical data
+
+    def fieldnames(self):
+        return (f.name for f in fields(self))
+
+    def __getitem__(self, item):  # to access X and Y like one would with a dictionary
+        if item not in self.fieldnames():
+            raise KeyError(f"'{item}' is not in the fields of a {self.__class__.__name__} object.")
+        return getattr(self, item)
+
+
+@dataclass
+class SimulationData:
+    """
+    Object holding multidimensional turn-by-turn simulation data in the form of pandas DataFrames.
+    """
+
+    X: pd.DataFrame  # horizontal data
+    PX: pd.DataFrame  # horizontal momentum data
+    Y: pd.DataFrame  # vertical data
+    PY: pd.DataFrame  # vertical momentum data
+    T: pd.DataFrame  # longitudinal data
+    PT: pd.DataFrame  # longitudinal momentum data
+    S: pd.DataFrame
+    E: pd.DataFrame
 
     def fieldnames(self):
         return (f.name for f in fields(self))
