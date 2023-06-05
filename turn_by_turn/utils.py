@@ -171,14 +171,14 @@ def numpy_to_tbt(names: np.ndarray, matrix: np.ndarray, datatype: DataType = Tra
     _, _, nbunches, nturns = matrix.shape
     matrices = []
     indices = []
-    for index in range(nbunches):
+    for idx_bunch in range(nbunches):
         matrices.append(
             datatype(  # datatype is directly the class to load data into (TransverseData or SimulationData)
                 **{  # for each field in the datatype, load the corresponding matrix
-                    field: pd.DataFrame(index=names, data=matrix[idx, :, index, :])
-                    for idx, field in enumerate(datatype.fieldnames())
+                    field: pd.DataFrame(index=names, data=matrix[idx_field, :, idx_bunch, :])
+                    for idx_field, field in enumerate(datatype.fieldnames())
                 }
             )
         )
-        indices.append(index)
+        indices.append(idx_bunch)
     return TbtData(matrices=matrices, bunch_ids=indices, nturns=nturns)
