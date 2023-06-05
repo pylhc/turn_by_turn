@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from turn_by_turn.constants import PLANES, PRINT_PRECISION
+from turn_by_turn.constants import PLANES, PRINT_PRECISION, SIMDATA_FIELDS
 from turn_by_turn.errors import DataTypeError
 from turn_by_turn.io import read_tbt, write_lhc_ascii, write_tbt
 from turn_by_turn.structures import TbtData
@@ -56,12 +56,13 @@ def test_tbt_write_read_ascii(_sdds_file, _test_file):
 # ----- Helpers ----- #
 
 
-def compare_tbt(origin: TbtData, new: TbtData, no_binary: bool, max_deviation=ASCII_PRECISION) -> None:
+def compare_tbt(origin: TbtData, new: TbtData, no_binary: bool, max_deviation = ASCII_PRECISION, full_sim_data: bool = False) -> None:
+    FIELDS = PLANES if not full_sim_data else SIMDATA_FIELDS  # check in ("X", "Y") if just trackone otherwise all fields
     assert new.nturns == origin.nturns
     assert new.nbunches == origin.nbunches
     assert new.bunch_ids == origin.bunch_ids
     for index in range(origin.nbunches):
-        for plane in PLANES:
+        for plane in FIELDS:
             assert np.all(new.matrices[index][plane].index == origin.matrices[index][plane].index)
             origin_mat = origin.matrices[index][plane].to_numpy()
             new_mat = new.matrices[index][plane].to_numpy()
