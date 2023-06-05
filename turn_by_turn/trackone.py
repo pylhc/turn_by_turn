@@ -13,7 +13,7 @@ from typing import Dict, Tuple, Union
 
 import numpy as np
 
-from turn_by_turn.structures import SimulationData, TbtData, TransverseData
+from turn_by_turn.structures import TbtData, TrackingData, TransverseData
 from turn_by_turn.utils import numpy_to_tbt
 
 LOGGER = logging.getLogger()
@@ -28,7 +28,7 @@ def read_tbt(file_path: Union[str, Path], is_tracking_data: bool = False) -> Tbt
         is_tracking_data (bool): if ``True``, all (``X``, ``PX``, ``Y``, ``PY``,
             ``T``, ``PT``, ``S``, ``E``) fields are expected in the file as it
             is considered a full tracking simulation output. Those are then read
-            into ``SimulationData`` objects. Defaults to ``False``.
+            into ``TrackingData`` objects. Defaults to ``False``.
 
     Returns:
         A ``TbTData`` object with the loaded data.
@@ -37,7 +37,7 @@ def read_tbt(file_path: Union[str, Path], is_tracking_data: bool = False) -> Tbt
     names, matrix = get_structure_from_trackone(nturns, npart, file_path)
     if is_tracking_data:
         # Converts full tracking output to TbTData.
-        return numpy_to_tbt(names, matrix, datatype=SimulationData)
+        return numpy_to_tbt(names, matrix, datatype=TrackingData)
     else:
         # matrix[0, 2] contains just (x, y) samples.
         return numpy_to_tbt(names, matrix[[0, 2]], datatype=TransverseData)

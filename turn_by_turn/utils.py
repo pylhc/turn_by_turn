@@ -159,7 +159,7 @@ def numpy_to_tbt(names: np.ndarray, matrix: np.ndarray, datatype: DataType = Tra
             quantities in order [x, y].
         datatype (DataType): The type of data to be converted to in the matrices. Either
             ``TransverseData`` (which implies reading ``X`` and ``Y`` fields) or
-            ``SimulationData`` (which implies reading all 8 fields). Defaults to 
+            ``TrackingData`` (which implies reading all 8 fields). Defaults to 
             ``TransverseData``.
 
     Returns:
@@ -171,7 +171,7 @@ def numpy_to_tbt(names: np.ndarray, matrix: np.ndarray, datatype: DataType = Tra
     indices = []
     for idx_bunch in range(nbunches):
         matrices.append(
-            datatype(  # datatype is directly the class to load data into (TransverseData or SimulationData)
+            datatype(  # datatype is directly the class to load data into (TransverseData or TrackingData)
                 **{  # for each field in the datatype, load the corresponding matrix
                     field: pd.DataFrame(index=names, data=matrix[idx_field, :, idx_bunch, :])
                     for idx_field, field in enumerate(datatype.fieldnames())

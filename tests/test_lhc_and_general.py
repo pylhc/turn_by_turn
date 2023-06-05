@@ -61,7 +61,7 @@ def compare_tbt(origin: TbtData, new: TbtData, no_binary: bool, max_deviation = 
     assert new.nbunches == origin.nbunches
     assert new.bunch_ids == origin.bunch_ids
     for index in range(origin.nbunches):
-        # In matrices are either TransverseData or SimulationData and we can get all the fields from the `fieldnames` classmethod
+        # In matrices are either TransverseData or TrackingData and we can get all the fields from the `fieldnames` classmethod
         for field in origin.matrices[0].fieldnames():
             assert np.all(new.matrices[index][field].index == origin.matrices[index][field].index)
             origin_mat = origin.matrices[index][field].to_numpy()

@@ -33,7 +33,7 @@ class TransverseData:
 
 
 @dataclass
-class SimulationData:
+class TrackingData:
     """
     Object holding multidimensional turn-by-turn simulation data in the form of pandas DataFrames.
     """
@@ -58,7 +58,7 @@ class SimulationData:
         return getattr(self, item)
 
 
-DataType = Union[TransverseData, SimulationData]
+DataType = Union[TransverseData, TrackingData]
 
 
 @dataclass

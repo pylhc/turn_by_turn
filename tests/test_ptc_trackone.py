@@ -9,7 +9,7 @@ import pytest
 from tests.test_lhc_and_general import ASCII_PRECISION, INPUTS_DIR, compare_tbt
 from turn_by_turn import ptc, trackone
 from turn_by_turn.errors import PTCFormatError
-from turn_by_turn.structures import SimulationData, TbtData, TransverseData
+from turn_by_turn.structures import TbtData, TrackingData, TransverseData
 
 
 def test_read_ptc(_ptc_file):
@@ -91,7 +91,7 @@ def _original_trackone(track: bool = False) -> TbtData:
 def _original_simulation_data() -> TbtData:
     names = np.array(["C1.BPM1"])
     matrices = [
-        SimulationData(  # first "bunch"
+        TrackingData(  # first "bunch"
             X=pd.DataFrame(index=names, data=[[0.001, -0.000361, -0.001658, -0.002666]]),
             PX=pd.DataFrame(index=names, data=[[0.0, -0.000202, -0.000368, -0.00047]]),
             Y=pd.DataFrame(index=names, data=[[0.001,  0.000706, -0.000207, -0.000938]]),
@@ -101,7 +101,7 @@ def _original_simulation_data() -> TbtData:
             S=pd.DataFrame(index=names, data=[[0, 0, 0, 0]]),
             E=pd.DataFrame(index=names, data=[[500.00088,  500.00088,  500.00088,  500.00088]]),
         ),
-        SimulationData(  # second "bunch"
+        TrackingData(  # second "bunch"
             X=pd.DataFrame(index=names, data=[[0.0011, -0.000397, -0.001824, -0.002933]]),
             PX=pd.DataFrame(index=names, data=[[0.0, -0.000222, -0.000405, -0.000517]]),
             Y=pd.DataFrame(index=names, data=[[0.0011,  0.000776, -0.000227, -0.001032]]),
