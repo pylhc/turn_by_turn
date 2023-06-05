@@ -21,8 +21,9 @@ class TransverseData:
     X: pd.DataFrame  # horizontal data
     Y: pd.DataFrame  # vertical data
 
-    def fieldnames(self):
-        return (f.name for f in fields(self))
+    @classmethod
+    def fieldnames(self) -> List[str]:
+        return list(f.name for f in fields(self))
 
     def __getitem__(self, item):  # to access X and Y like one would with a dictionary
         if item not in self.fieldnames():
@@ -45,8 +46,9 @@ class SimulationData:
     S: pd.DataFrame  # longitudinal position data
     E: pd.DataFrame  # energy data
 
-    def fieldnames(self):
-        return (f.name for f in fields(self))
+    @classmethod
+    def fieldnames(self) -> List[str]:
+        return list(f.name for f in fields(self))
 
     def __getitem__(self, item):  # to access fields like one would with a dictionary
         if item not in self.fieldnames():
