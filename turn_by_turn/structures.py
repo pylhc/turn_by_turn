@@ -12,7 +12,6 @@ import pandas as pd
 from dateutil import tz
 
 
-
 @dataclass
 class TransverseData:
     """
@@ -43,13 +42,13 @@ class SimulationData:
     PY: pd.DataFrame  # vertical momentum data
     T: pd.DataFrame  # longitudinal data
     PT: pd.DataFrame  # longitudinal momentum data
-    S: pd.DataFrame
-    E: pd.DataFrame
+    S: pd.DataFrame  # longitudinal position data
+    E: pd.DataFrame  # energy data
 
     def fieldnames(self):
         return (f.name for f in fields(self))
 
-    def __getitem__(self, item):  # to access X and Y like one would with a dictionary
+    def __getitem__(self, item):  # to access fields like one would with a dictionary
         if item not in self.fieldnames():
             raise KeyError(f"'{item}' is not in the fields of a {self.__class__.__name__} object.")
         return getattr(self, item)

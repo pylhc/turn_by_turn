@@ -14,17 +14,20 @@ from typing import Dict, Tuple, Union
 import numpy as np
 
 from turn_by_turn.structures import TbtData
-from turn_by_turn.utils import numpy_to_tbt, numpy_to_sim_tbt
+from turn_by_turn.utils import numpy_to_sim_tbt, numpy_to_tbt
 
 LOGGER = logging.getLogger()
 
 
-def read_tbt(file_path: Union[str, Path], full_sim_data=False) -> TbtData:
+def read_tbt(file_path: Union[str, Path], full_sim_data: bool = False) -> TbtData:
     """
     Reads turn-by-turn data from the ``MAD-X`` **trackone** format file.
 
     Args:
         file_path (Union[str, Path]): path to the turn-by-turn measurement file.
+        full_sim_data (bool): if ``True``, all fields (``X``, ``PX``, ``Y``, ``PY``,
+            ``T``, ``PT``, ``S``, ``E``) are expected in the file and read, as if it
+            were a full tracking simulation output.
 
     Returns:
         A ``TbTData`` object with the loaded data.
