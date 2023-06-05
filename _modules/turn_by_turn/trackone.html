@@ -11,11 +11,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -26,15 +26,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html">
-            <img src="../../_static/omc_logo.svg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 0.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -44,16 +48,43 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Constants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#io">IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.io.read_tbt"><code class="docutils literal notranslate"><span class="pre">read_tbt()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.io.write_tbt"><code class="docutils literal notranslate"><span class="pre">write_tbt()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#structures">Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TbtData"><code class="docutils literal notranslate"><span class="pre">TbtData</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TransverseData"><code class="docutils literal notranslate"><span class="pre">TransverseData</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#utils">Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.utils.add_noise"><code class="docutils literal notranslate"><span class="pre">add_noise()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.utils.add_noise_to_tbt"><code class="docutils literal notranslate"><span class="pre">add_noise_to_tbt()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.utils.generate_average_tbtdata"><code class="docutils literal notranslate"><span class="pre">generate_average_tbtdata()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.utils.get_averaged_data"><code class="docutils literal notranslate"><span class="pre">get_averaged_data()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.utils.matrices_to_array"><code class="docutils literal notranslate"><span class="pre">matrices_to_array()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.utils.numpy_to_tbt"><code class="docutils literal notranslate"><span class="pre">numpy_to_tbt()</span></code></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Readers</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html">ESRF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.esrf.load_esrf_mat_file"><code class="docutils literal notranslate"><span class="pre">load_esrf_mat_file()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.esrf.read_tbt"><code class="docutils literal notranslate"><span class="pre">read_tbt()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#iota">Iota</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.iota.read_tbt"><code class="docutils literal notranslate"><span class="pre">read_tbt()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#lhc">LHC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.lhc.read_tbt"><code class="docutils literal notranslate"><span class="pre">read_tbt()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.lhc.write_tbt"><code class="docutils literal notranslate"><span class="pre">write_tbt()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#ptc">PTC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.ptc.Segment"><code class="docutils literal notranslate"><span class="pre">Segment</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#turn_by_turn.ptc.Segment.element"><code class="docutils literal notranslate"><span class="pre">Segment.element</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#turn_by_turn.ptc.Segment.name"><code class="docutils literal notranslate"><span class="pre">Segment.name</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#turn_by_turn.ptc.Segment.number"><code class="docutils literal notranslate"><span class="pre">Segment.number</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#turn_by_turn.ptc.Segment.particles"><code class="docutils literal notranslate"><span class="pre">Segment.particles</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#turn_by_turn.ptc.Segment.turns"><code class="docutils literal notranslate"><span class="pre">Segment.turns</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.ptc.read_tbt"><code class="docutils literal notranslate"><span class="pre">read_tbt()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#trackone">Trackone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.trackone.get_structure_from_trackone"><code class="docutils literal notranslate"><span class="pre">get_structure_from_trackone()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.trackone.get_trackone_stats"><code class="docutils literal notranslate"><span class="pre">get_trackone_stats()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.trackone.read_tbt"><code class="docutils literal notranslate"><span class="pre">read_tbt()</span></code></a></li>
 </ul>
 
         </div>
@@ -69,9 +100,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>turn_by_turn.trackone</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">turn_by_turn.trackone</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -103,7 +134,7 @@
 
 
 <div class="viewcode-block" id="read_tbt"><a class="viewcode-back" href="../../readers/index.html#turn_by_turn.trackone.read_tbt">[docs]</a><span class="k">def</span> <span class="nf">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads turn-by-turn data from the ``MAD-X`` **trackone** format file.</span>
 
 <span class="sd">    Args:</span>
@@ -119,7 +150,7 @@
 
 
 <div class="viewcode-block" id="get_trackone_stats"><a class="viewcode-back" href="../../readers/index.html#turn_by_turn.trackone.get_trackone_stats">[docs]</a><span class="k">def</span> <span class="nf">get_trackone_stats</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">write_out</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determines the number of particles and turns in the matrices from the provided ``MAD-X``</span>
 <span class="sd">    **trackone** file.</span>
 
@@ -162,7 +193,7 @@
 <div class="viewcode-block" id="get_structure_from_trackone"><a class="viewcode-back" href="../../readers/index.html#turn_by_turn.trackone.get_structure_from_trackone">[docs]</a><span class="k">def</span> <span class="nf">get_structure_from_trackone</span><span class="p">(</span>
     <span class="n">nturns</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">npart</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;trackone&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extracts BPM names and particle coordinates in the **trackone** file produced by ``MAD-X``.</span>
 
 <span class="sd">    Args:</span>
