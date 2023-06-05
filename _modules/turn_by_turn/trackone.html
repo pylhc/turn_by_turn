@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.trackone &mdash; turn_by_turn 0.4.2 documentation</title>
+  <title>turn_by_turn.trackone &mdash; turn_by_turn 0.5.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
@@ -34,7 +34,7 @@
               <img src="../../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.4
+                0.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -52,7 +52,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.io.write_tbt"><code class="docutils literal notranslate"><span class="pre">write_tbt()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#structures">Structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TbtData"><code class="docutils literal notranslate"><span class="pre">TbtData</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TransverseData"><code class="docutils literal notranslate"><span class="pre">TransverseData</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TrackingData"><code class="docutils literal notranslate"><span class="pre">TrackingData</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TrackingData.fieldnames"><code class="docutils literal notranslate"><span class="pre">TrackingData.fieldnames()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TransverseData"><code class="docutils literal notranslate"><span class="pre">TransverseData</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TransverseData.fieldnames"><code class="docutils literal notranslate"><span class="pre">TransverseData.fieldnames()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#utils">Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.utils.add_noise"><code class="docutils literal notranslate"><span class="pre">add_noise()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.utils.add_noise_to_tbt"><code class="docutils literal notranslate"><span class="pre">add_noise_to_tbt()</span></code></a></li>
@@ -127,26 +134,34 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">turn_by_turn.structures</span> <span class="kn">import</span> <span class="n">TbtData</span>
+<span class="kn">from</span> <span class="nn">turn_by_turn.structures</span> <span class="kn">import</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">TrackingData</span><span class="p">,</span> <span class="n">TransverseData</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.utils</span> <span class="kn">import</span> <span class="n">numpy_to_tbt</span>
 
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="read_tbt"><a class="viewcode-back" href="../../readers/index.html#turn_by_turn.trackone.read_tbt">[docs]</a><span class="k">def</span> <span class="nf">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+<div class="viewcode-block" id="read_tbt"><a class="viewcode-back" href="../../readers/index.html#turn_by_turn.trackone.read_tbt">[docs]</a><span class="k">def</span> <span class="nf">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">is_tracking_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads turn-by-turn data from the ``MAD-X`` **trackone** format file.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        file_path (Union[str, Path]): path to the turn-by-turn measurement file.</span>
+<span class="sd">        is_tracking_data (bool): if ``True``, all (``X``, ``PX``, ``Y``, ``PY``,</span>
+<span class="sd">            ``T``, ``PT``, ``S``, ``E``) fields are expected in the file as it</span>
+<span class="sd">            is considered a full tracking simulation output. Those are then read</span>
+<span class="sd">            into ``TrackingData`` objects. Defaults to ``False``.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A ``TbTData`` object with the loaded data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">nturns</span><span class="p">,</span> <span class="n">npart</span> <span class="o">=</span> <span class="n">get_trackone_stats</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="n">names</span><span class="p">,</span> <span class="n">matrix</span> <span class="o">=</span> <span class="n">get_structure_from_trackone</span><span class="p">(</span><span class="n">nturns</span><span class="p">,</span> <span class="n">npart</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
-    <span class="c1"># matrix[0, 2] contains just (x, y) samples.</span>
-    <span class="k">return</span> <span class="n">numpy_to_tbt</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">matrix</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span></div>
+    <span class="k">if</span> <span class="n">is_tracking_data</span><span class="p">:</span>
+        <span class="c1"># Converts full tracking output to TbTData.</span>
+        <span class="k">return</span> <span class="n">numpy_to_tbt</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">TrackingData</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># matrix[0, 2] contains just (x, y) samples.</span>
+        <span class="k">return</span> <span class="n">numpy_to_tbt</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">matrix</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span> <span class="n">datatype</span><span class="o">=</span><span class="n">TransverseData</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_trackone_stats"><a class="viewcode-back" href="../../readers/index.html#turn_by_turn.trackone.get_trackone_stats">[docs]</a><span class="k">def</span> <span class="nf">get_trackone_stats</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">write_out</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>

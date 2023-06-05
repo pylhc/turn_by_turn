@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.structures &mdash; turn_by_turn 0.4.2 documentation</title>
+  <title>turn_by_turn.structures &mdash; turn_by_turn 0.5.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
@@ -34,7 +34,7 @@
               <img src="../../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.4
+                0.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -52,7 +52,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.io.write_tbt"><code class="docutils literal notranslate"><span class="pre">write_tbt()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#structures">Structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TbtData"><code class="docutils literal notranslate"><span class="pre">TbtData</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TransverseData"><code class="docutils literal notranslate"><span class="pre">TransverseData</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TrackingData"><code class="docutils literal notranslate"><span class="pre">TrackingData</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TrackingData.fieldnames"><code class="docutils literal notranslate"><span class="pre">TrackingData.fieldnames()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TransverseData"><code class="docutils literal notranslate"><span class="pre">TransverseData</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TransverseData.fieldnames"><code class="docutils literal notranslate"><span class="pre">TransverseData.fieldnames()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#utils">Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.utils.add_noise"><code class="docutils literal notranslate"><span class="pre">add_noise()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.utils.add_noise_to_tbt"><code class="docutils literal notranslate"><span class="pre">add_noise_to_tbt()</span></code></a></li>
@@ -120,7 +127,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">fields</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
@@ -135,13 +142,44 @@
     <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># horizontal data</span>
     <span class="n">Y</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># vertical data</span>
 
-    <span class="k">def</span> <span class="nf">fieldnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+<div class="viewcode-block" id="TransverseData.fieldnames"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.structures.TransverseData.fieldnames">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">fieldnames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of the fields of this dataclass.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>  <span class="c1"># to access X and Y like one would with a dictionary</span>
         <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldnames</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&#39; is not in the fields of a </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> object.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TrackingData"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.structures.TrackingData">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TrackingData</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Object holding multidimensional turn-by-turn simulation data in the form of pandas DataFrames.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># horizontal data</span>
+    <span class="n">PX</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># horizontal momentum data</span>
+    <span class="n">Y</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># vertical data</span>
+    <span class="n">PY</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># vertical momentum data</span>
+    <span class="n">T</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># longitudinal data</span>
+    <span class="n">PT</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># longitudinal momentum data</span>
+    <span class="n">S</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># longitudinal position data</span>
+    <span class="n">E</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># energy data</span>
+
+<div class="viewcode-block" id="TrackingData.fieldnames"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.structures.TrackingData.fieldnames">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">fieldnames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of the fields of this dataclass.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>  <span class="c1"># to access fields like one would with a dictionary</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fieldnames</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&#39; is not in the fields of a </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> object.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span></div>
+
+
+<span class="n">DataType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">TransverseData</span><span class="p">,</span> <span class="n">TrackingData</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="TbtData"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.structures.TbtData">[docs]</a><span class="nd">@dataclass</span>
@@ -151,7 +189,7 @@
 <span class="sd">    the transverse data, number of turns and bunches as well as the bunch IDs are encapsulated in this object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">matrices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">TransverseData</span><span class="p">]</span>  <span class="c1"># each entry corresponds to a bunch</span>
+    <span class="n">matrices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">DataType</span><span class="p">]</span>  <span class="c1"># each entry corresponds to a bunch</span>
     <span class="n">date</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># will default in post_init</span>
     <span class="n">bunch_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># will default in post_init</span>
     <span class="n">nturns</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
