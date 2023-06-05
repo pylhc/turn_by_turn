@@ -12,11 +12,9 @@ import pandas as pd
 
 from turn_by_turn.constants import PLANE_TO_NUM, PLANES
 from turn_by_turn.errors import ExclusiveArgumentsError
-from turn_by_turn.structures import SimulationData, TbtData, TransverseData
+from turn_by_turn.structures import DataType, TbtData, TransverseData
 
 LOGGER = logging.getLogger(__name__)
-
-DataType = Union[TransverseData, SimulationData]
 
 
 def generate_average_tbtdata(tbtdata: TbtData) -> TbtData:

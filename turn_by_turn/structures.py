@@ -58,6 +58,9 @@ class SimulationData:
         return getattr(self, item)
 
 
+DataType = Union[TransverseData, SimulationData]
+
+
 @dataclass
 class TbtData:
     """
@@ -65,7 +68,7 @@ class TbtData:
     the transverse data, number of turns and bunches as well as the bunch IDs are encapsulated in this object.
     """
 
-    matrices: Sequence[Union[TransverseData, SimulationData]]  # each entry corresponds to a bunch
+    matrices: Sequence[DataType]  # each entry corresponds to a bunch
     date: datetime = None  # will default in post_init
     bunch_ids: List[int] = None  # will default in post_init
     nturns: int = None
