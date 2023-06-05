@@ -13,26 +13,34 @@ from typing import Dict, Tuple, Union
 
 import numpy as np
 
-from turn_by_turn.structures import TbtData
+from turn_by_turn.structures import TbtData, TrackingData, TransverseData
 from turn_by_turn.utils import numpy_to_tbt
 
 LOGGER = logging.getLogger()
 
 
-def read_tbt(file_path: Union[str, Path]) -> TbtData:
+def read_tbt(file_path: Union[str, Path], is_tracking_data: bool = False) -> TbtData:
     """
     Reads turn-by-turn data from the ``MAD-X`` **trackone** format file.
 
     Args:
         file_path (Union[str, Path]): path to the turn-by-turn measurement file.
+        is_tracking_data (bool): if ``True``, all (``X``, ``PX``, ``Y``, ``PY``,
+            ``T``, ``PT``, ``S``, ``E``) fields are expected in the file as it
+            is considered a full tracking simulation output. Those are then read
+            into ``TrackingData`` objects. Defaults to ``False``.
 
     Returns:
         A ``TbTData`` object with the loaded data.
     """
     nturns, npart = get_trackone_stats(file_path)
     names, matrix = get_structure_from_trackone(nturns, npart, file_path)
-    # matrix[0, 2] contains just (x, y) samples.
-    return numpy_to_tbt(names, matrix[[0, 2]])
+    if is_tracking_data:
+        # Converts full tracking output to TbTData.
+        return numpy_to_tbt(names, matrix, datatype=TrackingData)
+    else:
+        # matrix[0, 2] contains just (x, y) samples.
+        return numpy_to_tbt(names, matrix[[0, 2]], datatype=TransverseData)
 
 
 def get_trackone_stats(file_path: Union[str, Path], write_out: bool = False) -> Tuple[int, int]:

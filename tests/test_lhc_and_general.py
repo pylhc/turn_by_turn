@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from turn_by_turn.constants import PLANES, PRINT_PRECISION
+from turn_by_turn.constants import PRINT_PRECISION
 from turn_by_turn.errors import DataTypeError
 from turn_by_turn.io import read_tbt, write_lhc_ascii, write_tbt
 from turn_by_turn.structures import TbtData
@@ -56,15 +56,16 @@ def test_tbt_write_read_ascii(_sdds_file, _test_file):
 # ----- Helpers ----- #
 
 
-def compare_tbt(origin: TbtData, new: TbtData, no_binary: bool, max_deviation=ASCII_PRECISION) -> None:
+def compare_tbt(origin: TbtData, new: TbtData, no_binary: bool, max_deviation = ASCII_PRECISION, is_tracking_data: bool = False) -> None:
     assert new.nturns == origin.nturns
     assert new.nbunches == origin.nbunches
     assert new.bunch_ids == origin.bunch_ids
     for index in range(origin.nbunches):
-        for plane in PLANES:
-            assert np.all(new.matrices[index][plane].index == origin.matrices[index][plane].index)
-            origin_mat = origin.matrices[index][plane].to_numpy()
-            new_mat = new.matrices[index][plane].to_numpy()
+        # In matrices are either TransverseData or TrackingData and we can get all the fields from the `fieldnames` classmethod
+        for field in origin.matrices[0].fieldnames():
+            assert np.all(new.matrices[index][field].index == origin.matrices[index][field].index)
+            origin_mat = origin.matrices[index][field].to_numpy()
+            new_mat = new.matrices[index][field].to_numpy()
             if no_binary:
                 assert np.nanmax(np.abs(origin_mat - new_mat)) < max_deviation
             else:

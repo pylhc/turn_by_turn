@@ -5,15 +5,14 @@ Utils
 Utility functions for convenience operations on turn-by-turn data objects in this package.
 """
 import logging
-
-from typing import Dict, Sequence
+from typing import Sequence, Union
 
 import numpy as np
 import pandas as pd
 
-from turn_by_turn.constants import PLANES, PLANE_TO_NUM
+from turn_by_turn.constants import PLANE_TO_NUM, PLANES
 from turn_by_turn.errors import ExclusiveArgumentsError
-from turn_by_turn.structures import TbtData, TransverseData
+from turn_by_turn.structures import DataType, TbtData, TransverseData
 
 LOGGER = logging.getLogger(__name__)
 
@@ -31,19 +30,18 @@ def generate_average_tbtdata(tbtdata: TbtData) -> TbtData:
     """
     data = tbtdata.matrices
     bpm_names = data[0].X.index
+    datatype = tbtdata.matrices[0].__class__
 
     new_matrices = [
-        TransverseData(
-            X=pd.DataFrame(
-                index=bpm_names,
-                data=get_averaged_data(bpm_names, data, "X", tbtdata.nturns),
-                dtype=float,
-            ),
-            Y=pd.DataFrame(
-                index=bpm_names,
-                data=get_averaged_data(bpm_names, data, "Y", tbtdata.nturns),
-                dtype=float,
-            ),
+        datatype(  # datatype is directly the class to load data into
+            **{  # for each field in the datatype, load the corresponding matrix
+                field: pd.DataFrame(
+                    index=bpm_names,
+                    data=get_averaged_data(bpm_names, data, field, tbtdata.nturns),
+                    dtype=float,
+                )
+                for field in datatype.fieldnames()
+            }
         )
     ]
     return TbtData(new_matrices, tbtdata.date, [1], tbtdata.nturns)
@@ -151,7 +149,7 @@ def add_noise_to_tbt(data: TbtData, noise: float = None, sigma: float = None, se
     )
 
 
-def numpy_to_tbt(names: np.ndarray, matrix: np.ndarray) -> TbtData:
+def numpy_to_tbt(names: np.ndarray, matrix: np.ndarray, datatype: DataType = TransverseData) -> TbtData:
     """
     Converts turn by turn matrices and names into a ``TbTData`` object.
 
@@ -159,6 +157,10 @@ def numpy_to_tbt(names: np.ndarray, matrix: np.ndarray) -> TbtData:
         names (np.ndarray): Numpy array of BPM names.
         matrix (np.ndarray): 4D Numpy array [quantity, BPM, particle/bunch No., turn No.]
             quantities in order [x, y].
+        datatype (DataType): The type of data to be converted to in the matrices. Either
+            ``TransverseData`` (which implies reading ``X`` and ``Y`` fields) or
+            ``TrackingData`` (which implies reading all 8 fields). Defaults to 
+            ``TransverseData``.
 
     Returns:
         A ``TbtData`` object loaded with the matrices in the provided numpy arrays.
@@ -167,12 +169,14 @@ def numpy_to_tbt(names: np.ndarray, matrix: np.ndarray) -> TbtData:
     _, _, nbunches, nturns = matrix.shape
     matrices = []
     indices = []
-    for index in range(nbunches):
+    for idx_bunch in range(nbunches):
         matrices.append(
-            TransverseData(
-                X=pd.DataFrame(index=names, data=matrix[0, :, index, :]),
-                Y=pd.DataFrame(index=names, data=matrix[1, :, index, :]),
+            datatype(  # datatype is directly the class to load data into (TransverseData or TrackingData)
+                **{  # for each field in the datatype, load the corresponding matrix
+                    field: pd.DataFrame(index=names, data=matrix[idx_field, :, idx_bunch, :])
+                    for idx_field, field in enumerate(datatype.fieldnames())
+                }
             )
         )
-        indices.append(index)
+        indices.append(idx_bunch)
     return TbtData(matrices=matrices, bunch_ids=indices, nturns=nturns)
