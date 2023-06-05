@@ -48,7 +48,7 @@ setuptools.setup(
     url=ABOUT_TBT["__url__"],
     packages=setuptools.find_packages(include=(MODULE_NAME,)),
     include_package_data=True,
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     license=ABOUT_TBT["__license__"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
