@@ -23,6 +23,7 @@ class TransverseData:
 
     @classmethod
     def fieldnames(self) -> List[str]:
+        """Return a list of the fields of this dataclass."""
         return list(f.name for f in fields(self))
 
     def __getitem__(self, item):  # to access X and Y like one would with a dictionary
@@ -48,6 +49,7 @@ class SimulationData:
 
     @classmethod
     def fieldnames(self) -> List[str]:
+        """Return a list of the fields of this dataclass."""
         return list(f.name for f in fields(self))
 
     def __getitem__(self, item):  # to access fields like one would with a dictionary
