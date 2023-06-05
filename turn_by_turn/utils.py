@@ -32,19 +32,18 @@ def generate_average_tbtdata(tbtdata: TbtData) -> TbtData:
     """
     data = tbtdata.matrices
     bpm_names = data[0].X.index
+    datatype = tbtdata.matrices[0].__class__
 
     new_matrices = [
-        TransverseData(
-            X=pd.DataFrame(
-                index=bpm_names,
-                data=get_averaged_data(bpm_names, data, "X", tbtdata.nturns),
-                dtype=float,
-            ),
-            Y=pd.DataFrame(
-                index=bpm_names,
-                data=get_averaged_data(bpm_names, data, "Y", tbtdata.nturns),
-                dtype=float,
-            ),
+        datatype(  # datatype is directly the class to load data into
+            **{  # for each field in the datatype, load the corresponding matrix
+                field: pd.DataFrame(
+                    index=bpm_names,
+                    data=get_averaged_data(bpm_names, data, field, tbtdata.nturns),
+                    dtype=float,
+                )
+                for field in datatype.fieldnames()
+            }
         )
     ]
     return TbtData(new_matrices, tbtdata.date, [1], tbtdata.nturns)
