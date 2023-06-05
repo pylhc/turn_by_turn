@@ -6,10 +6,10 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from tests.test_lhc_and_general import compare_tbt, INPUTS_DIR
+from tests.test_lhc_and_general import ASCII_PRECISION, INPUTS_DIR, compare_tbt
 from turn_by_turn import ptc, trackone
 from turn_by_turn.errors import PTCFormatError
-from turn_by_turn.structures import TbtData, TransverseData
+from turn_by_turn.structures import SimulationData, TbtData, TransverseData
 
 
 def test_read_ptc(_ptc_file):
@@ -63,20 +63,60 @@ def test_read_trackone_looseparticles(_ptc_file_losses):
     assert not new.matrices[0].X.isna().any().any()
 
 
+def test_read_trackone_simdata(_ptc_file):
+    new = trackone.read_tbt(_ptc_file, full_sim_data=True)  # read all fields (includes PX, PY, T, PT, S, E)
+    origin = _original_simulation_data()
+    compare_tbt(origin, new, True, full_sim_data=True)
+
+
+# ----- Helpers ----- #
+
+
 def _original_trackone(track: bool = False) -> TbtData:
     names = np.array(["C1.BPM1"])
     matrix = [
-        TransverseData(
+        TransverseData(  # first "bunch"
             X=pd.DataFrame(index=names, data=[[0.001, -0.0003606, -0.00165823, -0.00266631]]),
             Y=pd.DataFrame(index=names, data=[[0.001, 0.00070558, -0.00020681, -0.00093807]]),
         ),
-        TransverseData(
+        TransverseData(  # second "bunch"
             X=pd.DataFrame(index=names, data=[[0.0011, -0.00039666, -0.00182406, -0.00293294]]),
             Y=pd.DataFrame(index=names, data=[[0.0011, 0.00077614, -0.00022749, -0.00103188]]),
         ),
     ]
     origin = TbtData(matrix, None, [0, 1] if track else [1, 2], 4)
     return origin
+
+
+def _original_simulation_data() -> TbtData:
+    names = np.array(["C1.BPM1"])
+    matrices = [
+        SimulationData(  # first "bunch"
+            X=pd.DataFrame(index=names, data=[[0.001, -0.000361, -0.001658, -0.002666]]),
+            PX=pd.DataFrame(index=names, data=[[0.0, -0.000202, -0.000368, -0.00047]]),
+            Y=pd.DataFrame(index=names, data=[[0.001,  0.000706, -0.000207, -0.000938]]),
+            PY=pd.DataFrame(index=names, data=[[0.0, -0.000349, -0.000392, -0.000092]]),
+            T=pd.DataFrame(index=names, data=[[0.0, -0.000008, -0.000015, -0.000023]]),
+            PT=pd.DataFrame(index=names, data=[[0, 0, 0, 0]]),
+            S=pd.DataFrame(index=names, data=[[0, 0, 0, 0]]),
+            E=pd.DataFrame(index=names, data=[[500.00088,  500.00088,  500.00088,  500.00088]]),
+        ),
+        SimulationData(  # second "bunch"
+            X=pd.DataFrame(index=names, data=[[0.0011, -0.000397, -0.001824, -0.002933]]),
+            PX=pd.DataFrame(index=names, data=[[0.0, -0.000222, -0.000405, -0.000517]]),
+            Y=pd.DataFrame(index=names, data=[[0.0011,  0.000776, -0.000227, -0.001032]]),
+            PY=pd.DataFrame(index=names, data=[[0.0, -0.000384, -0.000431, -0.000101]]),
+            T=pd.DataFrame(index=names, data=[[-0.0, -0.000009, -0.000018, -0.000028]]),
+            PT=pd.DataFrame(index=names, data=[[0, 0, 0, 0]]),
+            S=pd.DataFrame(index=names, data=[[0, 0, 0, 0]]),
+            E=pd.DataFrame(index=names, data=[[500.00088,  500.00088,  500.00088,  500.00088]]),
+        )
+    ]
+    origin = TbtData(matrices, date=None, bunch_ids=[0, 1], nturns=4)  # [0, 1] for bunch_ids because it's from tracking
+    return origin
+
+
+# ----- Fixtures ----- #
 
 
 @pytest.fixture()
