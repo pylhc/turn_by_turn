@@ -62,10 +62,10 @@ def compare_tbt(origin: TbtData, new: TbtData, no_binary: bool, max_deviation = 
     assert new.nbunches == origin.nbunches
     assert new.bunch_ids == origin.bunch_ids
     for index in range(origin.nbunches):
-        for plane in FIELDS:
-            assert np.all(new.matrices[index][plane].index == origin.matrices[index][plane].index)
-            origin_mat = origin.matrices[index][plane].to_numpy()
-            new_mat = new.matrices[index][plane].to_numpy()
+        for field in FIELDS:
+            assert np.all(new.matrices[index][field].index == origin.matrices[index][field].index)
+            origin_mat = origin.matrices[index][field].to_numpy()
+            new_mat = new.matrices[index][field].to_numpy()
             if no_binary:
                 assert np.nanmax(np.abs(origin_mat - new_mat)) < max_deviation
             else:
