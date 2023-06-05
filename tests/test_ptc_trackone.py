@@ -66,7 +66,7 @@ def test_read_trackone_looseparticles(_ptc_file_losses):
 def test_read_trackone_simdata(_ptc_file):
     new = trackone.read_tbt(_ptc_file, is_tracking_data=True)  # read all fields (includes PX, PY, T, PT, S, E)
     origin = _original_simulation_data()
-    compare_tbt(origin, new, True, full_sim_data=True)
+    compare_tbt(origin, new, True, is_tracking_data=True)
 
 
 # ----- Helpers ----- #

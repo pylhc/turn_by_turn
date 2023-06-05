@@ -56,8 +56,8 @@ def test_tbt_write_read_ascii(_sdds_file, _test_file):
 # ----- Helpers ----- #
 
 
-def compare_tbt(origin: TbtData, new: TbtData, no_binary: bool, max_deviation = ASCII_PRECISION, full_sim_data: bool = False) -> None:
-    FIELDS = PLANES if not full_sim_data else SIMDATA_FIELDS  # check in ("X", "Y") if just trackone otherwise all fields
+def compare_tbt(origin: TbtData, new: TbtData, no_binary: bool, max_deviation = ASCII_PRECISION, is_tracking_data: bool = False) -> None:
+    FIELDS = PLANES if not is_tracking_data else SIMDATA_FIELDS  # check in ("X", "Y") if just trackone otherwise all fields
     assert new.nturns == origin.nturns
     assert new.nbunches == origin.nbunches
     assert new.bunch_ids == origin.bunch_ids
