@@ -19,22 +19,23 @@ from turn_by_turn.utils import numpy_to_sim_tbt, numpy_to_tbt
 LOGGER = logging.getLogger()
 
 
-def read_tbt(file_path: Union[str, Path], full_sim_data: bool = False) -> TbtData:
+def read_tbt(file_path: Union[str, Path], is_tracking_data: bool = False) -> TbtData:
     """
     Reads turn-by-turn data from the ``MAD-X`` **trackone** format file.
 
     Args:
         file_path (Union[str, Path]): path to the turn-by-turn measurement file.
-        full_sim_data (bool): if ``True``, all fields (``X``, ``PX``, ``Y``, ``PY``,
-            ``T``, ``PT``, ``S``, ``E``) are expected in the file and read, as if it
-            were a full tracking simulation output.
+        is_tracking_data (bool): if ``True``, all (``X``, ``PX``, ``Y``, ``PY``,
+            ``T``, ``PT``, ``S``, ``E``) fields are expected in the file as it
+            is considered a full tracking simulation output. Those are then read
+            into ``SimulationData`` objects. Defaults to ``False``.
 
     Returns:
         A ``TbTData`` object with the loaded data.
     """
     nturns, npart = get_trackone_stats(file_path)
     names, matrix = get_structure_from_trackone(nturns, npart, file_path)
-    if full_sim_data:
+    if is_tracking_data:
         # Converts full tracking output to TbTData.
         return numpy_to_sim_tbt(names, matrix)
     else:
