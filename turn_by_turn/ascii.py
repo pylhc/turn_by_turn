@@ -154,7 +154,7 @@ def _parse_samples(line: str) -> Tuple[str, str, np.ndarray]:
     parts = line.split()
     plane_num = parts[0]
     bpm_name = parts[1]
-    # bunch_id = part[2]  # not used, comment for clarification
+    # bpm_location = part[2]  # not used, comment for clarification
     bpm_samples = np.array([float(part) for part in parts[3:]])
     return plane_num, bpm_name, bpm_samples
 
