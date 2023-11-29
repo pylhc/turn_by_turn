@@ -37,17 +37,32 @@ def test_write_read(tmp_path):
         ],
     )
     tmp_sdds = tmp_path / "sps_fake_data.sdds"
-    sps.write_tbt(tmp_sdds, original, add_trailing_bpm_plane=True)  # should not add additional planes
-    read_sdds = sps.read_tbt(tmp_sdds, remove_trailing_bpm_plane=False)
-    compare_tbt(original, read_sdds, no_binary=True)
-    
-    sps.write_tbt(tmp_sdds, original, add_trailing_bpm_plane=False)  # should be same as above
+    # Normal read/write test
+    sps.write_tbt(tmp_sdds, original, add_trailing_bpm_plane=False) 
     read_sdds = sps.read_tbt(tmp_sdds, remove_trailing_bpm_plane=False)
     compare_tbt(original, read_sdds, no_binary=True)
 
+    # Test no name changes when writing and planes already present
+    sps.write_tbt(tmp_sdds, original, add_trailing_bpm_plane=True) 
+    read_sdds = sps.read_tbt(tmp_sdds, remove_trailing_bpm_plane=False)
+    compare_tbt(original, read_sdds, no_binary=True)
+    
+    # Test plane removal on reading
     read_sdds = sps.read_tbt(tmp_sdds, remove_trailing_bpm_plane=True)
     assert not any(read_sdds.matrices[0].X.index.str.endswith(".H"))
     assert not any(read_sdds.matrices[0].Y.index.str.endswith(".V"))
+    
+    # Test planes stay off when writing
+    sps.write_tbt(tmp_sdds, read_sdds, add_trailing_bpm_plane=False)
+    read_sdds = sps.read_tbt(tmp_sdds, remove_trailing_bpm_plane=False)
+    assert not any(read_sdds.matrices[0].X.index.str.endswith(".H"))
+    assert not any(read_sdds.matrices[0].Y.index.str.endswith(".V"))
+
+    # Test adding planes again
+    sps.write_tbt(tmp_sdds, read_sdds, add_trailing_bpm_plane=True) 
+    read_sdds = sps.read_tbt(tmp_sdds, remove_trailing_bpm_plane=False)
+    compare_tbt(original, read_sdds, no_binary=True)
+
 
 
 @pytest.fixture()
