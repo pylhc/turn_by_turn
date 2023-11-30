@@ -99,10 +99,7 @@ def _write_tbt_data(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> No
 
 # ----- Reader ----- #
 
-def read_tbt(
-        file_path: Union[str, Path],
-        bunch_id: int = None,
-) -> Tuple[List[TransverseData], Optional[datetime]]:
+def read_tbt(file_path: Union[str, Path], bunch_id: int = None) -> TbtData:
     """
     Reads turn-by-turn data from an ASCII turn-by-turn format file, and return the date as well as
     parsed matrices for construction of a ``TbtData`` object.
