@@ -46,8 +46,7 @@ def read_tbt(file_path: Union[str, Path], remove_trailing_bpm_plane: bool = True
     LOGGER.debug(f"Reading SPS file at path: '{file_path.absolute()}'")
 
     if is_ascii_file(file_path):
-        matrices, date = read_ascii(file_path)
-        return TbtData(matrices, date, [0], matrices[0].X.shape[1])
+        return read_ascii(file_path)
 
     sdds_file = sdds.read(file_path)
 

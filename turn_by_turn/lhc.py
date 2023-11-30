@@ -51,8 +51,7 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     LOGGER.debug(f"Reading LHC file at path: '{file_path.absolute()}'")
 
     if is_ascii_file(file_path):
-        matrices, date = read_ascii(file_path)
-        return TbtData(matrices, date, [0], matrices[0].X.shape[1])
+        return read_ascii(file_path)
 
     sdds_file = sdds.read(file_path)
     nbunches = sdds_file.values[N_BUNCHES]
