@@ -57,21 +57,21 @@ def read_tbt(file_path: Union[str, Path], remove_trailing_bpm_plane: bool = True
     bpm_names = np.array(sdds_file.values[BPM_NAMES])
     bpm_planes = np.array(sdds_file.values[BPM_PLANES]).astype(bool)
 
-    ver_bpms = bpm_names[bpm_planes]
-    hor_bpms = bpm_names[~bpm_planes]
+    bpm_names_y = bpm_names[bpm_planes]
+    bpm_names_x = bpm_names[~bpm_planes]
 
-    tbt_data_x = [sdds_file.values[bpm] for bpm in hor_bpms]
-    tbt_data_y = [sdds_file.values[bpm] for bpm in ver_bpms]
+    tbt_data_x = [sdds_file.values[bpm] for bpm in bpm_names_x]
+    tbt_data_y = [sdds_file.values[bpm] for bpm in bpm_names_y]
     
     if remove_trailing_bpm_plane:
         pattern = re.compile("\.[HV]$", flags=re.IGNORECASE)
-        hor_bpms  = [pattern.sub("", bpm) for bpm in hor_bpms]
-        ver_bpms  = [pattern.sub("", bpm) for bpm in ver_bpms]
+        bpm_names_x  = [pattern.sub("", bpm) for bpm in bpm_names_x]
+        bpm_names_y  = [pattern.sub("", bpm) for bpm in bpm_names_y]
 
     matrices = [
         TransverseData(
-            X=pd.DataFrame(index=hor_bpms, data=tbt_data_x, dtype=float),
-            Y=pd.DataFrame(index=ver_bpms, data=tbt_data_y, dtype=float),
+            X=pd.DataFrame(index=bpm_names_x, data=tbt_data_x, dtype=float),
+            Y=pd.DataFrame(index=bpm_names_y, data=tbt_data_y, dtype=float),
         )
     ]
 
