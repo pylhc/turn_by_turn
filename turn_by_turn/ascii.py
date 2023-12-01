@@ -7,12 +7,13 @@ past. They are not SDDS files, but instead more like table,
 containing the columns:
 - Plane (0 for horizontal, 1 for vertical)
 - Observation point (i.e. BPM name)
-- BPM index,
+- BPM index/longitunial location
 - Value Turn 1, Turn 2, etc.
 """
 import logging
 from datetime import datetime
 from pathlib import Path
+import re
 from typing import TextIO, Union, Tuple, List, Optional
 
 import numpy as np
@@ -98,23 +99,27 @@ def _write_tbt_data(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> No
 
 # ----- Reader ----- #
 
-def read_tbt(
-        file_path: Union[str, Path]
-) -> Tuple[List[TransverseData], Optional[datetime]]:
+def read_tbt(file_path: Union[str, Path], bunch_id: int = None) -> TbtData:
     """
     Reads turn-by-turn data from an ASCII turn-by-turn format file, and return the date as well as
     parsed matrices for construction of a ``TbtData`` object.
 
     Args:
         file_path (Union[str, Path]): path to the turn-by-turn measurement file.
+        bunch_id (int, optional): the bunch id associated with this file. 
+                                  Defaults to `None`, but is then attempted to parsed
+                                  from the filename. If not found, `0` is used.
 
     Returns:
-        Turn-by-turn data matrices and
+        Turn-by-turn data
     """
     data_lines = Path(file_path).read_text().splitlines()
     bpm_names = {"X": [], "Y": []}
     bpm_data = {"X": [], "Y": []}
     date = None  # will switch to TbtData.date's default if not found in file
+    
+    if bunch_id is None:
+        bunch_id = _parse_bunch_id(file_path)
 
     for line in data_lines:
         line = line.strip()
@@ -144,17 +149,18 @@ def read_tbt(
             Y=pd.DataFrame(index=bpm_names["Y"], data=np.array(bpm_data["Y"])),
         )
     ]
-    return matrices, date
+    return TbtData(matrices=matrices, date=date, bunch_ids=[bunch_id], nturns=matrices[0].X.shape[1])
 
 
 # ----- Helpers ----- #
+
 
 def _parse_samples(line: str) -> Tuple[str, str, np.ndarray]:
     """Parse a line into its different elements."""
     parts = line.split()
     plane_num = parts[0]
     bpm_name = parts[1]
-    # bunch_id = part[2]  # not used, comment for clarification
+    # bpm_location = part[2]  # not used, comment for clarification
     bpm_samples = np.array([float(part) for part in parts[3:]])
     return plane_num, bpm_name, bpm_samples
 
@@ -170,6 +176,17 @@ def _parse_date(line: str) -> datetime:
     except ValueError:
         LOGGER.error("Could not parse date in file, defaulting to: Today, UTC")
         return datetime.today().replace(tzinfo=tz.tzutc())
+
+
+def _parse_bunch_id(file_path: Path) -> int:
+    """Parse the bunch_id from the filename."""
+    bunch_id_match = re.match(r".*_(?P<bunch_id>\d+)(.sdds)?$", file_path.name)
+    if bunch_id_match:
+        try:
+            return int(bunch_id_match.group("bunch_id"))
+        except ValueError:
+            pass
+    return 0
 
 
 # For backwards compatibility <0.4.2:
