@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.utils &mdash; turn_by_turn 0.5.0 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <title>turn_by_turn.utils &mdash; turn_by_turn 0.6.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=988d0652" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8fa8b3e9"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -34,7 +36,7 @@
               <img src="../../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.5
+                0.6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -138,7 +140,9 @@
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="generate_average_tbtdata"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.generate_average_tbtdata">[docs]</a><span class="k">def</span> <span class="nf">generate_average_tbtdata</span><span class="p">(</span><span class="n">tbtdata</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+<div class="viewcode-block" id="generate_average_tbtdata">
+<a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.generate_average_tbtdata">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_average_tbtdata</span><span class="p">(</span><span class="n">tbtdata</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Takes a ``TbtData`` object and returns another containing the averaged matrices over all</span>
 <span class="sd">    bunches/particles at all used BPMs.</span>
@@ -168,7 +172,10 @@
     <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span><span class="n">new_matrices</span><span class="p">,</span> <span class="n">tbtdata</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">tbtdata</span><span class="o">.</span><span class="n">nturns</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_averaged_data"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.get_averaged_data">[docs]</a><span class="k">def</span> <span class="nf">get_averaged_data</span><span class="p">(</span>
+
+<div class="viewcode-block" id="get_averaged_data">
+<a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.get_averaged_data">[docs]</a>
+<span class="k">def</span> <span class="nf">get_averaged_data</span><span class="p">(</span>
     <span class="n">bpm_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">matrices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">TransverseData</span><span class="p">],</span> <span class="n">plane</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">turns</span><span class="p">:</span> <span class="nb">int</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -193,7 +200,10 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">bpm_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="matrices_to_array"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.matrices_to_array">[docs]</a><span class="k">def</span> <span class="nf">matrices_to_array</span><span class="p">(</span><span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+<div class="viewcode-block" id="matrices_to_array">
+<a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.matrices_to_array">[docs]</a>
+<span class="k">def</span> <span class="nf">matrices_to_array</span><span class="p">(</span><span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert  the matrices of a ``TbtData`` object to a numpy array.</span>
 
@@ -214,7 +224,10 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="add_noise"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.add_noise">[docs]</a><span class="k">def</span> <span class="nf">add_noise</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+<div class="viewcode-block" id="add_noise">
+<a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.add_noise">[docs]</a>
+<span class="k">def</span> <span class="nf">add_noise</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the given data with added noise. Noise is generated as a standard normal distribution (mean=0,</span>
 <span class="sd">    standard_deviation=1) with the size of the input data, and scaled by the a factor before being added to</span>
@@ -242,7 +255,10 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span> <span class="o">+</span> <span class="n">scaling</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="add_noise_to_tbt"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.add_noise_to_tbt">[docs]</a><span class="k">def</span> <span class="nf">add_noise_to_tbt</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+
+<div class="viewcode-block" id="add_noise_to_tbt">
+<a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.add_noise_to_tbt">[docs]</a>
+<span class="k">def</span> <span class="nf">add_noise_to_tbt</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a new copy of the given TbT data with added noise.</span>
 <span class="sd">    The noise is generated by :func:`turn_by_turn.utils.add_noise` from a single rng,</span>
@@ -270,7 +286,10 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="numpy_to_tbt"><a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.numpy_to_tbt">[docs]</a><span class="k">def</span> <span class="nf">numpy_to_tbt</span><span class="p">(</span><span class="n">names</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">datatype</span><span class="p">:</span> <span class="n">DataType</span> <span class="o">=</span> <span class="n">TransverseData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+
+<div class="viewcode-block" id="numpy_to_tbt">
+<a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.numpy_to_tbt">[docs]</a>
+<span class="k">def</span> <span class="nf">numpy_to_tbt</span><span class="p">(</span><span class="n">names</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">datatype</span><span class="p">:</span> <span class="n">DataType</span> <span class="o">=</span> <span class="n">TransverseData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts turn by turn matrices and names into a ``TbTData`` object.</span>
 
@@ -301,6 +320,7 @@
         <span class="p">)</span>
         <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx_bunch</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span><span class="n">matrices</span><span class="o">=</span><span class="n">matrices</span><span class="p">,</span> <span class="n">bunch_ids</span><span class="o">=</span><span class="n">indices</span><span class="p">,</span> <span class="n">nturns</span><span class="o">=</span><span class="n">nturns</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>
