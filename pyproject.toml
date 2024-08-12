@@ -20,11 +20,7 @@ name = "tfs-turn_by_turn"
 readme = "README.md"
 description = "Read and write turn-by-turn measurement files from different particle accelerator formats."
 authors = [
-    {name = "PyLHC", email = "pylhc@github.com"},
-    {name = "Felix Soubelet", email = "felix.soubelet@cern.ch"},
-    {name = "Joschua Dilly", email = "joschua.dilly@cern.ch"},
-    {name = "Felix Carlier", email = "felix.simon.carlier@cern.ch"},
-    {name = "Andreas Wegscheider"},
+    {name = "OMC Team", email = "pylhc@github.com"},  # see zenodo file / commits for details
 ]
 license = "MIT"
 dynamic = ["version"]
