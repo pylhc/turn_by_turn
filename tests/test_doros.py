@@ -17,6 +17,23 @@ from turn_by_turn.doros import N_ORBIT_SAMPLES, read_tbt, write_tbt, DEFAULT_BUN
 INPUTS_DIR = Path(__file__).parent / "inputs"
 
 
+def test_read_write_real_data(tmp_path):
+    tbt = read_tbt(INPUTS_DIR / "test_doros.h5", bunch_id=10)
+
+    assert tbt.nbunches == 1
+    assert len(tbt.matrices) == 1
+    assert tbt.nturns == 50000
+    assert tbt.matrices[0].X.shape == (3, tbt.nturns)
+    assert tbt.matrices[0].Y.shape == (3, tbt.nturns)
+    assert len(set(tbt.matrices[0].X.index)) == 3
+    assert np.all(tbt.matrices[0].X.index == tbt.matrices[0].Y.index)
+
+    file_path = tmp_path / "test_file.h5"
+    write_tbt(tbt, file_path)
+    new = read_tbt(file_path, bunch_id=10)
+    compare_tbt(tbt, new, no_binary=False)
+
+
 def test_write_read(tmp_path):
     tbt = _tbt_data()
     file_path = tmp_path / "test_file.h5"

@@ -28,7 +28,7 @@ TBT_MODULES = dict(
     trackone=trackone,
     ascii=ascii,
 )
-WRITERS = ("lhc", "sps", "ascii")  # implemented writers
+WRITERS = ("lhc", "sps", "doros", "ascii")  # implemented writers
 
 write_lhc_ascii = write_ascii  # Backwards compatibility <0.4
 
