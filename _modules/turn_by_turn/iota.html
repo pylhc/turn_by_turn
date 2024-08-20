@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.iota &mdash; turn_by_turn 0.6.0 documentation</title>
+  <title>turn_by_turn.iota &mdash; turn_by_turn 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=988d0652" />
@@ -15,7 +15,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=8fa8b3e9"></script>
+        <script src="../../_static/documentation_options.js?v=fe7df9b0"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -36,7 +36,7 @@
               <img src="../../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.6
+                0.7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -50,50 +50,18 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Constants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#io">IO</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.io.read_tbt"><code class="docutils literal notranslate"><span class="pre">read_tbt()</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.io.write_tbt"><code class="docutils literal notranslate"><span class="pre">write_tbt()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#structures">Structures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TbtData"><code class="docutils literal notranslate"><span class="pre">TbtData</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TrackingData"><code class="docutils literal notranslate"><span class="pre">TrackingData</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TrackingData.fieldnames"><code class="docutils literal notranslate"><span class="pre">TrackingData.fieldnames()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TransverseData"><code class="docutils literal notranslate"><span class="pre">TransverseData</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#turn_by_turn.structures.TransverseData.fieldnames"><code class="docutils literal notranslate"><span class="pre">TransverseData.fieldnames()</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#utils">Utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.utils.add_noise"><code class="docutils literal notranslate"><span class="pre">add_noise()</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.utils.add_noise_to_tbt"><code class="docutils literal notranslate"><span class="pre">add_noise_to_tbt()</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.utils.generate_average_tbtdata"><code class="docutils literal notranslate"><span class="pre">generate_average_tbtdata()</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.utils.get_averaged_data"><code class="docutils literal notranslate"><span class="pre">get_averaged_data()</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.utils.matrices_to_array"><code class="docutils literal notranslate"><span class="pre">matrices_to_array()</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#turn_by_turn.utils.numpy_to_tbt"><code class="docutils literal notranslate"><span class="pre">numpy_to_tbt()</span></code></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Readers</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html">ESRF</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.esrf.load_esrf_mat_file"><code class="docutils literal notranslate"><span class="pre">load_esrf_mat_file()</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.esrf.read_tbt"><code class="docutils literal notranslate"><span class="pre">read_tbt()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html">DOROS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#esrf">ESRF</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#iota">Iota</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.iota.read_tbt"><code class="docutils literal notranslate"><span class="pre">read_tbt()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#lhc">LHC</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.lhc.read_tbt"><code class="docutils literal notranslate"><span class="pre">read_tbt()</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.lhc.write_tbt"><code class="docutils literal notranslate"><span class="pre">write_tbt()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#sps">SPS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#ptc">PTC</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.ptc.Segment"><code class="docutils literal notranslate"><span class="pre">Segment</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#turn_by_turn.ptc.Segment.element"><code class="docutils literal notranslate"><span class="pre">Segment.element</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#turn_by_turn.ptc.Segment.name"><code class="docutils literal notranslate"><span class="pre">Segment.name</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#turn_by_turn.ptc.Segment.number"><code class="docutils literal notranslate"><span class="pre">Segment.number</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#turn_by_turn.ptc.Segment.particles"><code class="docutils literal notranslate"><span class="pre">Segment.particles</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#turn_by_turn.ptc.Segment.turns"><code class="docutils literal notranslate"><span class="pre">Segment.turns</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.ptc.read_tbt"><code class="docutils literal notranslate"><span class="pre">read_tbt()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#trackone">Trackone</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.trackone.get_structure_from_trackone"><code class="docutils literal notranslate"><span class="pre">get_structure_from_trackone()</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.trackone.get_trackone_stats"><code class="docutils literal notranslate"><span class="pre">get_trackone_stats()</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#turn_by_turn.trackone.read_tbt"><code class="docutils literal notranslate"><span class="pre">read_tbt()</span></code></a></li>
 </ul>
 
         </div>
@@ -128,7 +96,6 @@
 <span class="sd">Data handling for turn-by-turn measurement files from ``Iota`` (files in **hdf5** format).</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
 
@@ -136,7 +103,6 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="kn">from</span> <span class="nn">turn_by_turn.constants</span> <span class="kn">import</span> <span class="n">PLANES</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.errors</span> <span class="kn">import</span> <span class="n">HDF5VersionError</span>
 <span class="kn">from</span> <span class="nn">turn_by_turn.structures</span> <span class="kn">import</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">TransverseData</span>
 
@@ -166,25 +132,25 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reading Iota file at path: &#39;</span><span class="si">{</span><span class="n">file_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-    <span class="n">hdf_file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
-    <span class="n">bunch_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdf_file</span><span class="p">:</span>
+        <span class="n">bunch_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
-    <span class="n">bpm_names</span> <span class="o">=</span> <span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_bpm_names&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">)</span>
-    <span class="n">nturns</span> <span class="o">=</span> <span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_nturns&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">,</span> <span class="n">hdf5_version</span><span class="p">)</span>
-    <span class="n">matrices</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">TransverseData</span><span class="p">(</span>
-            <span class="n">X</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-                <span class="n">index</span><span class="o">=</span><span class="n">bpm_names</span><span class="p">,</span>
-                <span class="n">data</span><span class="o">=</span><span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_tbtdata&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="n">hdf5_version</span><span class="p">),</span>
-                <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
-            <span class="p">),</span>
-            <span class="n">Y</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-                <span class="n">index</span><span class="o">=</span><span class="n">bpm_names</span><span class="p">,</span>
-                <span class="n">data</span><span class="o">=</span><span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_tbtdata&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="n">hdf5_version</span><span class="p">),</span>
-                <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
-            <span class="p">),</span>
-        <span class="p">)</span>
-    <span class="p">]</span>
+        <span class="n">bpm_names</span> <span class="o">=</span> <span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_bpm_names&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">)</span>
+        <span class="n">nturns</span> <span class="o">=</span> <span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_nturns&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">,</span> <span class="n">hdf5_version</span><span class="p">)</span>
+        <span class="n">matrices</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">TransverseData</span><span class="p">(</span>
+                <span class="n">X</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                    <span class="n">index</span><span class="o">=</span><span class="n">bpm_names</span><span class="p">,</span>
+                    <span class="n">data</span><span class="o">=</span><span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_tbtdata&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="n">hdf5_version</span><span class="p">),</span>
+                    <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">Y</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                    <span class="n">index</span><span class="o">=</span><span class="n">bpm_names</span><span class="p">,</span>
+                    <span class="n">data</span><span class="o">=</span><span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_tbtdata&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="n">hdf5_version</span><span class="p">),</span>
+                    <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
     <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span><span class="n">matrices</span><span class="o">=</span><span class="n">matrices</span><span class="p">,</span> <span class="n">bunch_ids</span><span class="o">=</span><span class="n">bunch_ids</span><span class="p">,</span> <span class="n">nturns</span><span class="o">=</span><span class="n">nturns</span><span class="p">)</span></div>
 
 
@@ -202,13 +168,13 @@
 
 <span class="k">def</span> <span class="nf">_get_list_of_bpmnames_v1</span><span class="p">(</span><span class="n">hdf5_v1_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Go through the file to determine the list of BPMs, for an hdf5 v1 file.&quot;&quot;&quot;</span>
-    <span class="n">bpms</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;IBPM</span><span class="si">{</span><span class="n">key</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">hdf5_v1_file</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">check_key_v1</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
+    <span class="n">bpms</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;IBPM</span><span class="si">{</span><span class="n">key</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">hdf5_v1_file</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">check_key_v1</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">bpms</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_get_number_of_turns_v1</span><span class="p">(</span><span class="n">hdf5_v1_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Go through the file to determine the number of turns, for an hdf5 v1 file.&quot;&quot;&quot;</span>
-    <span class="n">lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">hdf5_v1_file</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">hdf5_v1_file</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">check_key_v1</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
+    <span class="n">lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">hdf5_v1_file</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">hdf5_v1_file</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">check_key_v1</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span>
 
 
@@ -229,7 +195,7 @@
 
 <span class="k">def</span> <span class="nf">_get_list_of_bpmnames_v2</span><span class="p">(</span><span class="n">hdf5_v2_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Go through the file to determine the list of BPMs, for an hdf5 v2 file.&quot;&quot;&quot;</span>
-    <span class="n">bpms</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;IBPM</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">hdf5_v2_file</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">check_key_v2</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
+    <span class="n">bpms</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;IBPM</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">hdf5_v2_file</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">check_key_v2</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">bpms</span><span class="p">:</span>
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Wrong version of the HDF format was used&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">HDF5VersionError</span>
