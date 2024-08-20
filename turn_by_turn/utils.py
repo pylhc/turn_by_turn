@@ -5,7 +5,7 @@ Utils
 Utility functions for convenience operations on turn-by-turn data objects in this package.
 """
 import logging
-from typing import Sequence, Union
+from typing import Iterable, Sequence
 
 import numpy as np
 import pandas as pd
@@ -180,3 +180,18 @@ def numpy_to_tbt(names: np.ndarray, matrix: np.ndarray, datatype: DataType = Tra
         )
         indices.append(idx_bunch)
     return TbtData(matrices=matrices, bunch_ids=indices, nturns=nturns)
+
+
+def all_elements_equal(iterable: Iterable) -> bool:
+    """
+    Check if all elements in an iterable are equal.
+    WARNING: Does not necissarily work with floating point numbers.
+
+    Args:
+        iterable (Iterable): an iterable to check.
+
+    Returns:
+        bool: ``True`` if all elements are equal, ``False`` otherwise.
+    """
+    first = next(iter(iterable))
+    return all(x == first for x in iterable)

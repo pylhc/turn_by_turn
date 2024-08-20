@@ -72,8 +72,8 @@ def compare_tbt(origin: TbtData, new: TbtData, no_binary: bool, max_deviation = 
                 assert np.all(origin_mat == new_mat)
 
 
-def create_data(phases, nbpm, function) -> np.ndarray:
-    return np.ones((nbpm, len(phases))) * function(phases)
+def create_data(phases, nbpm, function, noise: float = 0) -> np.ndarray:
+    return np.ones((nbpm, len(phases))) * function(phases) + noise * np.random.randn(nbpm, len(phases))
 
 
 @pytest.fixture()

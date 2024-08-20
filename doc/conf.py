@@ -11,6 +11,11 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
+
+# If extensions (or modules to document with autodoc) are in another directory,
+# add these directories to sys.path here. If the directory is relative to the
+# documentation root, use os.path.abspath to make it absolute, like shown here.
+#
 import pathlib
 import sys
 
@@ -18,9 +23,9 @@ import sys
 # https://stackoverflow.com/questions/40845304/runtimewarning-numpy-dtype-size-changed-may-indicate-binary-incompatibility
 import warnings
 
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
+warnings.filterwarnings("ignore", message="numpy.dtype size changed")
+warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
+
 
 TOPLEVEL_DIR = pathlib.Path(__file__).parent.parent.absolute()
 ABOUT_FILE = TOPLEVEL_DIR / "turn_by_turn" / "__init__.py"
@@ -63,6 +68,8 @@ extensions = [
     "sphinx.ext.githubpages",
     "sphinx.ext.napoleon",
 ]
+autosectionlabel_prefix_document = True
+autosectionlabel_maxdepth = 2
 
 # Add any paths that contain templates here, relative to this directory.
 # templates_path = ['_templates']
@@ -78,7 +85,7 @@ master_doc = "index"
 
 # General information about the project.
 project = ABOUT_TBT["__title__"]
-copyright_ = "2018-2021, pyLHC/OMC-TEAM"
+copyright_ = "2018-2024, pyLHC/OMC-TEAM"
 author = ABOUT_TBT["__author__"]
 
 # Override link in 'Edit on Github'
@@ -100,7 +107,7 @@ release = ABOUT_TBT["__version__"]
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -119,13 +126,6 @@ todo_include_todos = True
 # a list of builtin themes.
 #
 html_theme = "sphinx_rtd_theme"
-
-html_theme_options = {
-    "collapse_navigation": False,
-    "display_version": True,
-    "logo_only": True,
-    "navigation_depth": 2,
-}
 
 html_logo = "_static/img/omc_logo.svg"
 html_static_path = ["_static"]
@@ -147,13 +147,28 @@ smartquotes_action = "qe"  # renders only quotes and ellipses (...) but not dash
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    'collapse_navigation': False,
+    'display_version': True,
+    'logo_only': True,
+    'navigation_depth': 1,
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ['_static']
 
+# A dictionary of values to pass into the template engine’s context for all
+# pages. Single values can also be put in this dictionary using the
+# -A command-line option of sphinx-build.
+html_context = {
+    'display_github': True,
+    # the following are only needed if :github_url: is not set
+    'github_user': author,
+    'github_repo': project,
+    'github_version': 'master/doc/',
+}
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
 #
