@@ -84,7 +84,8 @@ def read_tbt(file_path: str|Path, bunch_id: int = DEFAULT_BUNCH_ID) -> TbtData:
     file_path = Path(file_path)
     LOGGER.debug(f"Reading DOROS file at path: '{file_path.absolute()}'")
     with h5py.File(file_path, "r") as hdf_file:
-        bpm_names = [name for name in hdf_file.keys() if name != METADATA]
+        # use "/" to keep track of bpm order, see https://github.com/h5py/h5py/issues/1471
+        bpm_names = [name for name in hdf_file["/"].keys() if name != METADATA]
 
         _check_data_lengths(hdf_file, bpm_names)
 
@@ -117,16 +118,16 @@ def write_tbt(tbt_data: TbtData, file_path: str|Path) -> None:
     LOGGER.debug(f"Writing DOROS file at path: '{file_path.absolute()}'")
 
     data = tbt_data.matrices[0]
-    with h5py.File(file_path, "w") as hdf_file:
+    with h5py.File(file_path, "w", track_order=True) as hdf_file:
         hdf_file.create_group(METADATA)
-        for bpm in tbt_data.matrices[0].X.index:
+        for bpm in data.X.index:
             hdf_file.create_group(bpm)
             hdf_file[bpm].create_dataset(ACQ_STAMP, data=[tbt_data.date.timestamp() * 1e6])
             hdf_file[bpm].create_dataset(BST_TIMESTAMP, data=[tbt_data.date.timestamp() * 1e6])
 
             hdf_file[bpm].create_dataset(N_ORBIT_SAMPLES, data=[tbt_data.nturns])
-            hdf_file[bpm].create_dataset(POSITIONS["X"], data=data.X[bpm].values)
-            hdf_file[bpm].create_dataset(POSITIONS["Y"], data=data.Y[bpm].values)
+            hdf_file[bpm].create_dataset(POSITIONS["X"], data=data.X.loc[bpm, :].values)
+            hdf_file[bpm].create_dataset(POSITIONS["Y"], data=data.Y.loc[bpm, :].values)
 
             hdf_file[bpm].create_dataset(N_OSCILLATION_SAMPLES, data=0)
             hdf_file[bpm].create_dataset(OSCILLATIONS["X"], data=[DEFAULT_OSCILLATION_DATA])
@@ -150,6 +151,6 @@ def _check_data_lengths(hdf_file: h5py.File, bpm_names: str) -> None:
         msg = f"Found BPMs with different data lengths than defined in '{N_ORBIT_SAMPLES}': {suspicious_bpms}"
         raise ValueError(msg)
 
-    if not all_elements_equal(hdf_file[bpm][N_ORBIT_SAMPLES] for bpm in bpm_names):
+    if not all_elements_equal(hdf_file[bpm][N_ORBIT_SAMPLES][0] for bpm in bpm_names):
         msg = "Not all BPMs have the same number of turns!"
         raise ValueError(msg)
