@@ -63,9 +63,7 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
         bunch_ids = bunch_ids[:nbunches]
 
     nturns = sdds_file.values[N_TURNS]
-    date = datetime.utcfromtimestamp(sdds_file.values[ACQ_STAMP] / 1e9).replace(
-        tzinfo=tz.tzutc()
-    )
+    date = datetime.fromtimestamp(sdds_file.values[ACQ_STAMP] / 1e9, tz=tz.tzutc())
     bpm_names = sdds_file.values[BPM_NAMES]
     nbpms = len(bpm_names)
     data = {

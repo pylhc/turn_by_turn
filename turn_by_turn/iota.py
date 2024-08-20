@@ -5,7 +5,6 @@ Iota
 Data handling for turn-by-turn measurement files from ``Iota`` (files in **hdf5** format).
 """
 import logging
-from datetime import datetime
 from pathlib import Path
 from typing import Callable, Dict, Union
 
@@ -13,7 +12,6 @@ import h5py
 import numpy as np
 import pandas as pd
 
-from turn_by_turn.constants import PLANES
 from turn_by_turn.errors import HDF5VersionError
 from turn_by_turn.structures import TbtData, TransverseData
 
@@ -41,25 +39,25 @@ def read_tbt(file_path: Union[str, Path], hdf5_version: int = 2) -> TbtData:
     """
     file_path = Path(file_path)
     LOGGER.debug(f"Reading Iota file at path: '{file_path.absolute()}'")
-    hdf_file = h5py.File(file_path, "r")
-    bunch_ids = [1]
+    with h5py.File(file_path, "r") as hdf_file:
+        bunch_ids = [1]
 
-    bpm_names = FUNCTIONS[hdf5_version]["get_bpm_names"](hdf_file)
-    nturns = FUNCTIONS[hdf5_version]["get_nturns"](hdf_file, hdf5_version)
-    matrices = [
-        TransverseData(
-            X=pd.DataFrame(
-                index=bpm_names,
-                data=FUNCTIONS[hdf5_version]["get_tbtdata"](hdf_file, "X", hdf5_version),
-                dtype=float,
-            ),
-            Y=pd.DataFrame(
-                index=bpm_names,
-                data=FUNCTIONS[hdf5_version]["get_tbtdata"](hdf_file, "Y", hdf5_version),
-                dtype=float,
-            ),
-        )
-    ]
+        bpm_names = FUNCTIONS[hdf5_version]["get_bpm_names"](hdf_file)
+        nturns = FUNCTIONS[hdf5_version]["get_nturns"](hdf_file, hdf5_version)
+        matrices = [
+            TransverseData(
+                X=pd.DataFrame(
+                    index=bpm_names,
+                    data=FUNCTIONS[hdf5_version]["get_tbtdata"](hdf_file, "X", hdf5_version),
+                    dtype=float,
+                ),
+                Y=pd.DataFrame(
+                    index=bpm_names,
+                    data=FUNCTIONS[hdf5_version]["get_tbtdata"](hdf_file, "Y", hdf5_version),
+                    dtype=float,
+                ),
+            )
+        ]
     return TbtData(matrices=matrices, bunch_ids=bunch_ids, nturns=nturns)
 
 
@@ -76,13 +74,13 @@ def _get_turn_by_turn_data_v1(hdf5_v1_file: h5py.File, plane: str, version: int)
 
 def _get_list_of_bpmnames_v1(hdf5_v1_file: h5py.File) -> np.ndarray:
     """Go through the file to determine the list of BPMs, for an hdf5 v1 file."""
-    bpms = [f"IBPM{key[4:-1]}" for key in list(hdf5_v1_file.keys()) if check_key_v1(key)]
+    bpms = [f"IBPM{key[4:-1]}" for key in hdf5_v1_file.keys() if check_key_v1(key)]
     return np.unique(bpms)
 
 
 def _get_number_of_turns_v1(hdf5_v1_file: h5py.File, version: int) -> int:
     """Go through the file to determine the number of turns, for an hdf5 v1 file."""
-    lengths = [len(hdf5_v1_file[key]) for key in list(hdf5_v1_file.keys()) if check_key_v1(key)]
+    lengths = [len(hdf5_v1_file[key]) for key in hdf5_v1_file.keys() if check_key_v1(key)]
     return np.min(lengths)
 
 
@@ -103,7 +101,7 @@ def _get_turn_by_turn_data_v2(hdf5_v2_file: h5py.File, plane: str, version: int)
 
 def _get_list_of_bpmnames_v2(hdf5_v2_file: h5py.File) -> np.ndarray:
     """Go through the file to determine the list of BPMs, for an hdf5 v2 file."""
-    bpms = [f"IBPM{key}" for key in list(hdf5_v2_file.keys()) if check_key_v2(key)]
+    bpms = [f"IBPM{key}" for key in hdf5_v2_file.keys() if check_key_v2(key)]
     if not bpms:
         LOGGER.error("Wrong version of the HDF format was used")
         raise HDF5VersionError

@@ -51,9 +51,7 @@ def read_tbt(file_path: Union[str, Path], remove_trailing_bpm_plane: bool = True
     sdds_file = sdds.read(file_path)
 
     nturns = sdds_file.values[N_TURNS]
-    date = datetime.utcfromtimestamp(sdds_file.values[TIMESTAMP] / 1e9).replace(
-        tzinfo=tz.tzutc()
-    )
+    date = datetime.fromtimestamp(sdds_file.values[TIMESTAMP] / 1e9, tz=tz.tzutc()) 
     bpm_names = np.array(sdds_file.values[BPM_NAMES])
     bpm_planes = np.array(sdds_file.values[BPM_PLANES]).astype(bool)
 
