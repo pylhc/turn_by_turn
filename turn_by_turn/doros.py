@@ -50,6 +50,7 @@ LOGGER = logging.getLogger()
 DEFAULT_BUNCH_ID: int = 0  # bunch ID not saved in the DOROS file 
 
 METADATA: str = "METADATA"
+BPM_NAME_END: str = "_DOROS"
 
 # tiemstamps
 BST_TIMESTAMP: str = "bstTimestamp"   # microseconds
@@ -85,7 +86,8 @@ def read_tbt(file_path: str|Path, bunch_id: int = DEFAULT_BUNCH_ID) -> TbtData:
     LOGGER.debug(f"Reading DOROS file at path: '{file_path.absolute()}'")
     with h5py.File(file_path, "r") as hdf_file:
         # use "/" to keep track of bpm order, see https://github.com/h5py/h5py/issues/1471
-        bpm_names = [name for name in hdf_file["/"].keys() if name != METADATA]
+        bpm_names = [name for name in hdf_file["/"].keys() if N_ORBIT_SAMPLES in hdf_file[f"/{name}"].keys()]
+        LOGGER.debug(f"Found BPMs in DOROS-type file: {bpm_names}")
 
         _check_data_lengths(hdf_file, bpm_names)
 
