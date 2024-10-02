@@ -7,8 +7,6 @@ import pandas as pd
 import pytest
 import h5py
 
-from turn_by_turn.constants import PRINT_PRECISION
-from turn_by_turn.errors import DataTypeError
 from turn_by_turn.structures import TbtData, TransverseData
 from tests.test_lhc_and_general import create_data, compare_tbt
 
@@ -16,9 +14,9 @@ from turn_by_turn.doros import N_ORBIT_SAMPLES, read_tbt, write_tbt, DEFAULT_BUN
 
 INPUTS_DIR = Path(__file__).parent / "inputs"
 
-
-def test_read_write_real_data(tmp_path):
-    tbt = read_tbt(INPUTS_DIR / "test_doros.h5", bunch_id=10)
+@pytest.mark.parametrize("filename", ["test_doros.h5", "test_doros_2024-09-29.h5"])
+def test_read_write_real_data(tmp_path, filename):
+    tbt = read_tbt(INPUTS_DIR / filename, bunch_id=10)
 
     assert tbt.nbunches == 1
     assert len(tbt.matrices) == 1
