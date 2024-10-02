@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.doros &mdash; turn_by_turn 0.7.0 documentation</title>
+  <title>turn_by_turn.doros &mdash; turn_by_turn 0.7.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=988d0652" />
@@ -15,7 +15,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=fe7df9b0"></script>
+        <script src="../../_static/documentation_options.js?v=5a057da9"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -141,6 +141,7 @@
 <span class="n">DEFAULT_BUNCH_ID</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># bunch ID not saved in the DOROS file </span>
 
 <span class="n">METADATA</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;METADATA&quot;</span>
+<span class="n">BPM_NAME_END</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;_DOROS&quot;</span>
 
 <span class="c1"># tiemstamps</span>
 <span class="n">BST_TIMESTAMP</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bstTimestamp&quot;</span>   <span class="c1"># microseconds</span>
@@ -178,7 +179,8 @@
     <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reading DOROS file at path: &#39;</span><span class="si">{</span><span class="n">file_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdf_file</span><span class="p">:</span>
         <span class="c1"># use &quot;/&quot; to keep track of bpm order, see https://github.com/h5py/h5py/issues/1471</span>
-        <span class="n">bpm_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">hdf_file</span><span class="p">[</span><span class="s2">&quot;/&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="n">METADATA</span><span class="p">]</span>
+        <span class="n">bpm_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">hdf_file</span><span class="p">[</span><span class="s2">&quot;/&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">N_ORBIT_SAMPLES</span> <span class="ow">in</span> <span class="n">hdf_file</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found BPMs in DOROS-type file: </span><span class="si">{</span><span class="n">bpm_names</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">_check_data_lengths</span><span class="p">(</span><span class="n">hdf_file</span><span class="p">,</span> <span class="n">bpm_names</span><span class="p">)</span>
 
