@@ -5,7 +5,8 @@ DOROS
 Data handling for turn-by-turn measurement files from the 
 ``DOROS`` BPMs of the ``LHC``  (files in **hdf5** format).
 
-The file contains an unused entry for ``METADATA`` and 
+The file contains entries for ``METADATA``, ``TIMESTAMPS_INDEX`` and
+``TIMESTAMPS_TABLE``, which we do not use and 
 then the actual data per BPM.
 
 These entries are as follows:
@@ -25,8 +26,7 @@ These entries are as follows:
   - ``verPositions``: vertical position of the beam per turn
 
 
-- Oscillation entries are the frequencies of change in position
-  these are not used in the turn-by-turn format.
+- Oscillation entries are the frequencies of change in position.
 
 - ``nbOscillationSamplesRead``: number of oscillation samples read
 - ``horOscillationData``: horizontal oscillation data
@@ -34,7 +34,6 @@ These entries are as follows:
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
 import logging
 from datetime import datetime
 from pathlib import Path
