@@ -8,7 +8,7 @@ own reader module, writing functionality is at the moment always done in the ``L
 """
 import logging
 from pathlib import Path
-from typing import Union
+from typing import Union, Any
 
 from turn_by_turn import ascii, doros, esrf, iota, lhc, ptc, sps, trackone
 from turn_by_turn.ascii import write_ascii
@@ -21,6 +21,8 @@ LOGGER = logging.getLogger()
 TBT_MODULES = dict(
     lhc=lhc,
     doros=doros,
+    doros_positions=doros,
+    doros_oscillations=doros,
     sps=sps,
     iota=iota,
     esrf=esrf,
@@ -28,7 +30,7 @@ TBT_MODULES = dict(
     trackone=trackone,
     ascii=ascii,
 )
-WRITERS = ("lhc", "sps", "doros", "ascii")  # implemented writers
+WRITERS = ("lhc", "sps", "doros", "doros_positions", "doros_oscillations", "ascii")  # implemented writers
 
 write_lhc_ascii = write_ascii  # Backwards compatibility <0.4
 
@@ -56,7 +58,7 @@ def read_tbt(file_path: Union[str, Path], datatype: str = "lhc") -> TbtData:
         )
         raise DataTypeError(datatype) from error
     else:
-        return module.read_tbt(file_path)
+        return module.read_tbt(file_path, **additional_args(datatype))
 
 
 def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = None, seed: int = None, datatype: str = "lhc") -> None:
@@ -74,11 +76,12 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = N
             defaults to ``lhc``.
     """
     output_path = Path(output_path)
-    if output_path.suffix != ".sdds":
-        output_path = output_path.with_name(f"{output_path.name}.sdds")
-
     if datatype.lower() not in WRITERS:
         raise DataTypeError(f"Only {','.join(WRITERS)} writers are implemented for now.")
+
+    if datatype.lower() in ("lhc", "sps", "ascii") and  output_path.suffix != ".sdds":  
+        # I would like to remove this, but I'm afraid of compatibility issues with omc3 (jdilly, 2024) 
+        output_path = output_path.with_name(f"{output_path.name}.sdds")
 
     try:
         module = TBT_MODULES[datatype.lower()]
@@ -90,4 +93,20 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = N
     else:
         if noise is not None:
             tbt_data = add_noise_to_tbt(tbt_data, noise=noise, seed=seed)
-        return module.write_tbt(output_path, tbt_data)
+        return module.write_tbt(output_path, tbt_data, **additional_args(datatype))
+
+
+def additional_args(datatype: str) -> dict[str, Any]:
+    """ Additional parameters to be added to the reader/writer function. 
+        
+    Args:
+        datatype (str): Type of the data.
+    """
+    if datatype.lower() == "doros_oscillations":
+        return dict(data_type=doros.DataKeys.OSCILLATIONS)
+
+    if datatype.lower() == "doros_positions":
+        return dict(data_type=doros.DataKeys.POSITIONS)
+
+    return dict()
+
