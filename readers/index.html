@@ -1,24 +1,22 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DOROS &mdash; turn_by_turn 0.7.1 documentation</title>
+  <title>DOROS &mdash; turn_by_turn 0.7.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=988d0652" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=5a057da9"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=6dfdf7c3"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -37,9 +35,6 @@
             
               <img src="../_static/omc_logo.svg" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                0.7
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -95,7 +90,8 @@
 <h1>DOROS<a class="headerlink" href="#doros" title="Link to this heading"></a></h1>
 <p>Data handling for turn-by-turn measurement files from the
 <code class="docutils literal notranslate"><span class="pre">DOROS</span></code> BPMs of the <code class="docutils literal notranslate"><span class="pre">LHC</span></code>  (files in <strong>hdf5</strong> format).</p>
-<p>The file contains an unused entry for <code class="docutils literal notranslate"><span class="pre">METADATA</span></code> and
+<p>The file contains entries for <code class="docutils literal notranslate"><span class="pre">METADATA</span></code>, <code class="docutils literal notranslate"><span class="pre">TIMESTAMPS_INDEX</span></code> and
+<code class="docutils literal notranslate"><span class="pre">TIMESTAMPS_TABLE</span></code>, which we do not use and
 then the actual data per BPM.</p>
 <p>These entries are as follows:</p>
 <ul class="simple">
@@ -114,22 +110,28 @@ distinguish between the bunches.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">verPositions</span></code>: vertical position of the beam per turn</p></li>
 </ul>
 </li>
-<li><p>Oscillation entries are the frequencies of change in position
-these are not used in the turn-by-turn format.</p></li>
+<li><p>Oscillation entries are the frequencies of change in position.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">nbOscillationSamplesRead</span></code>: number of oscillation samples read</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">horOscillationData</span></code>: horizontal oscillation data</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">verOscillationData</span></code>: vertical oscillation data</p></li>
 </ul>
 </section>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.doros.</span></span><span class="sig-name descname"><span class="pre">DataKeys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/doros.html#DataKeys"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Class to handle the different entry keys for oscillations and positions.</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">turn_by_turn.doros.</span></span><span class="sig-name descname"><span class="pre">read_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/doros.html#read_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.doros.</span></span><span class="sig-name descname"><span class="pre">read_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'oscillations'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/doros.html#read_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Reads turn-by-turn data from the <code class="docutils literal notranslate"><span class="pre">DOROS</span></code>’s <strong>SDDS</strong> format file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file_path</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>]</em>) -- path to the turn-by-turn measurement file.</p></li>
-<li><p><strong>bunch_id</strong> (<em>int</em><em>, </em><em>optional</em>) -- the ID of the bunch in the file. Defaults to 0</p></li>
+<li><p><strong>bunch_id</strong> (<em>int</em><em>, </em><em>optional</em>) -- the ID of the bunch in the file. Defaults to 0.</p></li>
+<li><p><strong>data_type</strong> (<em>str</em>) -- Datatype to load. Defaults to “oscillations”.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -140,7 +142,7 @@ these are not used in the turn-by-turn format.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">turn_by_turn.doros.</span></span><span class="sig-name descname"><span class="pre">write_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tbt_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TbtData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/doros.html#write_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.doros.</span></span><span class="sig-name descname"><span class="pre">write_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tbt_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TbtData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'oscillations'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/doros.html#write_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Writes turn-by-turn data to the <code class="docutils literal notranslate"><span class="pre">DOROS</span></code>’s <strong>SDDS</strong> format file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
