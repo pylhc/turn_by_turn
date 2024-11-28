@@ -32,6 +32,8 @@ def read_tbt(df: tfs.TfsDataFrame) -> TbtData:
         A ``TbTData`` object with the loaded data.
     """
     # df = tfs.read(file_path)
+    LOGGER.info("Starting to read TBT data from dataframe")
+    
     nturns = int(df.iloc[-1].loc["turn"])
     npart = int(df.iloc[-1].loc["id"])
     LOGGER.info(f"Number of turns: {nturns}, Number of particles: {npart}")
@@ -46,29 +48,34 @@ def read_tbt(df: tfs.TfsDataFrame) -> TbtData:
     matrices = []
     for particle_id in range(npart):
         LOGGER.info(f"Processing particle ID: {particle_id + 1}")
+        
         # Filter the dataframe for the current particle and set index to the matrix dims
         subdf = df.loc[particle_id + 1]  # Particle ID starts from 1 (not 0)
-        print(len(subdf["name"]), nbpms, nturns)
+
+        # Check if the number of BPMs is consistent for all particles/turns (i.e. no lost particles)
         assert (
             len(subdf["name"]) / nturns == nbpms
         ), "The number of BPMs is not consistent for all particles/turns. Simulation may have lost particles."
-        subdf.set_index(
-            ["eidx"], inplace=True
-        )  # Must set index after getting unique BPMs
 
-        # Create a dictionary of the TrackingData fields
+        # Set the index to the element index, which are unique for every BPM and turn
+        subdf.set_index(["eidx"], inplace=True)
+
+        # Create a dictionary of the TransverseData fields
         tracking_data_dict = {
             field: pd.DataFrame(
                 index=bpms,
-                data=subdf[field.lower()]
+                data=subdf[field.lower()] # MAD-NG uses lower case field names
                 .to_numpy()
-                .reshape(nbpms, nturns, order="F"),  # Number of BPMs x Number of turns
+                .reshape(nbpms, nturns, order="F"),  
+                #^ Number of BPMs x Number of turns, Fortran order (So that the BPMs are the rows)
             )
             for field in TransverseData.fieldnames()
         }
 
-        # Append the TrackingData object to the matrices list
+        # Append the TransverseData object to the matrices list
+        # We don't use TrackingData, as MAD-NG does not provide energy
         matrices.append(TransverseData(**tracking_data_dict))
 
     LOGGER.info("Finished reading TBT data")
+    # Should we also provide date? (jgray 2024)
     return TbtData(matrices=matrices, bunch_ids=list(range(npart)), nturns=nturns)
