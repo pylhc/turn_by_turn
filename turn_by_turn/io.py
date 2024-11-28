@@ -2,7 +2,7 @@
 IO
 --
 
-This module contains high-level I/O functions to read and write tur-by-turn data objects in different
+This module contains high-level I/O functions to read and write turn-by-turn data objects in different
 formats. While data can be loaded from the formats of different machines / codes, each format getting its
 own reader module, writing functionality is at the moment always done in the ``LHC``'s **SDDS** format.
 """
