@@ -1,4 +1,25 @@
-MADX:load("fodo.seq", "fodo.mad")       -- convert on need
+MADX:open_env()
+circum = 60
+lcell = 20
+f =\ lcell/sin(pi/4)/4
+k =\ 1/f
+qf = multipole 'QF' { knl := {0,k} }
+qd = multipole 'QD' { knl := {0, -k} }
+bpm = monitor 'BPM' {  }
+
+seq = sequence 'SEQ' { refer = centre, l = circum,
+bpm 'BPM1' { at = 0 },
+qf 'QF' { at = 0 },
+qd 'QD' { at = 0.5 *lcell },
+qf 'QF' { at = 1.0 *lcell },
+bpm 'BPM2' { at = 1.5 *lcell },
+qd 'QD' { at = 1.5 *lcell },
+qf 'QF' { at = 2.0 *lcell },
+qd 'QD' { at = 2.5 *lcell },
+bpm 'BPM3' { at = 3 *lcell },
+}
+MADX:close_env()
+
 local seq in MADX
 
 local beam, track in MAD

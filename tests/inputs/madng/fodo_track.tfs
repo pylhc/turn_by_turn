@@ -2,8 +2,8 @@
 @ type               %05s     "track"
 @ title              %03s     "SEQ"
 @ origin             %18s     "MAD 0.9.9 Linux 64"
-@ date               %08s     "28/11/24"
-@ time               %08s     "18:31:03"
+@ date               %08s     "29/11/24"
+@ time               %08s     "10:32:40"
 @ refcol             %04s     "name"
 @ direction          %le       1
 @ observe            %le       1
