@@ -49,6 +49,7 @@ dependencies = [
     "pandas >= 2.1",
     "sdds >= 0.4",
     "h5py >= 2.9",
+    "tfs >= 4.0.0", # for madng (potentially an optional dependency)
 ]
 
 [project.optional-dependencies]

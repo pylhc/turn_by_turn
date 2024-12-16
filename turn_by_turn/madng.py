@@ -10,6 +10,7 @@ are in the **TFS** format.
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 
 import pandas as pd
 import tfs
@@ -19,8 +20,7 @@ from turn_by_turn.structures import TbtData, TransverseData
 LOGGER = logging.getLogger()
 
 
-# def read_tbt(file_path: str | Path) -> TbtData:
-def read_tbt(df: tfs.TfsDataFrame) -> TbtData:
+def read_tbt(file_path: str | Path) -> TbtData:
     LOGGER.info("Starting to read TBT data")
     """
     Reads turn-by-turn data from the ``MAD-NG`` **TFS** format file.
@@ -31,9 +31,9 @@ def read_tbt(df: tfs.TfsDataFrame) -> TbtData:
     Returns:
         A ``TbTData`` object with the loaded data.
     """
-    # df = tfs.read(file_path)
+    df = tfs.read(file_path)
     LOGGER.info("Starting to read TBT data from dataframe")
-    
+
     nturns = int(df.iloc[-1].loc["turn"])
     npart = int(df.iloc[-1].loc["id"])
     LOGGER.info(f"Number of turns: {nturns}, Number of particles: {npart}")
@@ -48,7 +48,7 @@ def read_tbt(df: tfs.TfsDataFrame) -> TbtData:
     matrices = []
     for particle_id in range(npart):
         LOGGER.info(f"Processing particle ID: {particle_id + 1}")
-        
+
         # Filter the dataframe for the current particle and set index to the matrix dims
         subdf = df.loc[particle_id + 1]  # Particle ID starts from 1 (not 0)
 
@@ -64,10 +64,10 @@ def read_tbt(df: tfs.TfsDataFrame) -> TbtData:
         tracking_data_dict = {
             field: pd.DataFrame(
                 index=bpms,
-                data=subdf[field.lower()] # MAD-NG uses lower case field names
+                data=subdf[field.lower()]  # MAD-NG uses lower case field names
                 .to_numpy()
-                .reshape(nbpms, nturns, order="F"),  
-                #^ Number of BPMs x Number of turns, Fortran order (So that the BPMs are the rows)
+                .reshape(nbpms, nturns, order="F"),
+                # ^ Number of BPMs x Number of turns, Fortran order (So that the BPMs are the rows)
             )
             for field in TransverseData.fieldnames()
         }
