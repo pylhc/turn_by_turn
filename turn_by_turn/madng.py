@@ -68,14 +68,14 @@ def read_tbt(file_path: str | Path) -> TbtData:
 
         # Create a dictionary of the TransverseData fields
         tracking_data_dict = {
-            field: pd.DataFrame(
+            plane: pd.DataFrame(
                 index=bpms,
-                data=df_particle[field.lower()]  # MAD-NG uses lower case field names
+                data=df_particle[plane.lower()]  # MAD-NG uses lower case field names
                 .to_numpy()
                 .reshape(nbpms, nturns, order="F"),
                 # ^ Number of BPMs x Number of turns, Fortran order (So that the BPMs are the rows)
             )
-            for field in TransverseData.fieldnames()
+            for plane in TransverseData.fieldnames() # X, Y
         }
 
         # Append the TransverseData object to the matrices list
