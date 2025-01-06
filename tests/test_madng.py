@@ -32,7 +32,6 @@ def _original_simulation_data() -> TbtData:
     bpm3_p2_x = np.array([-0.002414213831, 0.0009999991309, 0.002414214191])
     bpm3_p2_y = np.array([-0.0004142133507,-0.001000000149, 0.0004142129907])
 
-    print(pd.DataFrame(index=names, data=[bpm1_p1_x, bpm2_p1_x, bpm3_p1_x]))
     matrix = [
         TransverseData(  # first particle
             X=pd.DataFrame(index=names, data=[bpm1_p1_x, bpm2_p1_x, bpm3_p1_x]),

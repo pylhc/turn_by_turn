@@ -35,19 +35,19 @@ def read_tbt(file_path: str | Path) -> TbtData:
     Returns:
         A ``TbTData`` object with the loaded data.
     """
-    df = tfs.read(file_path)
     LOGGER.debug("Starting to read TBT data from dataframe")
+    df = tfs.read(file_path)
 
     nturns = int(df.iloc[-1].loc[TURN])
     npart = int(df.iloc[-1].loc[PARTICLE_ID])
     LOGGER.info(f"Number of turns: {nturns}, Number of particles: {npart}")
 
-    # Get the unique BPMs and number of BPMs
-    bpms = df[NAME].unique()
-    nbpms = len(bpms)
+    # Get the names of all of the observed points (probably just BPMs, maybe other devices)
+    observe_points = df.loc[df[TURN] == 1][NAME].to_numpy()
+    num_observables = len(observe_points)  # Number of BPMs (or observed points)
 
     # Set the index to the particle ID
-    df.set_index([PARTICLE_ID], inplace=True)
+    df = df.set_index([PARTICLE_ID])
 
     matrices = []
     bunch_ids = range(1, npart + 1) # Particle IDs start from 1 (not 0)
@@ -55,25 +55,25 @@ def read_tbt(file_path: str | Path) -> TbtData:
         LOGGER.info(f"Processing particle ID: {particle_id}")
 
         # Filter the dataframe for the current particle
-        df_particle = df.loc[particle_id]
+        df_particle = df.loc[particle_id].copy() # As we 
 
-        # Check if the number of BPMs is consistent for all particles/turns (i.e. no lost particles)
-        if len(df_particle[NAME]) / nturns != nbpms:
+        # Check if the number of observed points is consistent for all particles/turns (i.e. no lost particles)
+        if len(df_particle[NAME]) / nturns != num_observables:
             raise ValueError(
-                "The number of BPMs is not consistent for all particles/turns. Simulation may have lost particles."
+                "The number of BPMs (or observed points) is not consistent for all particles/turns. Simulation may have lost particles."
             )
 
-        # Set the index to the element index, which are unique for every BPM and turn
-        df_particle.set_index([ELEMENT_INDEX], inplace=True)
+        # Set the index to the element index, which are unique for every observable and turn
+        df_particle = df_particle.set_index([ELEMENT_INDEX])
 
         # Create a dictionary of the TransverseData fields
         tracking_data_dict = {
             plane: pd.DataFrame(
-                index=bpms,
+                index=observe_points,
                 data=df_particle[plane.lower()]  # MAD-NG uses lower case field names
                 .to_numpy()
-                .reshape(nbpms, nturns, order="F"),
-                # ^ Number of BPMs x Number of turns, Fortran order (So that the BPMs are the rows)
+                .reshape(num_observables, nturns, order="F"),
+                # ^ Number of Observables x Number of turns, Fortran order (So that the observables are the rows)
             )
             for plane in TransverseData.fieldnames() # X, Y
         }
@@ -83,5 +83,4 @@ def read_tbt(file_path: str | Path) -> TbtData:
         matrices.append(TransverseData(**tracking_data_dict))
 
     LOGGER.debug("Finished reading TBT data")
-    # Should we also provide date? (jgray 2024)
     return TbtData(matrices=matrices, bunch_ids=list(bunch_ids), nturns=nturns)
