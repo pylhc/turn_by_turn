@@ -24,7 +24,7 @@ authors = [
 ]
 license = "MIT"
 dynamic = ["version"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -33,7 +33,6 @@ classifiers = [
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -49,7 +48,7 @@ dependencies = [
     "pandas >= 2.1",
     "sdds >= 0.4",
     "h5py >= 2.9",
-    "tfs-pandas >= 4.0.0", # for madng (potentially an optional dependency)
+    "tfs-pandas >= 4.0.0", # for madng (could be an optional dependency)
 ]
 
 [project.optional-dependencies]
