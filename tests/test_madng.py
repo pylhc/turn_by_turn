@@ -6,14 +6,10 @@ import pytest
 from tests.test_lhc_and_general import INPUTS_DIR, compare_tbt
 from turn_by_turn.structures import TbtData, TransverseData
 from turn_by_turn.madng import read_tbt
-from pymadng import MAD
 
 
 def test_read_ng(_ng_file):
-    with MAD() as mad:
-        file_as_string = mad.quote_strings(str(_ng_file))
-        df = mad.mtable.read(file_as_string).eval().to_df()
-    new = read_tbt(df)
+    new = read_tbt(_ng_file)
     origin = _original_simulation_data()
     compare_tbt(origin, new, True)
 
