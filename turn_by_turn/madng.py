@@ -42,30 +42,29 @@ def read_tbt(file_path: str | Path) -> TbtData:
     npart = int(df.iloc[-1].loc[PARTICLE_ID])
     LOGGER.info(f"Number of turns: {nturns}, Number of particles: {npart}")
 
-    # Get the names of all of the observed points (probably just BPMs, maybe other devices)
-    # By taking turn 1, particle 1, we can get the names of all the observed points, in order
-    observe_points = df.loc[(df[TURN] == 1) & (df[PARTICLE_ID] == 1)][NAME].to_numpy() 
-    num_observables = len(observe_points)  # Number of BPMs (or observed points)
+    # Set the order of the columns
+    df = df.set_index([PARTICLE_ID, TURN, ELEMENT_INDEX])
+    df = df.sort_index()
+    
+    # Get the names of the observed points (BPMs) from the first particle's first turn
+    observe_points = df.loc[(1, 1)][NAME].to_numpy()
+    num_observables = len(observe_points)
 
-    # Set the index to the particle ID
-    df = df.set_index([PARTICLE_ID])
+    # Check if the number of observed points is consistent for all particles/turns
+    if len(df[NAME]) / nturns / npart != num_observables:
+        raise ValueError(
+            "The number of BPMs (or observed points) is not consistent for all particles/turns. Simulation may have lost particles."
+        )
 
     matrices = []
     bunch_ids = range(1, npart + 1) # Particle IDs start from 1 (not 0)
+
+    # It is possible to do this list using a list comprehension, but it would be less readable
     for particle_id in bunch_ids:
         LOGGER.info(f"Processing particle ID: {particle_id}")
 
         # Filter the dataframe for the current particle
-        df_particle = df.loc[particle_id].copy() # Just to be safe, but it is slow potentially...
-
-        # Check if the number of observed points is consistent for all particles/turns (i.e. no lost particles)
-        if len(df_particle[NAME]) / nturns != num_observables:
-            raise ValueError(
-                "The number of BPMs (or observed points) is not consistent for all particles/turns. Simulation may have lost particles."
-            )
-
-        # Set the index to the element index, which are unique for every observable and turn
-        df_particle = df_particle.set_index([ELEMENT_INDEX])
+        df_particle = df.loc[particle_id]
 
         # Create a dictionary of the TransverseData fields
         tracking_data_dict = {

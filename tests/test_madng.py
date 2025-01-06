@@ -13,6 +13,10 @@ def test_read_ng(_ng_file):
     origin = _original_simulation_data()
     compare_tbt(origin, new, True)
 
+def test_error_ng(_error_file):
+    with pytest.raises(ValueError):
+        read_tbt(_error_file)
+
 # ---- Helpers ---- #
 def _original_simulation_data() -> TbtData:
     # Create a TbTData object with the original data
@@ -49,3 +53,7 @@ def _original_simulation_data() -> TbtData:
 @pytest.fixture
 def _ng_file(tmp_path):
     return INPUTS_DIR / "madng" / "fodo_track.tfs"
+
+@pytest.fixture
+def _error_file(tmp_path):
+    return INPUTS_DIR / "madng" / "fodo_track_error.tfs"
