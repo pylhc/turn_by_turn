@@ -10,7 +10,7 @@ import logging
 from pathlib import Path
 from typing import Union, Any
 
-from turn_by_turn import ascii, doros, esrf, iota, lhc, ptc, sps, trackone
+from turn_by_turn import ascii, doros, esrf, iota, lhc, ptc, sps, trackone, madng
 from turn_by_turn.ascii import write_ascii
 from turn_by_turn.errors import DataTypeError
 from turn_by_turn.structures import TbtData
@@ -29,6 +29,7 @@ TBT_MODULES = dict(
     ptc=ptc,
     trackone=trackone,
     ascii=ascii,
+    madng=madng,
 )
 WRITERS = ("lhc", "sps", "doros", "doros_positions", "doros_oscillations", "ascii")  # implemented writers
 
