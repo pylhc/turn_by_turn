@@ -16,7 +16,7 @@ def test_read_ng(_ng_file):
 # ---- Helpers ---- #
 def _original_simulation_data() -> TbtData:
     # Create a TbTData object with the original data
-    names = np.array(["BPM1", "BPM2", "BPM3"])
+    names = np.array(["BPM1", "BPM3", "BPM2"])
     bpm1_p1_x = np.array([ 1e-3, 0.002414213831,-0.0009999991309])
     bpm1_p1_y = np.array([-1e-3, 0.0004142133507, 0.001000000149])
     bpm1_p2_x = np.array([-1e-3,-0.002414213831, 0.0009999991309])

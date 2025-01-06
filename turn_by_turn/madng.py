@@ -43,7 +43,8 @@ def read_tbt(file_path: str | Path) -> TbtData:
     LOGGER.info(f"Number of turns: {nturns}, Number of particles: {npart}")
 
     # Get the names of all of the observed points (probably just BPMs, maybe other devices)
-    observe_points = df.loc[df[TURN] == 1][NAME].to_numpy()
+    # By taking turn 1, particle 1, we can get the names of all the observed points, in order
+    observe_points = df.loc[(df[TURN] == 1) & (df[PARTICLE_ID] == 1)][NAME].to_numpy() 
     num_observables = len(observe_points)  # Number of BPMs (or observed points)
 
     # Set the index to the particle ID
@@ -55,7 +56,7 @@ def read_tbt(file_path: str | Path) -> TbtData:
         LOGGER.info(f"Processing particle ID: {particle_id}")
 
         # Filter the dataframe for the current particle
-        df_particle = df.loc[particle_id].copy() # As we 
+        df_particle = df.loc[particle_id].copy() # Just to be safe, but it is slow potentially...
 
         # Check if the number of observed points is consistent for all particles/turns (i.e. no lost particles)
         if len(df_particle[NAME]) / nturns != num_observables:
