@@ -73,7 +73,7 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = N
             to ensure the exact same RNG state across operations. Defaults to `None`, which means
             any new RNG operation in noise addition will pull fresh entropy from the OS.
         datatype (str): type of matrices in the file, determines the reader to use. Case-insensitive,
-            defaults to ``lhc``
+            defaults to ``lhc``.
     """
     output_path = Path(output_path)
     if datatype.lower() not in WRITERS:

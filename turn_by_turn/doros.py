@@ -61,7 +61,7 @@ class DataKeys:
     OSCILLATIONS: str = "oscillations"
     POSITIONS: str = "positions"
 
-    def __init__(self, default_value: int, n_samples: str, names: dict[str, str]):
+    def __init__(self, default_value: float, n_samples: str, names: dict[str, str]):
         """Create an object containing the keys to use in the DOROS file,
         depending on the data to extract.
 
@@ -70,9 +70,9 @@ class DataKeys:
             n_samples (str): Key for the number of samples present in file entry. 
             names (dict[str, str]): Keys per plane for the actual tbt data.
         """
-        self.default_value = default_value
-        self.n_samples = n_samples
-        self.data = names
+        self.default_value: float = default_value
+        self.n_samples: str = n_samples
+        self.data: dict[str, str] = names
 
     @classmethod
     def types(cls) -> tuple[str]:
