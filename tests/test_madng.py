@@ -5,17 +5,24 @@ import pytest
 
 from tests.test_lhc_and_general import INPUTS_DIR, compare_tbt
 from turn_by_turn.structures import TbtData, TransverseData
-from turn_by_turn.madng import read_tbt
+from turn_by_turn import madng
+from turn_by_turn import read_tbt
 
 
 def test_read_ng(_ng_file):
-    new = read_tbt(_ng_file)
-    origin = _original_simulation_data()
-    compare_tbt(origin, new, True)
+    original = _original_simulation_data()
+    
+    # Check directly from the module
+    new = madng.read_tbt(_ng_file)
+    compare_tbt(original, new, True)
+    
+    # Check from the main function
+    new = read_tbt(_ng_file, datatype="madng")
+    compare_tbt(original, new, True)
 
 def test_error_ng(_error_file):
     with pytest.raises(ValueError):
-        read_tbt(_error_file)
+        read_tbt(_error_file, datatype="madng")
 
 # ---- Helpers ---- #
 def _original_simulation_data() -> TbtData:
