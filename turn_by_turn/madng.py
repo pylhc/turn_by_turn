@@ -19,9 +19,13 @@ from turn_by_turn.structures import TbtData, TransverseData
 
 LOGGER = logging.getLogger()
 
+# Define the column names in the TFS file
+NAME = "name"
+ELEMENT_INDEX = "eidx"
+TURN = "turn"
+PARTICLE_ID = "id"
 
 def read_tbt(file_path: str | Path) -> TbtData:
-    LOGGER.info("Starting to read TBT data")
     """
     Reads turn-by-turn data from the ``MAD-NG`` **TFS** format file.
 
@@ -32,39 +36,41 @@ def read_tbt(file_path: str | Path) -> TbtData:
         A ``TbTData`` object with the loaded data.
     """
     df = tfs.read(file_path)
-    LOGGER.info("Starting to read TBT data from dataframe")
+    LOGGER.debug("Starting to read TBT data from dataframe")
 
-    nturns = int(df.iloc[-1].loc["turn"])
-    npart = int(df.iloc[-1].loc["id"])
+    nturns = int(df.iloc[-1].loc[TURN])
+    npart = int(df.iloc[-1].loc[PARTICLE_ID])
     LOGGER.info(f"Number of turns: {nturns}, Number of particles: {npart}")
 
     # Get the unique BPMs and number of BPMs
-    bpms = df["name"].unique()
+    bpms = df[NAME].unique()
     nbpms = len(bpms)
 
     # Set the index to the particle ID
-    df.set_index(["id"], inplace=True)
+    df.set_index([PARTICLE_ID], inplace=True)
 
     matrices = []
-    for particle_id in range(npart):
-        LOGGER.info(f"Processing particle ID: {particle_id + 1}")
+    bunch_ids = range(1, npart + 1) # Particle IDs start from 1 (not 0)
+    for particle_id in bunch_ids:
+        LOGGER.info(f"Processing particle ID: {particle_id}")
 
-        # Filter the dataframe for the current particle and set index to the matrix dims
-        subdf = df.loc[particle_id + 1]  # Particle ID starts from 1 (not 0)
+        # Filter the dataframe for the current particle
+        df_particle = df.loc[particle_id]
 
         # Check if the number of BPMs is consistent for all particles/turns (i.e. no lost particles)
-        assert (
-            len(subdf["name"]) / nturns == nbpms
-        ), "The number of BPMs is not consistent for all particles/turns. Simulation may have lost particles."
+        if len(df_particle[NAME]) / nturns != nbpms:
+            raise ValueError(
+                "The number of BPMs is not consistent for all particles/turns. Simulation may have lost particles."
+            )
 
         # Set the index to the element index, which are unique for every BPM and turn
-        subdf.set_index(["eidx"], inplace=True)
+        df_particle.set_index([ELEMENT_INDEX], inplace=True)
 
         # Create a dictionary of the TransverseData fields
         tracking_data_dict = {
             field: pd.DataFrame(
                 index=bpms,
-                data=subdf[field.lower()]  # MAD-NG uses lower case field names
+                data=df_particle[field.lower()]  # MAD-NG uses lower case field names
                 .to_numpy()
                 .reshape(nbpms, nturns, order="F"),
                 # ^ Number of BPMs x Number of turns, Fortran order (So that the BPMs are the rows)
@@ -76,6 +82,6 @@ def read_tbt(file_path: str | Path) -> TbtData:
         # We don't use TrackingData, as MAD-NG does not provide energy
         matrices.append(TransverseData(**tracking_data_dict))
 
-    LOGGER.info("Finished reading TBT data")
+    LOGGER.debug("Finished reading TBT data")
     # Should we also provide date? (jgray 2024)
-    return TbtData(matrices=matrices, bunch_ids=list(range(npart)), nturns=nturns)
+    return TbtData(matrices=matrices, bunch_ids=list(bunch_ids), nturns=nturns)

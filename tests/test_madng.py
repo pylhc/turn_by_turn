@@ -43,7 +43,7 @@ def _original_simulation_data() -> TbtData:
             Y=pd.DataFrame(index=names, data=[bpm1_p2_y, bpm2_p2_y, bpm3_p2_y]),
         ),
     ]
-    return TbtData(matrices=matrix, bunch_ids=[0, 1], nturns=3)
+    return TbtData(matrices=matrix, bunch_ids=[1, 2], nturns=3)
 
 
 # ---- Fixtures ---- #
