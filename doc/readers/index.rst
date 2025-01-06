@@ -31,3 +31,7 @@
 .. automodule:: turn_by_turn.trackone
     :members:
     :noindex:
+
+.. automodule:: turn_by_turn.madng
+    :members:
+    :noindex:
