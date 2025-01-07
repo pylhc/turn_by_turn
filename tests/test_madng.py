@@ -14,11 +14,11 @@ def test_read_ng(_ng_file):
     
     # Check directly from the module
     new = madng.read_tbt(_ng_file)
-    compare_tbt(original, new, True)
+    compare_tbt(original, new, no_binary=True)
     
     # Check from the main function
     new = read_tbt(_ng_file, datatype="madng")
-    compare_tbt(original, new, True)
+    compare_tbt(original, new, no_binary=True)
 
 def test_write_ng(_ng_file, tmp_path):
     original_tbt = _original_simulation_data()
@@ -29,14 +29,14 @@ def test_write_ng(_ng_file, tmp_path):
     
     # Read the written data
     new_tbt = madng.read_tbt(from_tbt)
-    compare_tbt(original_tbt, new_tbt, True)
+    compare_tbt(original_tbt, new_tbt, no_binary=True)
 
     # Check from the main function
     original_tbt = read_tbt(_ng_file, datatype="madng")
     write_tbt(from_tbt, original_tbt, datatype="madng")
 
     new_tbt = read_tbt(from_tbt, datatype="madng")
-    compare_tbt(original_tbt, new_tbt, True)    
+    compare_tbt(original_tbt, new_tbt, no_binary=True)    
     
 def test_error_ng(_error_file):
     with pytest.raises(ValueError):

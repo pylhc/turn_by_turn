@@ -138,23 +138,21 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
     merged_df = merged_df.set_index([NAME])
 
     # Sort the dataframe by turn, element index and particle ID (so the format is consistent with MAD-NG)
-    merged_df.sort_values(by=[TURN, ELEMENT_INDEX, PARTICLE_ID], inplace=True)
+    merged_df = merged_df.sort_values(by=[TURN, ELEMENT_INDEX, PARTICLE_ID])
 
     # Drop the element index column (this is not the real element index, but a temporary one for merging)
-    merged_df.drop(columns=[ELEMENT_INDEX], inplace=True)
+    merged_df = merged_df.drop(columns=[ELEMENT_INDEX])
 
     # Set the columns to x, y, turn, id (this order is kind of pointless - keep? - jgray2024)
     merged_df = merged_df[[planes[0], planes[1], TURN, PARTICLE_ID]]
 
     # Write the dataframe to a TFS file
-    tfs_df = tfs.TfsDataFrame(merged_df)
     now = datetime.datetime.now()
-    tfs_df.headers = {
+    headers = {
         HNAME: "TbtData",
         ORIGIN: "Python",
         DATE: now.strftime("%d/%m/%Y"),
         TIME: now.strftime("%H:%M:%S"),
         REFCOL: NAME,
     }
-
-    tfs.write(output_path, tfs_df, save_index=NAME)
+    tfs.write(output_path, merged_df, headers_dict=headers, save_index=NAME)
