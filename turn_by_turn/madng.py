@@ -52,12 +52,11 @@ def read_tbt(file_path: str | Path) -> TbtData:
     time_str = df.headers.get(TIME)
     
     # Combine the date and time into a datetime object
+    date = None
     if date_str and time_str:
         date = datetime.strptime(f"{date_str} {time_str}", "%d/%m/%y %H:%M:%S")
     elif date_str:
         date = datetime.strptime(date_str, "%d/%m/%y")
-    else:
-        date = None
 
     nturns = int(df.iloc[-1].loc[TURN])
     npart = int(df.iloc[-1].loc[PARTICLE_ID])
