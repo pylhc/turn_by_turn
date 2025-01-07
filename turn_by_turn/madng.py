@@ -9,7 +9,7 @@ are in the **TFS** format.
 
 from __future__ import annotations
 
-import datetime
+from datetime import datetime
 import logging
 from pathlib import Path
 
@@ -100,7 +100,7 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
         file_path (str | Path): Target file path.
     """
     planes = [plane.lower() for plane in TransverseData.fieldnames()]  # x, y
-    df_list = {plane: [] for plane in planes}
+    plane_dfs = {plane: [] for plane in planes}
 
     for particle_id, transverse_data in zip(tbt_data.bunch_ids, tbt_data.matrices):
         for plane in planes:
@@ -129,11 +129,11 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
             particle_df[TURN] = particle_df[TURN].astype(int) + 1
 
             # Append the dataframe to the list
-            df_list[plane].append(particle_df)
+            plane_dfs[plane].append(particle_df)
 
     # Merge the dataframes on name, turn, particle ID and element index for both planes
-    df_x = pd.concat(df_list[planes[0]])
-    df_y = pd.concat(df_list[planes[1]])
+    df_x = pd.concat(plane_dfs[planes[0]])
+    df_y = pd.concat(plane_dfs[planes[1]])
     merged_df = pd.merge(df_x, df_y, on=[NAME, TURN, PARTICLE_ID, ELEMENT_INDEX])
     merged_df = merged_df.set_index([NAME])
 
@@ -143,16 +143,21 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
     # Drop the element index column (this is not the real element index, but a temporary one for merging)
     merged_df = merged_df.drop(columns=[ELEMENT_INDEX])
 
-    # Set the columns to x, y, turn, id (this order is kind of pointless - keep? - jgray2024)
+    # Set the columns to x, y, turn, id, for consistency.
     merged_df = merged_df[[planes[0], planes[1], TURN, PARTICLE_ID]]
 
+    # Get the date from the TbtData object, or use the current date
+    if tbt_data.date is None:
+        date = datetime.now()
+    else:
+        date = tbt_data.date
+
     # Write the dataframe to a TFS file
-    now = datetime.datetime.now()
     headers = {
         HNAME: "TbtData",
         ORIGIN: "Python",
-        DATE: now.strftime("%d/%m/%Y"),
-        TIME: now.strftime("%H:%M:%S"),
+        DATE: date.strftime("%d/%m/%Y"),
+        TIME: date.strftime("%H:%M:%S"),
         REFCOL: NAME,
     }
     tfs.write(output_path, merged_df, headers_dict=headers, save_index=NAME)

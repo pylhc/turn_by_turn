@@ -1,12 +1,13 @@
 
+from datetime import datetime
+
 import numpy as np
 import pandas as pd
 import pytest
 
 from tests.test_lhc_and_general import INPUTS_DIR, compare_tbt
+from turn_by_turn import madng, read_tbt, write_tbt
 from turn_by_turn.structures import TbtData, TransverseData
-from turn_by_turn import madng
-from turn_by_turn import read_tbt, write_tbt
 
 
 def test_read_ng(_ng_file):
@@ -33,6 +34,7 @@ def test_write_ng(_ng_file, tmp_path):
 
     # Check from the main function
     original_tbt = read_tbt(_ng_file, datatype="madng")
+    original_tbt.date = datetime.now() # Not tested, but checks that it runs
     write_tbt(from_tbt, original_tbt, datatype="madng")
 
     new_tbt = read_tbt(from_tbt, datatype="madng")
