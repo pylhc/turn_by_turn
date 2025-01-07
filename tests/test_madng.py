@@ -34,11 +34,11 @@ def test_write_ng(_ng_file, tmp_path):
 
     # Check from the main function
     original_tbt = read_tbt(_ng_file, datatype="madng")
-    original_tbt.date = datetime.now() # Not tested, but checks that it runs
     write_tbt(from_tbt, original_tbt, datatype="madng")
 
     new_tbt = read_tbt(from_tbt, datatype="madng")
-    compare_tbt(original_tbt, new_tbt, no_binary=True)    
+    compare_tbt(original_tbt, new_tbt, no_binary=True)
+    assert original_tbt.date == new_tbt.date
     
 def test_error_ng(_error_file):
     with pytest.raises(ValueError):

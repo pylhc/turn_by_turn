@@ -47,6 +47,18 @@ def read_tbt(file_path: str | Path) -> TbtData:
     LOGGER.debug("Starting to read TBT data from dataframe")
     df = tfs.read(file_path)
 
+    # Get the date and time from the headers (return None if not found)
+    date_str = df.headers.get(DATE)
+    time_str = df.headers.get(TIME)
+    
+    # Combine the date and time into a datetime object
+    if date_str and time_str:
+        date = datetime.strptime(f"{date_str} {time_str}", "%d/%m/%y %H:%M:%S")
+    elif date_str:
+        date = datetime.strptime(date_str, "%d/%m/%y")
+    else:
+        date = None
+
     nturns = int(df.iloc[-1].loc[TURN])
     npart = int(df.iloc[-1].loc[PARTICLE_ID])
     LOGGER.info(f"Number of turns: {nturns}, Number of particles: {npart}")
@@ -88,7 +100,7 @@ def read_tbt(file_path: str | Path) -> TbtData:
         matrices.append(TransverseData(**tracking_data_dict))
 
     LOGGER.debug("Finished reading TBT data")
-    return TbtData(matrices=matrices, bunch_ids=list(bunch_ids), nturns=nturns)
+    return TbtData(matrices=matrices, bunch_ids=list(bunch_ids), nturns=nturns, date=date)
 
 
 def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
@@ -146,18 +158,12 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
     # Set the columns to x, y, turn, id, for consistency.
     merged_df = merged_df[[planes[0], planes[1], TURN, PARTICLE_ID]]
 
-    # Get the date from the TbtData object, or use the current date
-    if tbt_data.date is None:
-        date = datetime.now()
-    else:
-        date = tbt_data.date
-
     # Write the dataframe to a TFS file
     headers = {
         HNAME: "TbtData",
         ORIGIN: "Python",
-        DATE: date.strftime("%d/%m/%Y"),
-        TIME: date.strftime("%H:%M:%S"),
+        DATE: tbt_data.date.strftime("%d/%m/%y"),
+        TIME: tbt_data.date.strftime("%H:%M:%S"),
         REFCOL: NAME,
     }
     tfs.write(output_path, merged_df, headers_dict=headers, save_index=NAME)
