@@ -59,7 +59,6 @@ def read_tbt(file_path: str | Path) -> TbtData:
     matrices = []
     bunch_ids = range(1, npart + 1) # Particle IDs start from 1 (not 0)
 
-    # It is possible to do this list using a list comprehension, but it would be less readable
     for particle_id in bunch_ids:
         LOGGER.info(f"Processing particle ID: {particle_id}")
 
@@ -70,7 +69,7 @@ def read_tbt(file_path: str | Path) -> TbtData:
         tracking_data_dict = {
             plane: pd.DataFrame(
                 index=observe_points,
-                data=df_particle[plane.lower()]  # MAD-NG uses lower case field names
+                data=df_particle[plane.lower()]  # MAD-NG uses lower case for the planes
                 .to_numpy()
                 .reshape(num_observables, nturns, order="F"),
                 # ^ Number of Observables x Number of turns, Fortran order (So that the observables are the rows)
