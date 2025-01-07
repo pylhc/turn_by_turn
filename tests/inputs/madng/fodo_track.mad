@@ -36,7 +36,7 @@ local mtbl = track {
   X0 = {part1, part2},
   nturn = 3,
   }
-mtbl:write("fodo_track.tfs", {"name", "x", "y", "eidx", "turn", "id"})
+mtbl:write("fodo_track.tfs", {"name", "x", "y", "turn", "id"})
 
 mtbl:remove(#mtbl) -- remove the final row to produce an incomplete file
-mtbl:write("fodo_track_error.tfs", {"name", "x", "y", "eidx", "turn", "id"})
+mtbl:write("fodo_track_error.tfs", {"name", "x", "y", "turn", "id"})

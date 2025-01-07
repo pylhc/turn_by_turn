@@ -6,7 +6,7 @@ import pytest
 from tests.test_lhc_and_general import INPUTS_DIR, compare_tbt
 from turn_by_turn.structures import TbtData, TransverseData
 from turn_by_turn import madng
-from turn_by_turn import read_tbt
+from turn_by_turn import read_tbt, write_tbt
 
 
 def test_read_ng(_ng_file):
@@ -20,6 +20,24 @@ def test_read_ng(_ng_file):
     new = read_tbt(_ng_file, datatype="madng")
     compare_tbt(original, new, True)
 
+def test_write_ng(_ng_file, tmp_path):
+    original_tbt = _original_simulation_data()
+    
+    # Write the data
+    from_tbt = tmp_path / "from_tbt.tfs"
+    madng.write_tbt(from_tbt, original_tbt)
+    
+    # Read the written data
+    new_tbt = madng.read_tbt(from_tbt)
+    compare_tbt(original_tbt, new_tbt, True)
+
+    # Check from the main function
+    original_tbt = read_tbt(_ng_file, datatype="madng")
+    write_tbt(from_tbt, original_tbt, datatype="madng")
+
+    new_tbt = read_tbt(from_tbt, datatype="madng")
+    compare_tbt(original_tbt, new_tbt, True)    
+    
 def test_error_ng(_error_file):
     with pytest.raises(ValueError):
         read_tbt(_error_file, datatype="madng")

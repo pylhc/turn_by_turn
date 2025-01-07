@@ -31,7 +31,7 @@ TBT_MODULES = dict(
     ascii=ascii,
     madng=madng,
 )
-WRITERS = ("lhc", "sps", "doros", "doros_positions", "doros_oscillations", "ascii")  # implemented writers
+WRITERS = ("lhc", "sps", "doros", "doros_positions", "doros_oscillations", "ascii", "madng")  # implemented writers
 
 write_lhc_ascii = write_ascii  # Backwards compatibility <0.4
 
