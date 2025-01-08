@@ -6,15 +6,15 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DOROS &mdash; turn_by_turn 0.7.2 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+  <title>DOROS &mdash; turn_by_turn 0.8.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=988d0652" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=6dfdf7c3"></script>
+      <script src="../_static/documentation_options.js?v=486e5634"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -59,6 +59,7 @@
 <li class="toctree-l1"><a class="reference internal" href="#sps">SPS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#ptc">PTC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#trackone">Trackone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#mad-ng">MAD-NG</a></li>
 </ul>
 
         </div>
@@ -406,6 +407,39 @@ into <code class="docutils literal notranslate"><span class="pre">TrackingData</
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A <code class="docutils literal notranslate"><span class="pre">TbTData</span></code> object with the loaded data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="mad-ng">
+<h1>MAD-NG<a class="headerlink" href="#mad-ng" title="Link to this heading"></a></h1>
+<p>This module provides functions to read and write <code class="docutils literal notranslate"><span class="pre">MAD-NG</span></code> turn-by-turn measurement files. These files
+are in the <strong>TFS</strong> format.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.madng.</span></span><span class="sig-name descname"><span class="pre">read_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/madng.html#read_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Reads turn-by-turn data from the <code class="docutils literal notranslate"><span class="pre">MAD-NG</span></code> <strong>TFS</strong> format file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em><em> | </em><em>Path</em>) -- path to the turn-by-turn measurement file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <code class="docutils literal notranslate"><span class="pre">TbTData</span></code> object with the loaded data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.madng.</span></span><span class="sig-name descname"><span class="pre">write_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tbt_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TbtData</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/madng.html#write_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Writes turn-by-turn data to a TFS file for MAD-NG.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tbt_data</strong> (<em>TbtData</em>) -- Turn-by-turn data to write.</p></li>
+<li><p><strong>file_path</strong> (<em>str</em><em> | </em><em>Path</em>) -- Target file path.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
