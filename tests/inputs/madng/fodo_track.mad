@@ -1,0 +1,42 @@
+MADX:open_env()
+circum = 60
+lcell = 20
+f =\ lcell/sin(pi/4)/4
+k =\ 1/f
+qf = multipole 'QF' { knl := {0,k} }
+qd = multipole 'QD' { knl := {0, -k} }
+bpm = monitor 'BPM' {  }
+
+seq = sequence 'SEQ' { refer = centre, l = circum,
+bpm 'BPM1' { at = 0 },
+qf 'QF' { at = 0 },
+qd 'QD' { at = 0.5 *lcell },
+qf 'QF' { at = 1.0 *lcell },
+bpm 'BPM3' { at = 1.5 *lcell },
+qd 'QD' { at = 1.5 *lcell },
+qf 'QF' { at = 2.0 *lcell },
+qd 'QD' { at = 2.5 *lcell },
+bpm 'BPM2' { at = 3 *lcell },
+}
+MADX:close_env()
+
+local seq in MADX
+
+local beam, track in MAD
+seq.beam = beam
+
+local observed in MAD.element.flags
+seq:deselect(observed)
+seq:select(observed, {pattern="BPM"})
+local part1 = {x = 1e-3, px = 0, y =-1e-3, py = 0, t = 0, pt = 0}
+local part2 = {x =-1e-3, px = 0, y = 1e-3, py = 0, t = 0, pt = 0}
+
+local mtbl = track {
+  sequence = seq,
+  X0 = {part1, part2},
+  nturn = 3,
+  }
+mtbl:write("fodo_track.tfs", {"name", "x", "y", "turn", "id"})
+
+mtbl:remove(#mtbl) -- remove the final row to produce an incomplete file
+mtbl:write("fodo_track_error.tfs", {"name", "x", "y", "turn", "id"})

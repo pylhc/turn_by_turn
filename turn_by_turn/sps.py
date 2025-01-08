@@ -62,7 +62,7 @@ def read_tbt(file_path: Union[str, Path], remove_trailing_bpm_plane: bool = True
     tbt_data_y = [sdds_file.values[bpm] for bpm in bpm_names_y]
     
     if remove_trailing_bpm_plane:
-        pattern = re.compile("\.[HV]$", flags=re.IGNORECASE)
+        pattern = re.compile(r"\.[HV]$", flags=re.IGNORECASE)
         bpm_names_x  = [pattern.sub("", bpm) for bpm in bpm_names_x]
         bpm_names_y  = [pattern.sub("", bpm) for bpm in bpm_names_y]
 

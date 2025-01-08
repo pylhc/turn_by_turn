@@ -2,7 +2,7 @@
 IO
 --
 
-This module contains high-level I/O functions to read and write tur-by-turn data objects in different
+This module contains high-level I/O functions to read and write turn-by-turn data objects in different
 formats. While data can be loaded from the formats of different machines / codes, each format getting its
 own reader module, writing functionality is at the moment always done in the ``LHC``'s **SDDS** format.
 """
@@ -10,7 +10,7 @@ import logging
 from pathlib import Path
 from typing import Union, Any
 
-from turn_by_turn import ascii, doros, esrf, iota, lhc, ptc, sps, trackone
+from turn_by_turn import ascii, doros, esrf, iota, lhc, ptc, sps, trackone, madng
 from turn_by_turn.ascii import write_ascii
 from turn_by_turn.errors import DataTypeError
 from turn_by_turn.structures import TbtData
@@ -29,8 +29,9 @@ TBT_MODULES = dict(
     ptc=ptc,
     trackone=trackone,
     ascii=ascii,
+    madng=madng,
 )
-WRITERS = ("lhc", "sps", "doros", "doros_positions", "doros_oscillations", "ascii")  # implemented writers
+WRITERS = ("lhc", "sps", "doros", "doros_positions", "doros_oscillations", "ascii", "madng")  # implemented writers
 
 write_lhc_ascii = write_ascii  # Backwards compatibility <0.4
 
