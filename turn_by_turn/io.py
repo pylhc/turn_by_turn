@@ -10,7 +10,7 @@ import logging
 from pathlib import Path
 from typing import Union, Any
 
-from turn_by_turn import ascii, doros, esrf, iota, lhc, ptc, sps, trackone, madng
+from turn_by_turn import ascii, doros, esrf, iota, lhc, ptc, sps, trackone, madng, tbt_data
 from turn_by_turn.ascii import write_ascii
 from turn_by_turn.errors import DataTypeError
 from turn_by_turn.structures import TbtData
@@ -30,26 +30,28 @@ TBT_MODULES = dict(
     trackone=trackone,
     ascii=ascii,
     madng=madng,
+    tbt_data=tbt_data,
 )
 WRITERS = ("lhc", "sps", "doros", "doros_positions", "doros_oscillations", "ascii", "madng")  # implemented writers
 
 write_lhc_ascii = write_ascii  # Backwards compatibility <0.4
 
 
-def read_tbt(file_path: Union[str, Path], datatype: str = "lhc") -> TbtData:
+def read_tbt(file_path: Union[str, Path, TbtData], datatype: str = "lhc") -> TbtData:
     """
     Calls the appropriate loader for the provided matrices type and returns a ``TbtData`` object of the
     loaded matrices.
 
     Args:
-        file_path (Union[str, Path]): path to a file containing TbtData.
+        file_path (Union[str, Path, TbtData]): path to a file containing TbtData.
         datatype (str): type of matrices in the file, determines the reader to use. Case-insensitive,
             defaults to ``lhc``.
 
     Returns:
         A ``TbtData`` object with the loaded matrices.
     """
-    file_path = Path(file_path)
+    if not isinstance(file_path, TbtData):
+        file_path = Path(file_path)
     LOGGER.info(f"Loading turn-by-turn matrices from '{file_path}'")
     try:
         module = TBT_MODULES[datatype.lower()]
