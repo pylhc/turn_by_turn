@@ -46,10 +46,27 @@ def read_tbt(file_path: str | Path) -> TbtData:
     """
     LOGGER.debug("Starting to read TBT data from dataframe")
     df = tfs.read(file_path)
+    return convert_to_tbt(df)
 
+def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
+    """
+    Converts a DataFrame (either a Pandas DataFrame or a TFS DataFrame) containing turn-by-turn data
+    into a ``TbtData`` object.
+
+    Args:
+        df (pd.DataFrame | tfs.TfsDataFrame): DataFrame containing the turn-by-turn data.
+
+    Returns:
+        A ``TbTData`` object with the loaded data.
+    """
+    
     # Get the date and time from the headers (return None if not found)
-    date_str = df.headers.get(DATE)
-    time_str = df.headers.get(TIME)
+    if isinstance(df, tfs.TfsDataFrame):
+        date_str = df.headers.get(DATE)
+        time_str = df.headers.get(TIME)
+    else:
+        date_str = df.attrs.get(DATE)
+        time_str = df.attrs.get(TIME)
     
     # Combine the date and time into a datetime object
     date = None
@@ -74,13 +91,13 @@ def read_tbt(file_path: str | Path) -> TbtData:
         )
 
     matrices = []
-    bunch_ids = range(1, npart + 1)  # Particle IDs start from 1 (not 0)
-
+    bunch_ids = range(npart)  # Particle IDs start from 1, but we use 0-based indexing in Python
+    
     for particle_id in bunch_ids:
         LOGGER.info(f"Processing particle ID: {particle_id}")
 
         # Filter the dataframe for the current particle
-        df_particle = df.loc[particle_id]
+        df_particle = df.loc[particle_id+1]
 
         # Create a dictionary of the TransverseData fields
         tracking_data_dict = {
@@ -134,7 +151,7 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
             )
 
             # Add the particle ID column
-            particle_df[PARTICLE_ID] = particle_id
+            particle_df[PARTICLE_ID] = particle_id + 1
 
             # Convert the turn column to integer and increment by 1 (MAD-NG uses 1-based indexing)
             particle_df[TURN] = particle_df[TURN].astype(int) + 1

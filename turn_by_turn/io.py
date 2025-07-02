@@ -6,15 +6,31 @@ This module contains high-level I/O functions to read and write turn-by-turn dat
 formats. While data can be loaded from the formats of different machines / codes, each format getting its
 own reader module, writing functionality is at the moment always done in the ``LHC``'s **SDDS** format.
 """
+from __future__ import annotations
 import logging
 from pathlib import Path
-from typing import Union, Any
+from typing import TYPE_CHECKING, Any, Union
 
-from turn_by_turn import ascii, doros, esrf, iota, lhc, ptc, sps, trackone, madng
+from turn_by_turn import (
+    ascii,
+    doros,
+    esrf,
+    iota,
+    lhc,
+    madng,
+    ptc,
+    sps,
+    trackone,
+    xtrack,
+)
 from turn_by_turn.ascii import write_ascii
 from turn_by_turn.errors import DataTypeError
 from turn_by_turn.structures import TbtData
 from turn_by_turn.utils import add_noise_to_tbt
+
+if TYPE_CHECKING:
+    from pandas import DataFrame
+    from xtrack import Table
 
 LOGGER = logging.getLogger()
 
@@ -30,8 +46,14 @@ TBT_MODULES = dict(
     trackone=trackone,
     ascii=ascii,
     madng=madng,
+    xtrack=xtrack,
 )
-WRITERS = ("lhc", "sps", "doros", "doros_positions", "doros_oscillations", "ascii", "madng")  # implemented writers
+
+# Modules supporting in-memory conversion to TbtData (not file readers)
+TBT_CONVERTERS = ("madng", "xtrack")
+
+# implemented writers
+WRITERS = ("lhc", "sps", "doros", "doros_positions", "doros_oscillations", "ascii", "madng")
 
 write_lhc_ascii = write_ascii  # Backwards compatibility <0.4
 
@@ -61,6 +83,22 @@ def read_tbt(file_path: Union[str, Path], datatype: str = "lhc") -> TbtData:
     else:
         return module.read_tbt(file_path, **additional_args(datatype))
 
+# Note: I don't specify tfs.TfsDataFrame as this inherits from pandas.DataFrame
+def convert_to_tbt(file_data: Union[DataFrame, Table], datatype: str = 'xtrack') -> TbtData:
+    """
+    Convert a pandas or tfs DataFrame (MAD-NG) or a Table (XTrack) to a TbtData object.
+    Args:
+        file_data (Union[DataFrame, Table]): The data to convert.
+        datatype (str): The type of the data, either 'xtrack' or 'madng'. Defaults to 'xtrack'.
+    Returns:
+        TbtData: The converted TbtData object.
+    """
+    if datatype.lower() not in TBT_CONVERTERS:
+        raise DataTypeError(f"Only {','.join(TBT_CONVERTERS)} converters are implemented for now.")
+    
+    module = TBT_MODULES[datatype.lower()]
+    return module.convert_to_tbt(file_data) # No additional arguments as no doros.
+
 
 def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = None, seed: int = None, datatype: str = "lhc") -> None:
     """
@@ -84,17 +122,12 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = N
         # I would like to remove this, but I'm afraid of compatibility issues with omc3 (jdilly, 2024) 
         output_path = output_path.with_name(f"{output_path.name}.sdds")
 
-    try:
-        module = TBT_MODULES[datatype.lower()]
-    except KeyError as error:
-        LOGGER.exception(
-            f"Unsupported datatype '{datatype}' was provided, should be one of {list(TBT_MODULES.keys())}"
-        )
-        raise DataTypeError(datatype) from error
-    else:
-        if noise is not None:
-            tbt_data = add_noise_to_tbt(tbt_data, noise=noise, seed=seed)
-        return module.write_tbt(output_path, tbt_data, **additional_args(datatype))
+    # If the datatype is not in the list of writers, we raise an error. Therefore the datatype
+    # must be in the TBT_MODULES dictionary -> No need for a try-except block here.
+    module = TBT_MODULES[datatype.lower()]
+    if noise is not None:
+        tbt_data = add_noise_to_tbt(tbt_data, noise=noise, seed=seed)
+    return module.write_tbt(output_path, tbt_data, **additional_args(datatype))
 
 
 def additional_args(datatype: str) -> dict[str, Any]:
@@ -110,4 +143,3 @@ def additional_args(datatype: str) -> dict[str, Any]:
         return dict(data_type=doros.DataKeys.POSITIONS)
 
     return dict()
-
