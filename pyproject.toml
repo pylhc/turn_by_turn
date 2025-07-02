@@ -48,7 +48,6 @@ dependencies = [
     "pandas >= 2.1",
     "sdds >= 0.4",
     "h5py >= 2.9",
-    "tfs-pandas >= 4.0.0", # for madng (could be an optional dependency)
 ]
 
 [project.optional-dependencies]
@@ -60,10 +59,15 @@ doc = [
     "sphinx >= 7.0",
     "sphinx_rtd_theme >= 2.0",
 ]
+new_codes = [
+    "tfs-pandas >= 4.0.0",  # for madng
+    "xtrack >= 0.84.7",      # for xtrack
+]
 
 all = [
     "turn_by_turn[test]",
     "turn_by_turn[doc]",
+    "turn_by_turn[new_codes]",
 ]
 
 [project.urls]
