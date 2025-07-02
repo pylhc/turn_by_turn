@@ -51,17 +51,18 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+new_codes = [
+    "tfs-pandas >= 4.0.0",   # for madng
+    "xtrack >= 0.84.7",      # for xtrack
+]
 test = [
     "pytest>=7.0",
     "pytest-cov>=2.9",
-]
+    "turn_by_turn[new_codes]",
+] # ???
 doc = [
     "sphinx >= 7.0",
     "sphinx_rtd_theme >= 2.0",
-]
-new_codes = [
-    "tfs-pandas >= 4.0.0",  # for madng
-    "xtrack >= 0.84.7",      # for xtrack
 ]
 
 all = [
