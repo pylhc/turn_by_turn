@@ -19,7 +19,7 @@ def test_convert_xsuite(example_line: xt.Line, example_tbt: TbtData):
     compare_tbt(example_tbt, tbt_data, no_binary=True)
 
     # Now convert using the generic function
-    tbt_data = convert_to_tbt(example_line, data_type="xtrack")
+    tbt_data = convert_to_tbt(example_line, datatype="xtrack")
     compare_tbt(example_tbt, tbt_data, no_binary=True)
 
 # --- Fixtures ---- #
