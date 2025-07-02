@@ -23,7 +23,6 @@ authors = [
     {name = "OMC Team", email = "pylhc@github.com"},  # see zenodo file / commits for details
 ]
 license = "MIT"
-license-expression = "MIT"
 dynamic = ["version"]
 requires-python = ">=3.10"
 
