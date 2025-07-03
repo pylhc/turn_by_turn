@@ -57,18 +57,17 @@ def convert_to_tbt(xline: Line) -> TbtData:
         raise TypeError(f"Expected an xtrack Line object, got {type(xline)} instead.")
 
     # Collect monitor names and monitor objects in order from the line
-    monitor_names, monitors = zip(
-        *[
-            (name, elem)
-            for name, elem in zip(xline.element_names, xline.elements)
-            if isinstance(elem, ParticlesMonitor)
-        ]
-    )
+    monitor_pairs = [
+        (name, elem)
+        for name, elem in zip(xline.element_names, xline.elements)
+        if isinstance(elem, ParticlesMonitor)
+    ]
     # Check that we have at least one monitor
-    if not monitors:
+    if not monitor_pairs:
         raise ValueError(
             "No ParticlesMonitor found in the Line. Please add a ParticlesMonitor to the Line."
         )
+    monitor_names, monitors = zip(*monitor_pairs)
 
     # Check that all monitors have the same number of turns
     nturns_set = {mon.data.at_turn.max() + 1 for mon in monitors}
