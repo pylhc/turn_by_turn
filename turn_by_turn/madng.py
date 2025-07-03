@@ -19,7 +19,6 @@ from __future__ import annotations
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 import pandas as pd
 
@@ -29,9 +28,6 @@ try:
     HAS_TFS = True
 except ImportError:
     HAS_TFS = False
-
-if TYPE_CHECKING:
-    from tfs import TfsDataFrame
 
 from turn_by_turn.structures import TbtData, TransverseData
 
@@ -77,7 +73,7 @@ def read_tbt(file_path: str | Path) -> TbtData:
     return convert_to_tbt(df)
 
 
-def convert_to_tbt(df: pd.DataFrame | TfsDataFrame) -> TbtData:
+def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
     """
     Convert a TFS or pandas DataFrame to a ``TbtData`` object.
 
