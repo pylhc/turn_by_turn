@@ -19,7 +19,7 @@ from turn_by_turn.constants import PLANES, PLANE_TO_NUM
 from turn_by_turn.structures import TbtData, TransverseData
 from turn_by_turn.utils import matrices_to_array
 
-LOGGER = logging.getLogger()
+LOGGER = logging.getLogger(__name__)
 
 # IDs
 N_BUNCHES: str = "nbOfCapBunches"

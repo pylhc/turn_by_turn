@@ -21,7 +21,7 @@ from turn_by_turn import (
     ptc,
     sps,
     trackone,
-    xtrack,
+    xtrack_line,
 )
 
 from turn_by_turn.ascii import write_ascii
@@ -33,7 +33,7 @@ if TYPE_CHECKING:
     from pandas import DataFrame
     from xtrack import Line
 
-LOGGER = logging.getLogger()
+LOGGER = logging.getLogger(__name__)
 
 TBT_MODULES = dict(
     lhc=lhc,
@@ -47,7 +47,7 @@ TBT_MODULES = dict(
     trackone=trackone,
     ascii=ascii,
     madng=madng,
-    xtrack=xtrack,
+    xtrack=xtrack_line,
 )
 
 # Modules supporting in-memory conversion to TbtData (not file readers)
@@ -59,18 +59,16 @@ WRITERS = ("lhc", "sps", "doros", "doros_positions", "doros_oscillations", "asci
 write_lhc_ascii = write_ascii  # Backwards compatibility <0.4
 
 def load_tbt_data(
-    tbt_input: TbtData | str | Path | Line | DataFrame, 
-    datatype: str | None = "lhc"
+    tbt_input: str | Path | Line | DataFrame, 
+    datatype: str = "lhc"
 ) -> TbtData:
     """
-    Get a TbtData object from various input types. Explicitly does not infer the datatype from the input
-    if it is not a TbtData object. 
+    Get a TbtData object from various input types. Explicitly does not infer the datatype from the input. 
 
     Args:
-        tbt_input (TbtData | str | Path | Line | DataFrame): 
+        tbt_input (str | Path | Line | DataFrame): 
             The input data object or path to a file.
-        datatype (str | None): 
-            The type of the data. If None, the input must be a TbtData object.
+        datatype (str): 
             Defaults to "lhc".
 
     Returns:
@@ -80,15 +78,6 @@ def load_tbt_data(
         DataTypeError: If the datatype is None and the input type cannot be inferred.
         TypeError: If the input type is not supported for the given datatype.
     """
-    if isinstance(tbt_input, TbtData):
-        return tbt_input
-
-    if datatype is None:
-        raise DataTypeError(
-            f"Datatype is None, and input type {type(tbt_input)} "
-            "cannot be inferred automatically."
-        )
-
     datatype = datatype.lower()
 
     try:
@@ -101,15 +90,7 @@ def load_tbt_data(
 
     if isinstance(tbt_input, (str, Path)):
         return module.read_tbt(Path(tbt_input), **additional_args(datatype))
-
-    if datatype in TBT_CONVERTERS:
-        return module.convert_to_tbt(tbt_input)
-
-    raise TypeError(
-        f"Unsupported input type {type(tbt_input).__name__} "
-        f"for datatype '{datatype}'. "
-        f"Expected path-like, TbtData, or convertible type for '{datatype}'."
-    )
+    return module.convert_to_tbt(tbt_input)
 
         
 def read_tbt(file_path: str | Path, datatype: str = "lhc") -> TbtData:
@@ -178,10 +159,14 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData, noise: float = None, s
 
     # If the datatype is not in the list of writers, we raise an error. Therefore the datatype
     # must be in the TBT_MODULES dictionary -> No need for a try-except block here.
-    module = TBT_MODULES[datatype.lower()]
-    if noise is not None:
-        tbt_data = add_noise_to_tbt(tbt_data, noise=noise, seed=seed)
-    return module.write_tbt(output_path, tbt_data, **additional_args(datatype))
+    try:
+        module = TBT_MODULES[datatype.lower()]
+    except KeyError:
+        raise DataTypeError(f"Invalid datatype: {datatype}. Ensure it is one of {', '.join(TBT_MODULES)}.")
+    else:
+        if noise is not None:
+            tbt_data = add_noise_to_tbt(tbt_data, noise=noise, seed=seed)
+        return module.write_tbt(output_path, tbt_data, **additional_args(datatype))
 
 
 def additional_args(datatype: str) -> dict[str, Any]:

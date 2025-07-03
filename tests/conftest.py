@@ -4,7 +4,7 @@ import pytest
 from turn_by_turn.structures import TbtData, TransverseData
 
 @pytest.fixture(scope="session")
-def example_tbt():
+def example_fake_tbt():
     """
     Returns a TbtData object with the original simulation data.
     This fixture is session-scoped and will only be created once per test run.

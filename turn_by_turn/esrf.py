@@ -18,7 +18,7 @@ from turn_by_turn.structures import TbtData
 from turn_by_turn.utils import numpy_to_tbt
 
 BPM_NAMES_FILE: str = "bpm_names.json"
-LOGGER = logging.getLogger()
+LOGGER = logging.getLogger(__name__)
 
 
 def read_tbt(file_path: Union[str, Path]) -> TbtData:

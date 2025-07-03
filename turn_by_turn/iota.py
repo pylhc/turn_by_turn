@@ -15,7 +15,7 @@ import pandas as pd
 from turn_by_turn.errors import HDF5VersionError
 from turn_by_turn.structures import TbtData, TransverseData
 
-LOGGER = logging.getLogger()
+LOGGER = logging.getLogger(__name__)
 
 VERSIONS = (1, 2)
 PLANES_CONV: Dict[int, Dict[str, str]] = {

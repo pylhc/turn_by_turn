@@ -5,11 +5,11 @@ import sys
 
 from tests.test_lhc_and_general import compare_tbt
 from turn_by_turn.structures import TbtData
-from turn_by_turn import xtrack
+from turn_by_turn import xtrack_line
 from turn_by_turn.io import convert_to_tbt
 
-@pytest.mark.skipif(sys.platform == "win32", reason="xtrack kernel compilation not supported on Windows CI")
-def test_convert_xsuite(example_line: xt.Line, example_tbt: TbtData):
+@pytest.mark.skipif(sys.platform == "win32", reason="xtrack not supported on Windows")
+def test_convert_xsuite(example_line: xt.Line, example_fake_tbt: TbtData):
     # Build the particles
     particles = example_line.build_particles(x=[1e-3,-1e-3], y=[-1e-3, 1e-3])
 
@@ -17,12 +17,12 @@ def test_convert_xsuite(example_line: xt.Line, example_tbt: TbtData):
     example_line.track(particles, num_turns=3)
     
     # Convert to TbtData using xtrack
-    tbt_data = xtrack.convert_to_tbt(example_line)
-    compare_tbt(example_tbt, tbt_data, no_binary=True)
+    tbt_data = xtrack_line.convert_to_tbt(example_line)
+    compare_tbt(example_fake_tbt, tbt_data, no_binary=True)
 
     # Now convert using the generic function
     tbt_data = convert_to_tbt(example_line, datatype="xtrack")
-    compare_tbt(example_tbt, tbt_data, no_binary=True)
+    compare_tbt(example_fake_tbt, tbt_data, no_binary=True)
 
 # --- Fixtures ---- #
 @pytest.fixture(scope="module")

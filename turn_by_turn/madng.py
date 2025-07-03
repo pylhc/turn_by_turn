@@ -10,7 +10,7 @@ Data is loaded into the standardized ``TbtData`` structure used by ``turn_by_tur
 allowing easy post-processing and conversion between formats.
 
 Dependencies:
-    - Requires the ``tfs-pandas`` package to read or write TFS files.
+    - Requires the ``tfs-pandas >= 4.0.0`` package to read or write TFS files.
 """
 
 
@@ -22,16 +22,19 @@ from pathlib import Path
 
 import pandas as pd
 
+from typing import TYPE_CHECKING
+
 try:
     import tfs
-
-    HAS_TFS = True
+    
+    if TYPE_CHECKING:
+        from tfs import TfsDataFrame
 except ImportError:
-    HAS_TFS = False
+    tfs = None
 
 from turn_by_turn.structures import TbtData, TransverseData
 
-LOGGER = logging.getLogger()
+LOGGER = logging.getLogger(__name__)
 
 # Define the column names in the TFS file
 NAME = "name"
@@ -63,9 +66,9 @@ def read_tbt(file_path: str | Path) -> TbtData:
     Raises:
         ImportError: If the ``tfs-pandas`` package is not installed.
     """
-    if not HAS_TFS:
+    if not tfs:
         raise ImportError(
-            "The 'tfs' package is required to read MAD-NG TFS files. Install it with: pip install 'tfs-pandas>=4.0.0'"
+            "The 'tfs' package is required to read MAD-NG TFS files. Install it with: pip install 'turn_by_turn[madng]'"
         )
 
     LOGGER.debug("Starting to read TBT data from dataframe")
@@ -73,7 +76,7 @@ def read_tbt(file_path: str | Path) -> TbtData:
     return convert_to_tbt(df)
 
 
-def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
+def convert_to_tbt(df: pd.DataFrame | 'TfsDataFrame') -> TbtData:
     """
     Convert a TFS or pandas DataFrame to a ``TbtData`` object.
 
@@ -94,7 +97,7 @@ def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
     """
 
     # Get the date and time from the headers (return None if not found)
-    if HAS_TFS and isinstance(df, tfs.TfsDataFrame):
+    if tfs and isinstance(df, tfs.TfsDataFrame):
         date_str = df.headers.get(DATE)
         time_str = df.headers.get(TIME)
     elif isinstance(df, pd.DataFrame):
@@ -128,10 +131,9 @@ def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
         )
 
     matrices = []
-    particle_ids = range(
-        npart
-    )  # Particle IDs start from 1, but we use 0-based indexing in Python
-
+    
+    # Particle IDs start from 1, but we use 0-based indexing in Python
+    particle_ids = range(npart)
     for particle_id in particle_ids:
         LOGGER.info(f"Processing particle ID: {particle_id}")
 
@@ -174,9 +176,9 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
     Raises:
         ImportError: If the ``tfs-pandas`` package is not installed.
     """
-    if not HAS_TFS:
+    if not tfs:
         raise ImportError(
-            "The 'tfs' package is required to write MAD-NG TFS files. Install it with: pip install 'tfs-pandas>4.0.0'"
+            "The 'tfs' package is required to write MAD-NG TFS files. Install it with: pip install 'turn_by_turn[madng]'"
         )
 
     planes = [plane.lower() for plane in TransverseData.fieldnames()]  # x, y

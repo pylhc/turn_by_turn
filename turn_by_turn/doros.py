@@ -45,7 +45,7 @@ from dateutil import tz
 from turn_by_turn.structures import TbtData, TransverseData
 from turn_by_turn.utils import all_elements_equal
 
-LOGGER = logging.getLogger()
+LOGGER = logging.getLogger(__name__)
 
 DEFAULT_BUNCH_ID: int = 0  # bunch ID not saved in the DOROS file 
 

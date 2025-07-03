@@ -22,7 +22,7 @@ from turn_by_turn.constants import PLANES
 from turn_by_turn.errors import PTCFormatError
 from turn_by_turn.structures import TbtData, TransverseData
 
-LOGGER = logging.getLogger()
+LOGGER = logging.getLogger(__name__)
 Segment = namedtuple("Segment", ["number", "turns", "particles", "element", "name"])
 
 # IDs ---

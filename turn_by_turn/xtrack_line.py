@@ -1,16 +1,37 @@
 """
-XTRACK
-------
+XTRACK_LINE
+-----------
 
-This module provides functions to convert tracking results from an ``xtrack`` Line
-(or its internal ParticlesMonitor elements) into the standardized ``TbtData`` format
-used throughout ``turn_by_turn``.
+This module provides functions to convert tracking results from an ``xtrack.Line``
+into the standardized ``TbtData`` format used by ``turn_by_turn``.
+
+Prerequisites for using ``convert_to_tbt``:
+  1. The input ``Line`` must contain one or more ``ParticlesMonitor`` elements
+     positioned at each location where turn-by-turn data is required (e.g., all BPMs).
+     A valid monitor setup involves:
+       • Placing a ``xt.ParticlesMonitor`` instance in the line's element sequence
+         at all the places you would like to observe.
+       • Configuring each monitor with identical settings:
+           - ``start_at_turn`` (first turn to record, usually 0)
+           - ``stop_at_turn`` (The total number of turns to record, e.g., 100)
+           - ``num_particles`` (number of tracked particles)
+     If any monitor is configured with different parameters, ``convert_to_tbt`` 
+     will either find no data or raise a inconsistency error.
+  2. Before conversion, you must:
+       • Build particles with the desired initial coordinates
+         (using ``line.build_particles(...)``).
+       • Track those particles through the line for the intended number of turns
+         (using ``line.track(..., num_turns=num_turns)``).
+  
+Once these conditions are met, pass the tracked ``Line`` to ``convert_to_tbt`` to
+extract the data from each particle monitor into a ``TbtData`` object.
 """
 
 
 from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING
 from pathlib import Path
 
 import numpy as np
@@ -19,14 +40,14 @@ import pandas as pd
 from turn_by_turn.structures import TbtData, TransverseData
 
 try:
-    from xtrack import Line
-    from xtrack.monitors import ParticlesMonitor
+    import xtrack as xt
+    if TYPE_CHECKING:
+        from xtrack import Line
 
-    HAS_XTRACK = True
 except ImportError:
-    HAS_XTRACK = False
+    xt = None
 
-LOGGER = logging.getLogger()
+LOGGER = logging.getLogger(__name__)
 
 
 def convert_to_tbt(xline: Line) -> TbtData:
@@ -39,7 +60,7 @@ def convert_to_tbt(xline: Line) -> TbtData:
     per tracked particle.
 
     Args:
-        xline (Line): An ``xtrack`` Line containing at least one ``ParticlesMonitor``.
+        xline (Line): An ``xtrack.Line`` containing at least one ``ParticlesMonitor``.
 
     Returns:
         TbtData: The extracted turn-by-turn data for all particles and monitors.
@@ -49,18 +70,18 @@ def convert_to_tbt(xline: Line) -> TbtData:
         TypeError: If the input is not a valid ``xtrack.Line``.
         ValueError: If no monitors are found or data is inconsistent.
     """
-    if not HAS_XTRACK:
+    if not xt:
         raise ImportError(
-            "The 'xtrack' package is required to convert xtrack Line objects. Install it with: pip install 'xtrack>=0.84.7'"
+            "The 'xtrack' package is required to convert xtrack Line objects. Install it with: pip install 'turn_by_turn[xtrack]'"
         )
-    if not isinstance(xline, Line):
+    if not isinstance(xline, xt.Line):
         raise TypeError(f"Expected an xtrack Line object, got {type(xline)} instead.")
 
     # Collect monitor names and monitor objects in order from the line
     monitor_pairs = [
         (name, elem)
         for name, elem in zip(xline.element_names, xline.elements)
-        if isinstance(elem, ParticlesMonitor)
+        if isinstance(elem, xt.ParticlesMonitor)
     ]
     # Check that we have at least one monitor
     if not monitor_pairs:
@@ -73,7 +94,7 @@ def convert_to_tbt(xline: Line) -> TbtData:
     nturns_set = {mon.data.at_turn.max() + 1 for mon in monitors}
     if len(nturns_set) != 1:
         raise ValueError(
-            "Monitors have different number of turns, maybe some lost particles?"
+            "Monitors have different number of turns, have you set the monitors with different 'start_at_turn' or 'stop_at_turn' parameters?"
         )
     nturns = nturns_set.pop()
 
@@ -85,9 +106,9 @@ def convert_to_tbt(xline: Line) -> TbtData:
         )
     npart = npart_set.pop()
 
-    # Precompute masks for each monitor and particle_id (Half the time to compute this bit)
+    # Precompute masks for each monitor and particle_id using vectorized broadcasting for speed
     monitor_particle_masks = [
-        [mon.data.particle_id == particle_id for particle_id in range(npart)]
+        mon.data.particle_id[:, None] == np.arange(npart)[None, :]
         for mon in monitors
     ]
 
@@ -95,20 +116,16 @@ def convert_to_tbt(xline: Line) -> TbtData:
     # Loop over each particle ID
     for particle_id in range(npart):
         # For each plane (e.g., 'X', 'Y'), build a DataFrame: rows=BPMs, cols=turns
-        tracking_data_dict = {
-            plane: pd.DataFrame(
-                np.vstack(
-                    [
-                        getattr(mon.data, plane.lower())[
-                            monitor_particle_masks[i][particle_id]
-                        ]
-                        for i, mon in enumerate(monitors)
-                    ]
-                ),
+        tracking_data_dict = {}
+        for plane in TransverseData.fieldnames():
+            stacked = np.vstack([
+                getattr(mon.data, plane.lower())[monitor_particle_masks[i][:, particle_id]]
+                for i, mon in enumerate(monitors)
+            ])
+            tracking_data_dict[plane] = pd.DataFrame(
+                stacked,
                 index=monitor_names,
             )
-            for plane in TransverseData.fieldnames()
-        }
         # Create a TransverseData object for this particle and add to the list
         matrices.append(TransverseData(**tracking_data_dict))
 

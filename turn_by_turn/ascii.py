@@ -10,11 +10,13 @@ containing the columns:
 - BPM index/longitunial location
 - Value Turn 1, Turn 2, etc.
 """
+from __future__ import annotations
+
 import logging
 from datetime import datetime
 from pathlib import Path
 import re
-from typing import TextIO, Union, Tuple, List, Optional
+from typing import TextIO
 
 import numpy as np
 import pandas as pd
@@ -23,7 +25,7 @@ from dateutil import tz
 from turn_by_turn.constants import FORMAT_STRING, PLANE_TO_NUM, PLANES, NUM_TO_PLANE
 from turn_by_turn.structures import TbtData, TransverseData
 
-LOGGER = logging.getLogger()
+LOGGER = logging.getLogger(__name__)
 
 # ASCII IDs
 ASCII_COMMENT: str = "#"
@@ -32,12 +34,12 @@ ACQ_DATE_PREFIX: str = "Acquisition date:"
 ACQ_DATE_FORMAT: str = "%Y-%m-%d at %H:%M:%S"
 
 
-def is_ascii_file(file_path: Union[str, Path]) -> bool:
+def is_ascii_file(file_path: str | Path) -> bool:
     """
     Returns ``True`` only if the file looks like a readable TbT ASCII file, else ``False``.
 
     Args:
-        file_path (Union[str, Path]): path to the turn-by-turn measurement file.
+        file_path (str | Path): path to the turn-by-turn measurement file.
 
     Returns:
         A boolean.
@@ -57,12 +59,12 @@ def is_ascii_file(file_path: Union[str, Path]) -> bool:
 
 # ----- Writer ----- #
 
-def write_tbt(output_path: Union[str, Path], tbt_data: TbtData) -> None:
+def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
     """
     Write a ``TbtData`` object's data to file, in the TbT ASCII format.
 
     Args:
-        output_path (Union[str, Path]): path to the disk location where to write the data.
+        output_path (str | Path): path to the disk location where to write the data.
         tbt_data (TbtData): the ``TbtData`` object to write to disk.
     """
     output_path = Path(output_path)
@@ -99,13 +101,13 @@ def _write_tbt_data(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> No
 
 # ----- Reader ----- #
 
-def read_tbt(file_path: Union[str, Path], bunch_id: int = None) -> TbtData:
+def read_tbt(file_path: str | Path, bunch_id: int = None) -> TbtData:
     """
     Reads turn-by-turn data from an ASCII turn-by-turn format file, and return the date as well as
     parsed matrices for construction of a ``TbtData`` object.
 
     Args:
-        file_path (Union[str, Path]): path to the turn-by-turn measurement file.
+        file_path (str | Path): path to the turn-by-turn measurement file.
         bunch_id (int, optional): the bunch id associated with this file. 
                                   Defaults to `None`, but is then attempted to parsed
                                   from the filename. If not found, `0` is used.
@@ -155,7 +157,7 @@ def read_tbt(file_path: Union[str, Path], bunch_id: int = None) -> TbtData:
 # ----- Helpers ----- #
 
 
-def _parse_samples(line: str) -> Tuple[str, str, np.ndarray]:
+def _parse_samples(line: str) -> tuple[str, str, np.ndarray]:
     """Parse a line into its different elements."""
     parts = line.split()
     plane_num = parts[0]

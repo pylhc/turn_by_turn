@@ -63,9 +63,9 @@ xtrack = [
 test = [
     "pytest>=7.0",
     "pytest-cov>=2.9",
-    "tfs-pandas >= 4.0.0",
+    "turn_by_turn[madng]",
     "turn_by_turn[xtrack]",
-] # ???
+]
 
 doc = [
     "sphinx >= 7.0",

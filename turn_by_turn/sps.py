@@ -18,7 +18,7 @@ from dateutil import tz
 from turn_by_turn.ascii import is_ascii_file, read_tbt as read_ascii
 from turn_by_turn.structures import TbtData, TransverseData
 
-LOGGER = logging.getLogger()
+LOGGER = logging.getLogger(__name__)
 
 # IDs
 N_TURNS: str = "nbOfTurns"
