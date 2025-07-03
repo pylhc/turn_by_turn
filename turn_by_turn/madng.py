@@ -111,11 +111,11 @@ def convert_to_tbt(df: pd.DataFrame | TfsDataFrame) -> TbtData:
         )
 
     matrices = []
-    bunch_ids = range(
+    particle_ids = range(
         npart
     )  # Particle IDs start from 1, but we use 0-based indexing in Python
 
-    for particle_id in bunch_ids:
+    for particle_id in particle_ids:
         LOGGER.info(f"Processing particle ID: {particle_id}")
 
         # Filter the dataframe for the current particle
@@ -139,7 +139,7 @@ def convert_to_tbt(df: pd.DataFrame | TfsDataFrame) -> TbtData:
 
     LOGGER.debug("Finished reading TBT data")
     return TbtData(
-        matrices=matrices, bunch_ids=list(bunch_ids), nturns=nturns, date=date
+        matrices=matrices, bunch_ids=list(particle_ids), nturns=nturns, date=date
     )
 
 

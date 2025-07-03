@@ -2,10 +2,11 @@
 XTRACK
 ------
 
-This module provides functions to convert tracking results from the ``xtrack`` library into the
-``turn_by_turn`` format.
-
+This module provides functions to convert tracking results from an ``xtrack`` Line
+(or its internal ParticlesMonitor elements) into the standardized ``TbtData`` format
+used throughout ``turn_by_turn``.
 """
+
 
 from __future__ import annotations
 
@@ -30,13 +31,23 @@ LOGGER = logging.getLogger()
 
 def convert_to_tbt(xline: Line) -> TbtData:
     """
-    Converts the results from an ``xtrack`` Line object into a ``TbtData`` object.
+    Convert tracking results from an ``xtrack`` Line into a ``TbtData`` object.
+
+    This function extracts all ``ParticlesMonitor`` elements found in the Line,
+    verifies they contain consistent turn-by-turn data, and assembles the results
+    into the standard ``TbtData`` format. One ``TransverseData`` matrix is created
+    per tracked particle.
 
     Args:
-        xline (Line): An ``xtrack`` Line object containing the tracking results.
+        xline (Line): An ``xtrack`` Line containing at least one ``ParticlesMonitor``.
 
     Returns:
-        TbtData: A ``TbtData`` object containing the turn-by-turn data for all particles.
+        TbtData: The extracted turn-by-turn data for all particles and monitors.
+
+    Raises:
+        ImportError: If the ``xtrack`` library is not installed.
+        TypeError: If the input is not a valid ``xtrack.Line``.
+        ValueError: If no monitors are found or data is inconsistent.
     """
     if not HAS_XTRACK:
         raise ImportError(
@@ -109,6 +120,12 @@ def convert_to_tbt(xline: Line) -> TbtData:
 
 # Added this function to match the interface, but it is not implemented - should I not include it?
 def read_tbt(path: str | Path) -> None:
+    """
+    Not implemented.
+
+    Reading TBT data directly from files is not supported for xtrack.
+    Use ``convert_to_tbt`` to convert an in-memory ``xtrack.Line`` instead.
+    """
     raise NotImplementedError(
         "Reading TBT data from xtrack Line files is not implemented."
     )
