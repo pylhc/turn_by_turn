@@ -9,12 +9,22 @@ are in the **TFS** format.
 
 from __future__ import annotations
 
-from datetime import datetime
 import logging
+from datetime import datetime
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pandas as pd
-import tfs
+
+try:
+    import tfs
+
+    HAS_TFS = True
+except ImportError:
+    HAS_TFS = False
+
+if TYPE_CHECKING:
+    from tfs import TfsDataFrame
 
 from turn_by_turn.structures import TbtData, TransverseData
 
@@ -44,11 +54,17 @@ def read_tbt(file_path: str | Path) -> TbtData:
     Returns:
         A ``TbTData`` object with the loaded data.
     """
+    if not HAS_TFS:
+        raise ImportError(
+            "The 'tfs' package is required to read MAD-NG TFS files. Install it with: pip install 'tfs-pandas>4.0.0'"
+        )
+
     LOGGER.debug("Starting to read TBT data from dataframe")
     df = tfs.read(file_path)
     return convert_to_tbt(df)
 
-def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
+
+def convert_to_tbt(df: pd.DataFrame | TfsDataFrame) -> TbtData:
     """
     Converts a DataFrame (either a Pandas DataFrame or a TFS DataFrame) containing turn-by-turn data
     into a ``TbtData`` object.
@@ -59,15 +75,19 @@ def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
     Returns:
         A ``TbTData`` object with the loaded data.
     """
-    
+
     # Get the date and time from the headers (return None if not found)
-    if isinstance(df, tfs.TfsDataFrame):
+    if HAS_TFS and isinstance(df, tfs.TfsDataFrame):
         date_str = df.headers.get(DATE)
         time_str = df.headers.get(TIME)
-    else:
+    elif isinstance(df, pd.DataFrame):
         date_str = df.attrs.get(DATE)
         time_str = df.attrs.get(TIME)
-    
+    else:
+        raise TypeError(
+            "Input DataFrame must be a Pandas DataFrame or a TFS DataFrame."
+        )
+
     # Combine the date and time into a datetime object
     date = None
     if date_str and time_str:
@@ -91,13 +111,15 @@ def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
         )
 
     matrices = []
-    bunch_ids = range(npart)  # Particle IDs start from 1, but we use 0-based indexing in Python
-    
+    bunch_ids = range(
+        npart
+    )  # Particle IDs start from 1, but we use 0-based indexing in Python
+
     for particle_id in bunch_ids:
         LOGGER.info(f"Processing particle ID: {particle_id}")
 
         # Filter the dataframe for the current particle
-        df_particle = df.loc[particle_id+1]
+        df_particle = df.loc[particle_id + 1]
 
         # Create a dictionary of the TransverseData fields
         tracking_data_dict = {
@@ -116,7 +138,9 @@ def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
         matrices.append(TransverseData(**tracking_data_dict))
 
     LOGGER.debug("Finished reading TBT data")
-    return TbtData(matrices=matrices, bunch_ids=list(bunch_ids), nturns=nturns, date=date)
+    return TbtData(
+        matrices=matrices, bunch_ids=list(bunch_ids), nturns=nturns, date=date
+    )
 
 
 def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
@@ -127,6 +151,11 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
         tbt_data (TbtData): Turn-by-turn data to write.
         file_path (str | Path): Target file path.
     """
+    if not HAS_TFS:
+        raise ImportError(
+            "The 'tfs' package is required to write MAD-NG TFS files. Install it with: pip install 'tfs-pandas>4.0.0'"
+        )
+
     planes = [plane.lower() for plane in TransverseData.fieldnames()]  # x, y
     plane_dfs = {plane: [] for plane in planes}
 

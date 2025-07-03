@@ -3,20 +3,29 @@ XTRACK
 ------
 
 This module provides functions to convert tracking results from the ``xtrack`` library into the
-``turn_by_turn`` format. 
+``turn_by_turn`` format.
 
 """
+
 from __future__ import annotations
 
 import logging
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
-from xtrack import Line
-from xtrack.monitors import ParticlesMonitor
+
 from turn_by_turn.structures import TbtData, TransverseData
 
-LOGGER = logging.getLogger()
+try:
+    from xtrack import Line
+    from xtrack.monitors import ParticlesMonitor
 
+    HAS_XTRACK = True
+except ImportError:
+    HAS_XTRACK = False
+
+LOGGER = logging.getLogger()
 
 
 def convert_to_tbt(xline: Line) -> TbtData:
@@ -29,23 +38,41 @@ def convert_to_tbt(xline: Line) -> TbtData:
     Returns:
         TbtData: A ``TbtData`` object containing the turn-by-turn data for all particles.
     """
+    if not HAS_XTRACK:
+        raise ImportError(
+            "The 'xtrack' package is required to convert xtrack Line objects. Install it with: pip install 'xtrack>=0.84.7'"
+        )
+    if not isinstance(xline, Line):
+        raise TypeError(f"Expected an xtrack Line object, got {type(xline)} instead.")
+
     # Collect monitor names and monitor objects in order from the line
-    monitor_names, monitors = zip(*[
-        (name, elem)
-        for name, elem in zip(xline.element_names, xline.elements)
-        if isinstance(elem, ParticlesMonitor)
-    ])
+    monitor_names, monitors = zip(
+        *[
+            (name, elem)
+            for name, elem in zip(xline.element_names, xline.elements)
+            if isinstance(elem, ParticlesMonitor)
+        ]
+    )
+    # Check that we have at least one monitor
+    if not monitors:
+        raise ValueError(
+            "No ParticlesMonitor found in the Line. Please add a ParticlesMonitor to the Line."
+        )
 
     # Check that all monitors have the same number of turns
     nturns_set = {mon.data.at_turn.max() + 1 for mon in monitors}
     if len(nturns_set) != 1:
-        raise ValueError("Monitors have different number of turns, maybe some lost particles?")
+        raise ValueError(
+            "Monitors have different number of turns, maybe some lost particles?"
+        )
     nturns = nturns_set.pop()
 
     # Check that all monitors have the same number of particles
     npart_set = {len(set(mon.data.particle_id)) for mon in monitors}
     if len(npart_set) != 1:
-        raise ValueError("Monitors have different number of particles, maybe some lost particles?")
+        raise ValueError(
+            "Monitors have different number of particles, maybe some lost particles?"
+        )
     npart = npart_set.pop()
 
     # Precompute masks for each monitor and particle_id (Half the time to compute this bit)
@@ -60,11 +87,15 @@ def convert_to_tbt(xline: Line) -> TbtData:
         # For each plane (e.g., 'X', 'Y'), build a DataFrame: rows=BPMs, cols=turns
         tracking_data_dict = {
             plane: pd.DataFrame(
-                np.vstack([
-                    getattr(mon.data, plane.lower())[monitor_particle_masks[i][particle_id]]
-                    for i, mon in enumerate(monitors)
-                ]),
-                index=monitor_names
+                np.vstack(
+                    [
+                        getattr(mon.data, plane.lower())[
+                            monitor_particle_masks[i][particle_id]
+                        ]
+                        for i, mon in enumerate(monitors)
+                    ]
+                ),
+                index=monitor_names,
             )
             for plane in TransverseData.fieldnames()
         }
@@ -72,4 +103,12 @@ def convert_to_tbt(xline: Line) -> TbtData:
         matrices.append(TransverseData(**tracking_data_dict))
 
     # Return the TbtData object containing all particles' data
-    return TbtData(matrices=matrices, bunch_ids=list(range(npart)), nturns=nturns, date=None)
+    return TbtData(
+        matrices=matrices, bunch_ids=list(range(npart)), nturns=nturns, date=None
+    )
+
+# Added this function to match the interface, but it is not implemented - should I not include it?
+def read_tbt(path: str | Path) -> None:
+    raise NotImplementedError(
+        "Reading TBT data from xtrack Line files is not implemented."
+    )

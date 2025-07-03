@@ -9,7 +9,7 @@ own reader module, writing functionality is at the moment always done in the ``L
 from __future__ import annotations
 import logging
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
 from turn_by_turn import (
     ascii,
@@ -23,6 +23,7 @@ from turn_by_turn import (
     trackone,
     xtrack,
 )
+
 from turn_by_turn.ascii import write_ascii
 from turn_by_turn.errors import DataTypeError
 from turn_by_turn.structures import TbtData
@@ -30,7 +31,7 @@ from turn_by_turn.utils import add_noise_to_tbt
 
 if TYPE_CHECKING:
     from pandas import DataFrame
-    from xtrack import Table
+    from xtrack import Line
 
 LOGGER = logging.getLogger()
 
@@ -57,8 +58,61 @@ WRITERS = ("lhc", "sps", "doros", "doros_positions", "doros_oscillations", "asci
 
 write_lhc_ascii = write_ascii  # Backwards compatibility <0.4
 
+def load_tbt_data(
+    tbt_input: TbtData | str | Path | Line | DataFrame, 
+    datatype: str | None = "lhc"
+) -> TbtData:
+    """
+    Get a TbtData object from various input types. Explicitly does not infer the datatype from the input
+    if it is not a TbtData object. 
 
-def read_tbt(file_path: Union[str, Path], datatype: str = "lhc") -> TbtData:
+    Args:
+        tbt_input (TbtData | str | Path | Line | DataFrame): 
+            The input data object or path to a file.
+        datatype (str | None): 
+            The type of the data. If None, the input must be a TbtData object.
+            Defaults to "lhc".
+
+    Returns:
+        TbtData: The resulting TbtData object.
+    
+    Raises:
+        DataTypeError: If the datatype is None and the input type cannot be inferred.
+        TypeError: If the input type is not supported for the given datatype.
+    """
+    if isinstance(tbt_input, TbtData):
+        return tbt_input
+
+    if datatype is None:
+        raise DataTypeError(
+            f"Datatype is None, and input type {type(tbt_input)} "
+            "cannot be inferred automatically."
+        )
+
+    datatype = datatype.lower()
+
+    try:
+        module = TBT_MODULES[datatype]
+    except KeyError as error:
+        LOGGER.exception(
+            f"Unsupported datatype '{datatype}'. Supported types: {list(TBT_MODULES.keys())}"
+        )
+        raise DataTypeError(datatype) from error
+
+    if isinstance(tbt_input, (str, Path)):
+        return module.read_tbt(Path(tbt_input), **additional_args(datatype))
+
+    if datatype in TBT_CONVERTERS:
+        return module.convert_to_tbt(tbt_input)
+
+    raise TypeError(
+        f"Unsupported input type {type(tbt_input).__name__} "
+        f"for datatype '{datatype}'. "
+        f"Expected path-like, TbtData, or convertible type for '{datatype}'."
+    )
+
+        
+def read_tbt(file_path: str | Path, datatype: str = "lhc") -> TbtData:
     """
     Calls the appropriate loader for the provided matrices type and returns a ``TbtData`` object of the
     loaded matrices.
@@ -84,7 +138,7 @@ def read_tbt(file_path: Union[str, Path], datatype: str = "lhc") -> TbtData:
         return module.read_tbt(file_path, **additional_args(datatype))
 
 # Note: I don't specify tfs.TfsDataFrame as this inherits from pandas.DataFrame
-def convert_to_tbt(file_data: Union[DataFrame, Table], datatype: str = 'xtrack') -> TbtData:
+def convert_to_tbt(file_data: DataFrame | Line, datatype: str = 'xtrack') -> TbtData:
     """
     Convert a pandas or tfs DataFrame (MAD-NG) or a Table (XTrack) to a TbtData object.
     Args:
@@ -100,7 +154,7 @@ def convert_to_tbt(file_data: Union[DataFrame, Table], datatype: str = 'xtrack')
     return module.convert_to_tbt(file_data) # No additional arguments as no doros.
 
 
-def write_tbt(output_path: Union[str, Path], tbt_data: TbtData, noise: float = None, seed: int = None, datatype: str = "lhc") -> None:
+def write_tbt(output_path: str | Path, tbt_data: TbtData, noise: float = None, seed: int = None, datatype: str = "lhc") -> None:
     """
     Write a ``TbtData`` object's data to file, in the ``LHC``'s **SDDS** format.
 

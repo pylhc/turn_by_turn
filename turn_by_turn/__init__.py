@@ -1,5 +1,5 @@
 """Exposes TbtData, read_tbt and write_tbt directly in the package's namespace."""
-from .io import read_tbt, write_tbt
+from .io import read_tbt, write_tbt, convert_to_tbt, load_tbt_data
 from .structures import TbtData, TransverseData
 
 __title__ = "turn_by_turn"
@@ -13,6 +13,8 @@ __license__ = "MIT"
 # aliases
 write = write_tbt
 read = read_tbt
+convert = convert_to_tbt
+load = load_tbt_data
 
 # Importing * is a bad practice and you should be punished for using it
 __all__ = []
