@@ -25,12 +25,12 @@ def test_convert_xsuite(example_line: xt.Line, example_tbt: TbtData):
 # --- Fixtures ---- #
 @pytest.fixture(scope="module")
 def example_line():
-    lcell = 20
-    f = lcell/np.sin(np.pi/4)/4
+    lcell = 20.
+    f = lcell/np.sin(np.pi/4.)/4.
     k = 1/f
     nturns = 3
-    qf = xt.Multipole(knl=[0, k], ksl=[0,0])
-    qd = xt.Multipole(knl=[0,-k], ksl=[0,0])
+    qf = xt.Multipole(knl=[0., k], ksl=[0.,0.])
+    qd = xt.Multipole(knl=[0.,-k], ksl=[0.,0.])
     drift = xt.Drift(length=10.)
     line = xt.Line(
         elements=[
@@ -56,5 +56,5 @@ def example_line():
             'BPM2'
             ]
         )
-    line.particle_ref = xt.Particles(p0c=1e9, q0=1, mass0=xt.ELECTRON_MASS_EV)
+    line.particle_ref = xt.Particles(p0c=1e9, q0=1., mass0=xt.ELECTRON_MASS_EV)
     return line
