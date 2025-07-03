@@ -63,7 +63,7 @@ xtrack = [
 test = [
     "pytest>=7.0",
     "pytest-cov>=2.9",
-    "turn_by_turn[madng]",
+    "tfs-pandas >= 4.0.0",
     "turn_by_turn[xtrack]",
 ] # ???
 
