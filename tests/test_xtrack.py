@@ -1,12 +1,14 @@
 import numpy as np
 import xtrack as xt
 import pytest
+import sys
 
 from tests.test_lhc_and_general import compare_tbt
 from turn_by_turn.structures import TbtData
 from turn_by_turn import xtrack
 from turn_by_turn.io import convert_to_tbt
 
+@pytest.mark.skipif(sys.platform == "win32", reason="xtrack kernel compilation not supported on Windows CI")
 def test_convert_xsuite(example_line: xt.Line, example_tbt: TbtData):
     # Build the particles
     particles = example_line.build_particles(x=[1e-3,-1e-3], y=[-1e-3, 1e-3])
