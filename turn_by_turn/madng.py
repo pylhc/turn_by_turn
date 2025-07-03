@@ -2,10 +2,17 @@
 MAD-NG
 ------
 
-This module provides functions to read and write ``MAD-NG`` turn-by-turn measurement files. These files
-are in the **TFS** format.
+This module provides functions to read and write turn-by-turn measurement data
+produced by the ``MAD-NG`` code. MAD-NG stores its tracking data in the **TFS**
+(Table File System) file format.
 
+Data is loaded into the standardized ``TbtData`` structure used by ``turn_by_turn``,
+allowing easy post-processing and conversion between formats.
+
+Dependencies:
+    - Requires the ``tfs-pandas`` package to read or write TFS files.
 """
+
 
 from __future__ import annotations
 
@@ -46,13 +53,19 @@ REFCOL = "refcol"
 
 def read_tbt(file_path: str | Path) -> TbtData:
     """
-    Reads turn-by-turn data from the ``MAD-NG`` **TFS** format file.
+    Read turn-by-turn data from a MAD-NG TFS file.
+
+    Loads the TFS file using ``tfs-pandas`` and converts its contents into a
+    ``TbtData`` object for use with the ``turn_by_turn`` toolkit.
 
     Args:
-        file_path (str | Path): path to the turn-by-turn measurement file.
+        file_path (str | Path): Path to the MAD-NG TFS measurement file.
 
     Returns:
-        A ``TbTData`` object with the loaded data.
+        TbtData: The loaded turn-by-turn data.
+
+    Raises:
+        ImportError: If the ``tfs-pandas`` package is not installed.
     """
     if not HAS_TFS:
         raise ImportError(
@@ -66,14 +79,22 @@ def read_tbt(file_path: str | Path) -> TbtData:
 
 def convert_to_tbt(df: pd.DataFrame | TfsDataFrame) -> TbtData:
     """
-    Converts a DataFrame (either a Pandas DataFrame or a TFS DataFrame) containing turn-by-turn data
-    into a ``TbtData`` object.
+    Convert a TFS or pandas DataFrame to a ``TbtData`` object.
+
+    This function parses the required turn-by-turn columns, reconstructs the
+    particle-by-particle tracking data, and returns a ``TbtData`` instance
+    that can be written or converted to other formats.
 
     Args:
-        df (pd.DataFrame | tfs.TfsDataFrame): DataFrame containing the turn-by-turn data.
+        df (pd.DataFrame | TfsDataFrame): 
+            DataFrame containing MAD-NG turn-by-turn tracking data.
 
     Returns:
-        A ``TbTData`` object with the loaded data.
+        TbtData: The extracted and structured turn-by-turn data.
+
+    Raises:
+        TypeError: If the input is not a recognized DataFrame type.
+        ValueError: If the data structure is inconsistent (e.g., lost particles).
     """
 
     # Get the date and time from the headers (return None if not found)
@@ -145,11 +166,17 @@ def convert_to_tbt(df: pd.DataFrame | TfsDataFrame) -> TbtData:
 
 def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
     """
-    Writes turn-by-turn data to a TFS file for MAD-NG.
+    Write turn-by-turn data to a MAD-NG TFS file.
+
+    Takes a ``TbtData`` object and writes its contents to disk in the standard
+    TFS format used by MAD-NG, including relevant headers (date, time, origin).
 
     Args:
-        tbt_data (TbtData): Turn-by-turn data to write.
-        file_path (str | Path): Target file path.
+        output_path (str | Path): Destination file path for the TFS file.
+        tbt_data (TbtData): The turn-by-turn data to write.
+
+    Raises:
+        ImportError: If the ``tfs-pandas`` package is not installed.
     """
     if not HAS_TFS:
         raise ImportError(
