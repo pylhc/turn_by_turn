@@ -69,7 +69,7 @@ def read_tbt(file_path: str | Path) -> TbtData:
     """
     if not HAS_TFS:
         raise ImportError(
-            "The 'tfs' package is required to read MAD-NG TFS files. Install it with: pip install 'tfs-pandas>4.0.0'"
+            "The 'tfs' package is required to read MAD-NG TFS files. Install it with: pip install 'tfs-pandas>=4.0.0'"
         )
 
     LOGGER.debug("Starting to read TBT data from dataframe")
