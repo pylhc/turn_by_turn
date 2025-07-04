@@ -2,9 +2,34 @@
 IO
 --
 
-This module contains high-level I/O functions to read and write turn-by-turn data objects in different
-formats. While data can be loaded from the formats of different machines / codes, each format getting its
-own reader module, writing functionality is at the moment always done in the ``LHC``'s **SDDS** format.
+This module contains high-level I/O functions to read and write turn-by-turn data objects in different formats.
+
+There are two main entry points for users:
+
+1. ``read_tbt``: Reads turn-by-turn data from disk (file-based). Use this when you have a measurement file on disk and want to load it into a ``TbtData`` object. The file format is detected or specified by the ``datatype`` argument.
+
+2. ``convert_to_tbt``: Converts in-memory data (such as a pandas DataFrame, tfs DataFrame, or xtrack.Line) to a ``TbtData`` object. Use this when your data is already loaded in memory and you want to standardize it for further processing or writing.
+
+Writing Data
+============
+
+The single entry point for writing is ``write_tbt``. This function writes a ``TbtData`` object to disk, typically in the LHC SDDS format (default), but other formats are supported via the ``datatype`` argument. The output file extension and format are determined by the ``datatype`` you specify.
+
+- If you specify ``datatype='lhc'``, ``'sps'``, or ``'ascii'``, the output will be in SDDS format and the file extension will be set to ``.sdds`` if not already present (for compatibility with downstream tools).
+- If you specify ``datatype='madng'``, the output will be in MAD-NG TFS format (extension ``.tfs`` is recommended).
+- Other supported datatypes (see ``WRITERS``) will use their respective formats and conventions.
+- If you provide the ``noise`` argument, random noise will be added to the data before writing. The ``seed`` argument can be used for reproducibility.
+- The ``datatype`` argument controls both the output format and any additional options passed to the underlying writer.
+- The interface is extensible: new formats can be added by implementing a module with a ``write_tbt`` function and adding it to ``TBT_MODULES`` and ``WRITERS``.
+
+Example::
+
+    from turn_by_turn.io import write_tbt
+    write_tbt("output.sdds", tbt_data)  # writes in SDDS format by default
+    write_tbt("output.tfs", tbt_data, datatype="madng")  # writes in MAD-NG TFS format
+    write_tbt("output.sdds", tbt_data, noise=0.01, seed=42)  # add noise before writing
+
+While data can be loaded from the formats of different machines/codes (each format getting its own reader module), writing functionality is at the moment always done in the ``LHC``'s **SDDS** format by default, unless another supported format is specified. The interface is designed to be future-proof and easy to extend for new formats.
 """
 from __future__ import annotations
 import logging
