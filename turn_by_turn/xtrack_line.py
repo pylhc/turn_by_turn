@@ -6,23 +6,35 @@ This module provides functions to convert tracking results from an ``xtrack.Line
 into the standardized ``TbtData`` format used by ``turn_by_turn``.
 
 Prerequisites for using ``convert_to_tbt``:
+
   1. The input ``Line`` must contain one or more ``ParticlesMonitor`` elements
      positioned at each location where turn-by-turn data is required (e.g., all BPMs).
+
      A valid monitor setup involves:
-       • Placing a ``xt.ParticlesMonitor`` instance in the line's element sequence
+
+       - Placing a ``xt.ParticlesMonitor`` instance in the line's element sequence
          at all the places you would like to observe.
-       • Configuring each monitor with identical settings:
-           - ``start_at_turn`` (first turn to record, usually 0)
-           - ``stop_at_turn`` (The total number of turns to record, e.g., 100)
-           - ``num_particles`` (number of tracked particles)
-     If any monitor is configured with different parameters, ``convert_to_tbt`` 
-     will either find no data or raise a inconsistency error.
+       - Configuring each monitor with identical settings:
+
+           * ``start_at_turn`` (first turn to record, usually 0)
+           * ``stop_at_turn`` (The total number of turns to record, e.g., 100)
+           * ``num_particles`` (number of tracked particles)
+
+     If any monitor is configured with different parameters, ``convert_to_tbt``
+     will either find no data or raise an inconsistency error.
+     
+     Also, if you specify more turns than were actually tracked, the resulting 
+     TBT data will include all turns up to the monitor's configured limit. 
+     This may result in extra rows filled with zeros for turns where no real 
+     data was recorded, which might not be desirable for your analysis.
+
   2. Before conversion, you must:
-       • Build particles with the desired initial coordinates
+
+       - Build particles with the desired initial coordinates
          (using ``line.build_particles(...)``).
-       • Track those particles through the line for the intended number of turns
+       - Track those particles through the line for the intended number of turns
          (using ``line.track(..., num_turns=num_turns)``).
-  
+
 Once these conditions are met, pass the tracked ``Line`` to ``convert_to_tbt`` to
 extract the data from each particle monitor into a ``TbtData`` object.
 """
@@ -39,18 +51,13 @@ import pandas as pd
 
 from turn_by_turn.structures import TbtData, TransverseData
 
-try:
+if TYPE_CHECKING:
     import xtrack as xt
-    if TYPE_CHECKING:
-        from xtrack import Line
-
-except ImportError:
-    xt = None
 
 LOGGER = logging.getLogger(__name__)
 
 
-def convert_to_tbt(xline: Line) -> TbtData:
+def convert_to_tbt(xline: xt.Line) -> TbtData:
     """
     Convert tracking results from an ``xtrack`` Line into a ``TbtData`` object.
 
@@ -70,10 +77,13 @@ def convert_to_tbt(xline: Line) -> TbtData:
         TypeError: If the input is not a valid ``xtrack.Line``.
         ValueError: If no monitors are found or data is inconsistent.
     """
-    if not xt:
+    try:
+        import xtrack as xt
+    except ImportError as e:
         raise ImportError(
             "The 'xtrack' package is required to convert xtrack Line objects. Install it with: pip install 'turn_by_turn[xtrack]'"
-        )
+        ) from e
+    
     if not isinstance(xline, xt.Line):
         raise TypeError(f"Expected an xtrack Line object, got {type(xline)} instead.")
 
@@ -106,7 +116,7 @@ def convert_to_tbt(xline: Line) -> TbtData:
         )
     npart = npart_set.pop()
 
-    # Precompute masks for each monitor and particle_id using vectorized broadcasting for speed
+    # Precompute masks for each monitor and particle_id
     monitor_particle_masks = [
         mon.data.particle_id[:, None] == np.arange(npart)[None, :]
         for mon in monitors

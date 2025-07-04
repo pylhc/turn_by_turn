@@ -149,7 +149,7 @@ smartquotes_action = "qe"  # renders only quotes and ellipses (...) but not dash
 #
 html_theme_options = {
     'collapse_navigation': False,
-    'display_version': True,
+    # 'display_version': True, # I get a warning about this, so I disable it 
     'logo_only': True,
     'navigation_depth': 1,
 }

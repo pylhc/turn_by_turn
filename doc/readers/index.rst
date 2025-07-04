@@ -36,6 +36,6 @@
     :members:
     :noindex:
 
-.. automodule:: turn_by_turn.xtrack
+.. automodule:: turn_by_turn.xtrack_line
     :members:
     :noindex:

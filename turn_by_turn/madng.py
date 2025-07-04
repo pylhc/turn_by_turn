@@ -10,7 +10,8 @@ Data is loaded into the standardized ``TbtData`` structure used by ``turn_by_tur
 allowing easy post-processing and conversion between formats.
 
 Dependencies:
-    - Requires the ``tfs-pandas >= 4.0.0`` package to read or write TFS files.
+    - Requires the ``tfs-pandas >= 4.0.0`` package for compatibility with MAD-NG 
+    features. Earlier versions does not support MAD-NG TFS files.
 """
 
 
@@ -23,14 +24,9 @@ from pathlib import Path
 import pandas as pd
 
 from typing import TYPE_CHECKING
-
-try:
-    import tfs
     
-    if TYPE_CHECKING:
-        from tfs import TfsDataFrame
-except ImportError:
-    tfs = None
+if TYPE_CHECKING:
+    import tfs
 
 from turn_by_turn.structures import TbtData, TransverseData
 
@@ -66,17 +62,22 @@ def read_tbt(file_path: str | Path) -> TbtData:
     Raises:
         ImportError: If the ``tfs-pandas`` package is not installed.
     """
-    if not tfs:
-        raise ImportError(
+    try:
+        import tfs
+    except ImportError as e:
+        LOGGER.exception(
             "The 'tfs' package is required to read MAD-NG TFS files. Install it with: pip install 'turn_by_turn[madng]'"
         )
+        raise ImportError(
+            "The 'tfs' package is required to read MAD-NG TFS files. Install it with: pip install 'turn_by_turn[madng]'"
+        ) from e
 
     LOGGER.debug("Starting to read TBT data from dataframe")
     df = tfs.read(file_path)
     return convert_to_tbt(df)
 
 
-def convert_to_tbt(df: pd.DataFrame | 'TfsDataFrame') -> TbtData:
+def convert_to_tbt(df: pd.DataFrame | 'tfs.TfsDataFrame') -> TbtData:
     """
     Convert a TFS or pandas DataFrame to a ``TbtData`` object.
 
@@ -97,16 +98,21 @@ def convert_to_tbt(df: pd.DataFrame | 'TfsDataFrame') -> TbtData:
     """
 
     # Get the date and time from the headers (return None if not found)
-    if tfs and isinstance(df, tfs.TfsDataFrame):
+    try:
+        import tfs
+        is_tfs_df = isinstance(df, tfs.TfsDataFrame)
+    except ImportError:
+        LOGGER.debug(
+            "The 'tfs' package is not installed. Assuming a pandas DataFrame."
+        )
+        is_tfs_df = False
+
+    if is_tfs_df:
         date_str = df.headers.get(DATE)
         time_str = df.headers.get(TIME)
-    elif isinstance(df, pd.DataFrame):
+    else:
         date_str = df.attrs.get(DATE)
         time_str = df.attrs.get(TIME)
-    else:
-        raise TypeError(
-            "Input DataFrame must be a Pandas DataFrame or a TFS DataFrame."
-        )
 
     # Combine the date and time into a datetime object
     date = None

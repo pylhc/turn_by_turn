@@ -29,11 +29,11 @@ from turn_by_turn.errors import DataTypeError
 from turn_by_turn.structures import TbtData
 from turn_by_turn.utils import add_noise_to_tbt
 
+LOGGER = logging.getLogger(__name__)
+
 if TYPE_CHECKING:
     from pandas import DataFrame
     from xtrack import Line
-
-LOGGER = logging.getLogger(__name__)
 
 TBT_MODULES = dict(
     lhc=lhc,
@@ -57,42 +57,7 @@ TBT_CONVERTERS = ("madng", "xtrack")
 WRITERS = ("lhc", "sps", "doros", "doros_positions", "doros_oscillations", "ascii", "madng")
 
 write_lhc_ascii = write_ascii  # Backwards compatibility <0.4
-
-def load_tbt_data(
-    tbt_input: str | Path | Line | DataFrame, 
-    datatype: str = "lhc"
-) -> TbtData:
-    """
-    Get a TbtData object from various input types. Explicitly does not infer the datatype from the input. 
-
-    Args:
-        tbt_input (str | Path | Line | DataFrame): 
-            The input data object or path to a file.
-        datatype (str): 
-            Defaults to "lhc".
-
-    Returns:
-        TbtData: The resulting TbtData object.
-    
-    Raises:
-        DataTypeError: If the datatype is None and the input type cannot be inferred.
-        TypeError: If the input type is not supported for the given datatype.
-    """
-    datatype = datatype.lower()
-
-    try:
-        module = TBT_MODULES[datatype]
-    except KeyError as error:
-        LOGGER.exception(
-            f"Unsupported datatype '{datatype}'. Supported types: {list(TBT_MODULES.keys())}"
-        )
-        raise DataTypeError(datatype) from error
-
-    if isinstance(tbt_input, (str, Path)):
-        return module.read_tbt(Path(tbt_input), **additional_args(datatype))
-    return module.convert_to_tbt(tbt_input)
-
-        
+     
 def read_tbt(file_path: str | Path, datatype: str = "lhc") -> TbtData:
     """
     Calls the appropriate loader for the provided matrices type and returns a ``TbtData`` object of the

@@ -6,8 +6,13 @@ from turn_by_turn.structures import TbtData, TransverseData
 @pytest.fixture(scope="session")
 def example_fake_tbt():
     """
-    Returns a TbtData object with the original simulation data.
-    This fixture is session-scoped and will only be created once per test run.
+    Returns a TbtData object using simulation data taken from MAD-NG. 
+    This data is also used for the tests in xtrack, so change the numbers
+    at your own risk.
+
+    It is possible to run the MAD-NG in the inputs folder to regenerate the data.
+    Also, xtrack produces the same data, so you can use the xtrack test fixture 
+    `example_line`.
     """
     names = np.array(["BPM1", "BPM3", "BPM2"])
     # First BPM
