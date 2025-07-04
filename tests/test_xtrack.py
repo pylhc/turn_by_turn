@@ -27,6 +27,12 @@ def test_convert_xsuite(example_line: xt.Line, example_fake_tbt: TbtData):
 # --- Fixtures ---- #
 @pytest.fixture(scope="module")
 def example_line():
+    """
+    Creates a simple xtrack Line with three BPMs and two quadrupoles.
+    This replicates the MAD-NG example used in the tests exactly, changes 
+    will likely break the tests.
+    See tests/inputs/madng/fodo_track.mad for the original MAD-NG file.
+    """
     lcell = 20.
     f = lcell/np.sin(np.pi/4.)/4.
     k = 1/f
