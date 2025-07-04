@@ -182,10 +182,12 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
     Raises:
         ImportError: If the ``tfs-pandas`` package is not installed.
     """
-    if not tfs:
+    try:
+        import tfs
+    except ImportError as e:
         raise ImportError(
             "The 'tfs' package is required to write MAD-NG TFS files. Install it with: pip install 'turn_by_turn[madng]'"
-        )
+        ) from e
 
     planes = [plane.lower() for plane in TransverseData.fieldnames()]  # x, y
     plane_dfs = {plane: [] for plane in planes}
