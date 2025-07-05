@@ -31,13 +31,15 @@ Example::
 
 While data can be loaded from the formats of different machines/codes (each format getting its own reader module), writing functionality is at the moment always done in the ``LHC``'s **SDDS** format by default, unless another supported format is specified. The interface is designed to be future-proof and easy to extend for new formats.
 """
+
 from __future__ import annotations
+
 import logging
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from turn_by_turn import (
-    ascii,
+    ascii,  # noqa: A004
     doros,
     esrf,
     iota,
@@ -48,10 +50,8 @@ from turn_by_turn import (
     trackone,
     xtrack_line,
 )
-
 from turn_by_turn.ascii import write_ascii
 from turn_by_turn.errors import DataTypeError
-from turn_by_turn.structures import TbtData
 from turn_by_turn.utils import add_noise_to_tbt
 
 LOGGER = logging.getLogger(__name__)
@@ -60,29 +60,40 @@ if TYPE_CHECKING:
     from pandas import DataFrame
     from xtrack import Line
 
-TBT_MODULES = dict(
-    lhc=lhc,
-    doros=doros,
-    doros_positions=doros,
-    doros_oscillations=doros,
-    sps=sps,
-    iota=iota,
-    esrf=esrf,
-    ptc=ptc,
-    trackone=trackone,
-    ascii=ascii,
-    madng=madng,
-    xtrack=xtrack_line,
-)
+    from turn_by_turn.structures import TbtData
+
+TBT_MODULES = {
+    "lhc": lhc,
+    "doros": doros,
+    "doros_positions": doros,
+    "doros_oscillations": doros,
+    "sps": sps,
+    "iota": iota,
+    "esrf": esrf,
+    "ptc": ptc,
+    "trackone": trackone,
+    "ascii": ascii,
+    "madng": madng,
+    "xtrack": xtrack_line,
+}
 
 # Modules supporting in-memory conversion to TbtData (not file readers)
 TBT_CONVERTERS = ("madng", "xtrack")
 
 # implemented writers
-WRITERS = ("lhc", "sps", "doros", "doros_positions", "doros_oscillations", "ascii", "madng")
+WRITERS = (
+    "lhc",
+    "sps",
+    "doros",
+    "doros_positions",
+    "doros_oscillations",
+    "ascii",
+    "madng",
+)
 
 write_lhc_ascii = write_ascii  # Backwards compatibility <0.4
-     
+
+
 def read_tbt(file_path: str | Path, datatype: str = "lhc") -> TbtData:
     """
     Calls the appropriate loader for the provided matrices type and returns a ``TbtData`` object of the
@@ -108,8 +119,9 @@ def read_tbt(file_path: str | Path, datatype: str = "lhc") -> TbtData:
     else:
         return module.read_tbt(file_path, **additional_args(datatype))
 
+
 # Note: I don't specify tfs.TfsDataFrame as this inherits from pandas.DataFrame
-def convert_to_tbt(file_data: DataFrame | Line, datatype: str = 'xtrack') -> TbtData:
+def convert_to_tbt(file_data: DataFrame | Line, datatype: str = "xtrack") -> TbtData:
     """
     Convert a pandas or tfs DataFrame (MAD-NG) or a Table (XTrack) to a TbtData object.
     Args:
@@ -119,13 +131,21 @@ def convert_to_tbt(file_data: DataFrame | Line, datatype: str = 'xtrack') -> Tbt
         TbtData: The converted TbtData object.
     """
     if datatype.lower() not in TBT_CONVERTERS:
-        raise DataTypeError(f"Only {','.join(TBT_CONVERTERS)} converters are implemented for now.")
-    
+        raise DataTypeError(
+            f"Only {','.join(TBT_CONVERTERS)} converters are implemented for now."
+        )
+
     module = TBT_MODULES[datatype.lower()]
-    return module.convert_to_tbt(file_data) # No additional arguments as no doros.
+    return module.convert_to_tbt(file_data)  # No additional arguments as no doros.
 
 
-def write_tbt(output_path: str | Path, tbt_data: TbtData, noise: float = None, seed: int = None, datatype: str = "lhc") -> None:
+def write_tbt(
+    output_path: str | Path,
+    tbt_data: TbtData,
+    noise: float = None,
+    seed: int = None,
+    datatype: str = "lhc",
+) -> None:
     """
     Write a ``TbtData`` object's data to file, in the ``LHC``'s **SDDS** format.
 
@@ -141,10 +161,12 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData, noise: float = None, s
     """
     output_path = Path(output_path)
     if datatype.lower() not in WRITERS:
-        raise DataTypeError(f"Only {','.join(WRITERS)} writers are implemented for now.")
+        raise DataTypeError(
+            f"Only {','.join(WRITERS)} writers are implemented for now."
+        )
 
-    if datatype.lower() in ("lhc", "sps", "ascii") and  output_path.suffix != ".sdds":  
-        # I would like to remove this, but I'm afraid of compatibility issues with omc3 (jdilly, 2024) 
+    if datatype.lower() in ("lhc", "sps", "ascii") and output_path.suffix != ".sdds":
+        # I would like to remove this, but I'm afraid of compatibility issues with omc3 (jdilly, 2024)
         output_path = output_path.with_name(f"{output_path.name}.sdds")
 
     # If the datatype is not in the list of writers, we raise an error. Therefore the datatype
@@ -152,7 +174,9 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData, noise: float = None, s
     try:
         module = TBT_MODULES[datatype.lower()]
     except KeyError:
-        raise DataTypeError(f"Invalid datatype: {datatype}. Ensure it is one of {', '.join(TBT_MODULES)}.")
+        raise DataTypeError(
+            f"Invalid datatype: {datatype}. Ensure it is one of {', '.join(TBT_MODULES)}."
+        )
     else:
         if noise is not None:
             tbt_data = add_noise_to_tbt(tbt_data, noise=noise, seed=seed)
@@ -160,15 +184,15 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData, noise: float = None, s
 
 
 def additional_args(datatype: str) -> dict[str, Any]:
-    """ Additional parameters to be added to the reader/writer function. 
-        
+    """Additional parameters to be added to the reader/writer function.
+
     Args:
         datatype (str): Type of the data.
     """
     if datatype.lower() == "doros_oscillations":
-        return dict(data_type=doros.DataKeys.OSCILLATIONS)
+        return {"data_type": doros.DataKeys.OSCILLATIONS}
 
     if datatype.lower() == "doros_positions":
-        return dict(data_type=doros.DataKeys.POSITIONS)
+        return {"data_type": doros.DataKeys.POSITIONS}
 
-    return dict()
+    return {}

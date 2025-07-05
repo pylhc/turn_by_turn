@@ -10,22 +10,22 @@ Data is loaded into the standardized ``TbtData`` structure used by ``turn_by_tur
 allowing easy post-processing and conversion between formats.
 
 Dependencies:
-    - Requires the ``tfs-pandas >= 4.0.0`` package for compatibility with MAD-NG 
-    features. Earlier versions does not support MAD-NG TFS files.
-"""
+    - Requires the ``tfs-pandas >= 4.0.0`` package for compatibility with MAD-NG
+      features. Earlier versions does not support MAD-NG TFS files.
 
+"""
 
 from __future__ import annotations
 
 import logging
 from datetime import datetime
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pandas as pd
 
-from typing import TYPE_CHECKING
-    
 if TYPE_CHECKING:
+    from pathlib import Path  # Only used for type hinting
+
     import tfs
 
 from turn_by_turn.structures import TbtData, TransverseData
@@ -65,11 +65,9 @@ def read_tbt(file_path: str | Path) -> TbtData:
     try:
         import tfs
     except ImportError as e:
-        LOGGER.exception(
-            "The 'tfs' package is required to read MAD-NG TFS files. Install it with: pip install 'turn_by_turn[madng]'"
-        )
         raise ImportError(
-            "The 'tfs' package is required to read MAD-NG TFS files. Install it with: pip install 'turn_by_turn[madng]'"
+            "The 'tfs' package is required to read MAD-NG TFS files. "
+            "Install it with: pip install 'turn_by_turn[madng]'"
         ) from e
 
     LOGGER.debug("Starting to read TBT data from dataframe")
@@ -77,7 +75,7 @@ def read_tbt(file_path: str | Path) -> TbtData:
     return convert_to_tbt(df)
 
 
-def convert_to_tbt(df: pd.DataFrame | 'tfs.TfsDataFrame') -> TbtData:
+def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
     """
     Convert a TFS or pandas DataFrame to a ``TbtData`` object.
 
@@ -86,7 +84,7 @@ def convert_to_tbt(df: pd.DataFrame | 'tfs.TfsDataFrame') -> TbtData:
     that can be written or converted to other formats.
 
     Args:
-        df (pd.DataFrame | TfsDataFrame): 
+        df (pd.DataFrame | TfsDataFrame):
             DataFrame containing MAD-NG turn-by-turn tracking data.
 
     Returns:
@@ -100,11 +98,10 @@ def convert_to_tbt(df: pd.DataFrame | 'tfs.TfsDataFrame') -> TbtData:
     # Get the date and time from the headers (return None if not found)
     try:
         import tfs
+
         is_tfs_df = isinstance(df, tfs.TfsDataFrame)
     except ImportError:
-        LOGGER.debug(
-            "The 'tfs' package is not installed. Assuming a pandas DataFrame."
-        )
+        LOGGER.debug("The 'tfs' package is not installed. Assuming a pandas DataFrame.")
         is_tfs_df = False
 
     if is_tfs_df:
@@ -133,11 +130,12 @@ def convert_to_tbt(df: pd.DataFrame | 'tfs.TfsDataFrame') -> TbtData:
     # Check if the number of observed points is consistent for all particles/turns
     if len(df[NAME]) / nturns / npart != num_observables:
         raise ValueError(
-            "The number of BPMs (or observed points) is not consistent for all particles/turns. Simulation may have lost particles."
+            "The number of observed points is not consistent for all particles/turns. "
+            "Simulation may have lost particles."
         )
 
     matrices = []
-    
+
     # Particle IDs start from 1, but we use 0-based indexing in Python
     particle_ids = range(npart)
     for particle_id in particle_ids:

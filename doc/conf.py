@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # TFS-Pandas documentation build configuration file, created by
 # sphinx-quickstart on Tue Feb  6 12:10:18 2018.
@@ -90,7 +89,7 @@ author = ABOUT_TBT["__author__"]
 
 # Override link in 'Edit on Github'
 rst_prolog = f"""
-:github_url: {ABOUT_TBT['__url__']}
+:github_url: {ABOUT_TBT["__url__"]}
 """
 
 # The version info for the project you're documenting, acts as replacement for
@@ -130,7 +129,7 @@ html_theme = "sphinx_rtd_theme"
 html_logo = "_static/img/omc_logo.svg"
 html_static_path = ["_static"]
 html_context = {
-#    "css_files": ["_static/css/custom.css"],
+    #    "css_files": ["_static/css/custom.css"],
     "display_github": True,
     # the following are only needed if :github_url: is not set
     "github_user": author,
@@ -141,17 +140,20 @@ html_css_files = [
     "css/custom.css",
 ]
 
-smartquotes_action = "qe"  # renders only quotes and ellipses (...) but not dashes (option: D)
+# renders only quotes and ellipses (...) but not dashes (option: D)
+smartquotes_action = "qe"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
 html_theme_options = {
-    'collapse_navigation': False,
-    # 'display_version': True, # I get a warning about this, so I disable it 
-    'logo_only': True,
-    'navigation_depth': 1,
+    "collapse_navigation": False,
+    # the followingreplaces 'display_version' since sphinx-rtd-theme 3.0
+    # but only works on ReadTheDocs
+    "version_selector": True,
+    "logo_only": True,
+    "navigation_depth": 1,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -163,11 +165,11 @@ html_theme_options = {
 # pages. Single values can also be put in this dictionary using the
 # -A command-line option of sphinx-build.
 html_context = {
-    'display_github': True,
+    "display_github": True,
     # the following are only needed if :github_url: is not set
-    'github_user': author,
-    'github_repo': project,
-    'github_version': 'master/doc/',
+    "github_user": author,
+    "github_repo": project,
+    "github_version": "master/doc/",
 }
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -207,7 +209,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "turn_by_turn.tex", "turn_by_turn Documentation", "pyLHC/OMC-TEAM", "manual"),
+    (
+        master_doc,
+        "turn_by_turn.tex",
+        "turn_by_turn Documentation",
+        "pyLHC/OMC-TEAM",
+        "manual",
+    ),
 ]
 
 # -- Options for manual page output ---------------------------------------
