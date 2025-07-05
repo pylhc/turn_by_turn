@@ -9,7 +9,6 @@ This module is untested and should be considered experimental at the moment.
 import json
 import logging
 from pathlib import Path
-from typing import Tuple, Union
 
 import numpy as np
 from scipy.io import loadmat
@@ -21,7 +20,7 @@ BPM_NAMES_FILE: str = "bpm_names.json"
 LOGGER = logging.getLogger(__name__)
 
 
-def read_tbt(file_path: Union[str, Path]) -> TbtData:
+def read_tbt(file_path: str | Path) -> TbtData:
     """
     Reads turn-by-turn data from the ``ESRF``'s **Matlab** format file.
 
@@ -37,7 +36,7 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     return numpy_to_tbt(names, matrix)
 
 
-def load_esrf_mat_file(infile: Union[str, Path]) -> Tuple[np.ndarray, np.ndarray]:
+def load_esrf_mat_file(infile: str | Path) -> tuple[np.ndarray, np.ndarray]:
     """
     Reads the **ESRF** TbT ``Matlab`` file, checks for nans and matrices duplicities from consecutive kicks.
 
@@ -63,7 +62,9 @@ def load_esrf_mat_file(infile: Union[str, Path]) -> Tuple[np.ndarray, np.ndarray
         LOGGER.error("Number of bpms does not match with accelerator class")
         raise ValueError("Mismatch to model!")
 
-    tbt_data = _check_esrf_tbt_data(np.transpose(np.array([hor, ver]), axes=[0, 2, 3, 1]))
+    tbt_data = _check_esrf_tbt_data(
+        np.transpose(np.array([hor, ver]), axes=[0, 2, 3, 1])
+    )
     return np.array(bpm_names), tbt_data
 
 

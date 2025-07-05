@@ -1,4 +1,3 @@
-
 from datetime import datetime
 from pathlib import Path
 
@@ -13,6 +12,7 @@ from turn_by_turn.doros import DEFAULT_BUNCH_ID, DataKeys, read_tbt, write_tbt
 from turn_by_turn.structures import TbtData, TransverseData
 
 INPUTS_DIR = Path(__file__).parent / "inputs"
+
 
 @pytest.mark.parametrize("datatype", DataKeys.types())
 def test_read_write_real_data(tmp_path, datatype):
@@ -83,7 +83,7 @@ def test_read_raises_on_different_bpm_lengths_in_data(tmp_path):
     write_tbt(file_path, tbt_data, data_type=data_type)
 
     bpms = [tbt_data.matrices[0].X.index[i] for i in (0, 2)]
-    
+
     # modify the BPM lengths in the file
     with h5py.File(file_path, "r+") as h5f:
         for bpm in bpms:
@@ -107,16 +107,20 @@ def _tbt_data() -> TbtData:
                 X=pd.DataFrame(
                     index=bpms,
                     data=create_data(
-                        np.linspace(-np.pi, np.pi, nturns, endpoint=False), 
-                        nbpm=len(bpms), function=np.sin, noise=0.02
+                        np.linspace(-np.pi, np.pi, nturns, endpoint=False),
+                        nbpm=len(bpms),
+                        function=np.sin,
+                        noise=0.02,
                     ),
                     dtype=float,
                 ),
                 Y=pd.DataFrame(
                     index=bpms,
                     data=create_data(
-                        np.linspace(-np.pi, np.pi, nturns, endpoint=False), 
-                        nbpm=len(bpms), function=np.cos, noise=0.015
+                        np.linspace(-np.pi, np.pi, nturns, endpoint=False),
+                        nbpm=len(bpms),
+                        function=np.cos,
+                        noise=0.015,
                     ),
                     dtype=float,
                 ),

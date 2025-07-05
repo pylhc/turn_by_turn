@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from tests.test_lhc_and_general import create_data, compare_tbt
+from tests.test_lhc_and_general import compare_tbt, create_data
 from turn_by_turn.constants import PLANES
 from turn_by_turn.errors import ExclusiveArgumentsError
 from turn_by_turn.structures import TbtData, TransverseData
@@ -12,7 +12,9 @@ from turn_by_turn.utils import add_noise, add_noise_to_tbt, generate_average_tbt
 
 
 def test_noise_addition():
-    array = create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin).flatten()
+    array = create_data(
+        np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin
+    ).flatten()
     noised = add_noise(array, noise=0)
     np.testing.assert_array_equal(array, noised)
 
@@ -41,11 +43,19 @@ def test_noise_addition_to_tbt():
             TransverseData(
                 X=pd.DataFrame(
                     index=[f"BPM{i}" for i in range(nbpms)],
-                    data=create_data(np.linspace(-np.pi, np.pi, nturns, endpoint=False), nbpms, np.sin)
+                    data=create_data(
+                        np.linspace(-np.pi, np.pi, nturns, endpoint=False),
+                        nbpms,
+                        np.sin,
+                    ),
                 ),
                 Y=pd.DataFrame(
                     index=[f"BPM{i}" for i in range(nbpms)],
-                    data=create_data(np.linspace(-np.pi, np.pi, nturns, endpoint=False), nbpms, np.cos)
+                    data=create_data(
+                        np.linspace(-np.pi, np.pi, nturns, endpoint=False),
+                        nbpms,
+                        np.cos,
+                    ),
                 ),
             )
             for _ in range(nbunches)
@@ -58,9 +68,14 @@ def test_noise_addition_to_tbt():
     noise = 5
     noised = add_noise_to_tbt(original, noise=noise, seed=14783)
     for m_original, m_noised in zip(original.matrices, noised.matrices):
-        for df_original, df_noised in ((m_original.X, m_noised.X), (m_original.Y, m_noised.Y)):
+        for df_original, df_noised in (
+            (m_original.X, m_noised.X),
+            (m_original.Y, m_noised.Y),
+        ):
             with pytest.raises(AssertionError):
-                np.testing.assert_array_equal(df_original.to_numpy(), df_noised.to_numpy())
+                np.testing.assert_array_equal(
+                    df_original.to_numpy(), df_noised.to_numpy()
+                )
             df_noise = df_original - df_noised
             av_deviation_std = (df_noise.std() - noise).mean()
             av_mean = df_noise.mean().mean()
@@ -73,11 +88,15 @@ def test_noise_addition_to_tbt():
 
 @pytest.mark.parametrize("seed", [1236, 6749, 23495564])
 def test_noise_addition_with_seed(seed):
-    array = create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin).flatten()
+    array = create_data(
+        np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin
+    ).flatten()
 
     noised_1 = add_noise(array, sigma=5, seed=seed)
     noised_2 = add_noise(array, sigma=5, seed=seed)
-    np.testing.assert_array_equal(noised_1, noised_2)  # should be equal with same noise seed
+    np.testing.assert_array_equal(
+        noised_1, noised_2
+    )  # should be equal with same noise seed
 
     noised_3 = add_noise(array, noise=5, seed=seed * 5)
     with pytest.raises(AssertionError):  # Should be different with different seeds
@@ -85,13 +104,16 @@ def test_noise_addition_with_seed(seed):
 
 
 def test_add_noise_raises_on_both_arguments():
-    array = create_data(np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin).flatten()
+    array = create_data(
+        np.linspace(-np.pi, np.pi, 2000, endpoint=False), 1, np.sin
+    ).flatten()
     with pytest.raises(ExclusiveArgumentsError):
         _ = add_noise(array, noise=5, sigma=1)
 
 
-def test_compare_average_Tbtdata():
+def test_compare_average_tbtdata():
     npart = 10
+    rng = np.random.default_rng()
     data = {
         plane: np.concatenate(
             [
@@ -99,7 +121,7 @@ def test_compare_average_Tbtdata():
                     create_data(
                         np.linspace(1, 10, 10, endpoint=False, dtype=int),
                         2,
-                        (lambda x: np.random.randn(len(x))),
+                        (lambda x: rng.normal(size=len(x))),
                     )
                 ]
                 for _ in range(npart)
@@ -112,8 +134,12 @@ def test_compare_average_Tbtdata():
     origin = TbtData(
         matrices=[
             TransverseData(
-                X=pd.DataFrame(index=["IBPMA1C", "IBPME2R"], data=data["X"][i], dtype=float),
-                Y=pd.DataFrame(index=["IBPMA1C", "IBPME2R"], data=data["Y"][i], dtype=float),
+                X=pd.DataFrame(
+                    index=["IBPMA1C", "IBPME2R"], data=data["X"][i], dtype=float
+                ),
+                Y=pd.DataFrame(
+                    index=["IBPMA1C", "IBPME2R"], data=data["Y"][i], dtype=float
+                ),
             )
             for i in range(npart)
         ],
@@ -142,4 +168,4 @@ def test_compare_average_Tbtdata():
         nturns=10,
     )
 
-    compare_tbt(generate_average_tbtdata(origin), new, False)
+    compare_tbt(generate_average_tbtdata(origin), new, no_binary=False)

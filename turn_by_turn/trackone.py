@@ -7,9 +7,9 @@ particle tracking of your machine through in ``MAD-X``. The files are very close
 files, with the difference that the data part is split into "segments" relating containing data for a given
 observation point.
 """
+
 import logging
 from pathlib import Path
-from typing import Dict, Tuple, Union
 
 import numpy as np
 
@@ -19,7 +19,7 @@ from turn_by_turn.utils import numpy_to_tbt
 LOGGER = logging.getLogger(__name__)
 
 
-def read_tbt(file_path: Union[str, Path], is_tracking_data: bool = False) -> TbtData:
+def read_tbt(file_path: str | Path, is_tracking_data: bool = False) -> TbtData:
     """
     Reads turn-by-turn data from the ``MAD-X`` **trackone** format file.
 
@@ -38,12 +38,13 @@ def read_tbt(file_path: Union[str, Path], is_tracking_data: bool = False) -> Tbt
     if is_tracking_data:
         # Converts full tracking output to TbTData.
         return numpy_to_tbt(names, matrix, datatype=TrackingData)
-    else:
-        # matrix[0, 2] contains just (x, y) samples.
-        return numpy_to_tbt(names, matrix[[0, 2]], datatype=TransverseData)
+    # matrix[0, 2] contains just (x, y) samples.
+    return numpy_to_tbt(names, matrix[[0, 2]], datatype=TransverseData)
 
 
-def get_trackone_stats(file_path: Union[str, Path], write_out: bool = False) -> Tuple[int, int]:
+def get_trackone_stats(
+    file_path: str | Path, write_out: bool = False
+) -> tuple[int, int]:
     """
     Determines the number of particles and turns in the matrices from the provided ``MAD-X``
     **trackone** file.
@@ -77,7 +78,9 @@ def get_trackone_stats(file_path: Union[str, Path], write_out: bool = False) -> 
             stats_string = stats_string + line
 
     if write_out:
-        LOGGER.debug(f"Writing tbt stats for file '{file_path.absolute()}' at 'stats.txt'")
+        LOGGER.debug(
+            f"Writing tbt stats for file '{file_path.absolute()}' at 'stats.txt'"
+        )
         with Path("stats.txt").open("w") as stats_file:
             stats_file.write(stats_string)
 
@@ -85,8 +88,8 @@ def get_trackone_stats(file_path: Union[str, Path], write_out: bool = False) -> 
 
 
 def get_structure_from_trackone(
-    nturns: int = 0, npart: int = 0, file_path: Union[str, Path] = "trackone"
-) -> Tuple[np.ndarray, np.ndarray]:
+    nturns: int = 0, npart: int = 0, file_path: str | Path = "trackone"
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Extracts BPM names and particle coordinates in the **trackone** file produced by ``MAD-X``.
 
@@ -101,7 +104,7 @@ def get_structure_from_trackone(
         A numpy array of BPM names and a 4D Numpy array [quantity, BPM, particle/bunch No.,
         turn No.] quantities in order [x, px, y, py, t, pt, s, E].
     """
-    bpms: Dict[str, np.ndarray] = dict()
+    bpms: dict[str, np.ndarray] = {}
     with Path(file_path).open("r") as input_file:
         for line in input_file:
             if len(line.strip()) == 0:
@@ -112,11 +115,13 @@ def get_structure_from_trackone(
             if parts[0] == "#segment":
                 bpm_name = parts[-1].upper()
                 if (np.all([k not in bpm_name.lower() for k in ["start", "end"]])) and (
-                    bpm_name not in bpms.keys()
+                    bpm_name not in bpms
                 ):
                     bpms[bpm_name] = np.empty([npart, nturns, 8], dtype=float)
             elif np.all([k not in bpm_name.lower() for k in ["start", "end"]]):
-                bpms[bpm_name][np.abs(int(float(parts[0]))) - 1, int(float(parts[1])) - 1, :] = np.array(
-                    parts[2:]
-                )
-    return np.array(list(bpms.keys())), np.transpose(np.array(list(bpms.values())), axes=[3, 0, 1, 2])
+                bpms[bpm_name][
+                    np.abs(int(float(parts[0]))) - 1, int(float(parts[1])) - 1, :
+                ] = np.array(parts[2:])
+    return np.array(list(bpms.keys())), np.transpose(
+        np.array(list(bpms.values())), axes=[3, 0, 1, 2]
+    )

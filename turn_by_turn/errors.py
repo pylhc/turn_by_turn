@@ -10,7 +10,9 @@ class DataTypeError(Exception):
     """Raised when an unsupported or invalid datatype is given in I/O operations."""
 
     def __init__(self, datatype: str):
-        super().__init__(f"Provided datatype {datatype} is not supported by this package")
+        super().__init__(
+            f"Provided datatype {datatype} is not supported by this package"
+        )
 
 
 class ExclusiveArgumentsError(Exception):
