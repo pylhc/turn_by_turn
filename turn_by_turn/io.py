@@ -2,34 +2,72 @@
 IO
 --
 
-This module contains high-level I/O functions to read and write turn-by-turn data objects in different formats.
+This module contains high-level I/O functions to read and write turn-by-turn data objects to and from different formats.
 
-There are two main entry points for users:
+Reading Data
+============
+Since version ``0.9.0`` of the package, data can be loaded either from file or from in-memory structures exclusive to certain codes (for some tracking simulation in *MAD-NG* or *xtrack*).
+Two different APIs are provided for these use cases.
 
-1. ``read_tbt``: Reads turn-by-turn data from disk (file-based). Use this when you have a measurement file on disk and want to load it into a ``TbtData`` object. The file format is detected or specified by the ``datatype`` argument.
+1. **To read from file**, use the ``read_tbt`` function (exported as ``read`` at the package's level). The file format is detected or specified by the ``datatype`` parameter.
+2. **To load in-memory data**, use the ``convert_to_tbt`` function (exported as ``convert`` at the package's level). This is valid for tracking simulation results from e.g. *xtrack* or sent back by *MAD-NG*.
 
-2. ``convert_to_tbt``: Converts in-memory data (such as a pandas DataFrame, tfs DataFrame, or xtrack.Line) to a ``TbtData`` object. Use this when your data is already loaded in memory and you want to standardize it for further processing or writing.
+In both cases, the returned value is a structured ``TbtData`` object.
 
 Writing Data
 ============
+The single entry point for writing to disk is the ``write_tbt`` function (exported as ``write`` at the package's level). This writes a ``TbtData`` object to disk, typically in the LHC SDDS format (by default). The output file extension and format are determined by the ``datatype`` argument.
 
-The single entry point for writing is ``write_tbt``. This function writes a ``TbtData`` object to disk, typically in the LHC SDDS format (default), but other formats are supported via the ``datatype`` argument. The output file extension and format are determined by the ``datatype`` you specify.
+The following cases arise:
+- If ``datatype`` is set to ``lhc``, ``sps`` or ``ascii``, the output will be in SDDS format and the file extension will be set to ``.sdds`` if not already present.
+- If ``datatype`` is set to ``madng``, the output will be in a TFS file (extension ``.tfs`` is recommended).
+- Other supported datatypes (see ``WRITERS``) will use their respective formats and conventions if implemented.
 
-- If you specify ``datatype='lhc'``, ``'sps'``, or ``'ascii'``, the output will be in SDDS format and the file extension will be set to ``.sdds`` if not already present (for compatibility with downstream tools).
-- If you specify ``datatype='madng'``, the output will be in MAD-NG TFS format (extension ``.tfs`` is recommended).
-- Other supported datatypes (see ``WRITERS``) will use their respective formats and conventions.
-- If you provide the ``noise`` argument, random noise will be added to the data before writing. The ``seed`` argument can be used for reproducibility.
-- The ``datatype`` argument controls both the output format and any additional options passed to the underlying writer.
-- The interface is extensible: new formats can be added by implementing a module with a ``write_tbt`` function and adding it to ``TBT_MODULES`` and ``WRITERS``.
+The ``datatype`` parameter controls both the output format and any additional options passed to the underlying writer.
+Should the ``noise`` parameter be used, random noise will be added to the data before writing. A ``seed`` can be provided for reproducibility.
 
 Example::
 
-    from turn_by_turn.io import write_tbt
-    write_tbt("output.sdds", tbt_data)  # writes in SDDS format by default
-    write_tbt("output.tfs", tbt_data, datatype="madng")  # writes in MAD-NG TFS format
-    write_tbt("output.sdds", tbt_data, noise=0.01, seed=42)  # add noise before writing
+    from turn_by_turn import write
+    write("output.sdds", tbt_data)  # writes in SDDS format by default
+    write("output.tfs", tbt_data, datatype="madng")  # writes a TFS file in MAD-NG's tracking results format
+    write("output.sdds", tbt_data, noise=0.01, seed=42)  # reproducibly adds noise before writing
 
-While data can be loaded from the formats of different machines/codes (each format getting its own reader module), writing functionality is at the moment always done in the ``LHC``'s **SDDS** format by default, unless another supported format is specified. The interface is designed to be future-proof and easy to extend for new formats.
+While data can be loaded from the formats of different machines/codes (each through its own reader module), writing functionality is at the moment always done in the ``LHC``'s **SDDS** format by default, unless another supported format is specified. The interface is designed to be future-proof and easy to extend for new formats.
+
+
+Supported Modules and Limitations
+=================================
+
+The following table summarizes which modules support disk reading and in-memory conversion, and any important limitations:
+
++----------------+---------------------+-----------------------+----------------------------------------------------------+
+| Module         | Disk Reading        | In-Memory Conversion  | Notes / Limitations                                      |
++================+=====================+=======================+==========================================================+
+| lhc            | Yes (SDDS, ASCII)   | No                    | Reads LHC SDDS and legacy ASCII files.                   |
++----------------+---------------------+-----------------------+----------------------------------------------------------+
+| sps            | Yes (SDDS, ASCII)   | No                    | Reads SPS SDDS and legacy ASCII files.                   |
++----------------+---------------------+-----------------------+----------------------------------------------------------+
+| doros          | Yes (HDF5)          | No                    | Reads DOROS HDF5 files.                                  |
++----------------+---------------------+-----------------------+----------------------------------------------------------+
+| madng          | Yes (TFS)           | Yes                   | In-memory: only via pandas/tfs DataFrame.                |
++----------------+---------------------+-----------------------+----------------------------------------------------------+
+| xtrack         | No                  | Yes                   | Only in-memory via xtrack.Line.                          |
++----------------+---------------------+-----------------------+----------------------------------------------------------+
+| ptc            | Yes (trackone)      | No                    | Reads MAD-X PTC trackone files.                          |
++----------------+---------------------+-----------------------+----------------------------------------------------------+
+| esrf           | Yes (Matlab .mat)   | No                    | Experimental/untested.                                   |
++----------------+---------------------+-----------------------+----------------------------------------------------------+
+| iota           | Yes (HDF5)          | No                    | Reads IOTA HDF5 files.                                   |
++----------------+---------------------+-----------------------+----------------------------------------------------------+
+| ascii          | Yes (legacy ASCII)  | No                    | For legacy ASCII files only.                             |
++----------------+---------------------+-----------------------+----------------------------------------------------------+
+| trackone       | Yes (MAD-X)         | No                    | Reads MAD-X trackone files.                              |
++----------------+---------------------+-----------------------+----------------------------------------------------------+
+
+- Only ``madng`` and ``xtrack`` support in-memory conversion.
+- Most modules are for disk reading only.
+- Some modules (e.g., ``esrf``) are experimental or have limited support.
 """
 
 from __future__ import annotations
@@ -154,7 +192,7 @@ def write_tbt(
         tbt_data (TbtData): the ``TbtData`` object to write to disk.
         noise (float): optional noise to add to the data.
         seed (int): A given seed to initialise the RNG if one chooses to add noise. This is useful
-            to ensure the exact same RNG state across operations. Defaults to `None`, which means
+            to ensure the exact same RNG state across operations. Defaults to ``None``, which means
             any new RNG operation in noise addition will pull fresh entropy from the OS.
         datatype (str): type of matrices in the file, determines the reader to use. Case-insensitive,
             defaults to ``lhc``.
