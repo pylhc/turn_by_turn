@@ -1,7 +1,7 @@
 """Exposes TbtData, read_tbt and write_tbt directly in the package's namespace."""
 
-from .io import read_tbt, write_tbt, convert_to_tbt
-from .structures import TbtData, TransverseData
+from .io import convert_to_tbt, read_tbt, write_tbt
+from .structures import TbtData, TransverseData  # noqa: F401
 
 __title__ = "turn_by_turn"
 __description__ = "Read and write turn-by-turn measurement files from different particle accelerator formats."
