@@ -22,10 +22,10 @@ Prerequisites for using ``convert_to_tbt``:
 
      If any monitor is configured with different parameters, ``convert_to_tbt``
      will either find no data or raise an inconsistency error.
-     
-     Also, if you specify more turns than were actually tracked, the resulting 
-     TBT data will include all turns up to the monitor's configured limit. 
-     This may result in extra rows filled with zeros for turns where no real 
+
+     Also, if you specify more turns than were actually tracked, the resulting
+     TBT data will include all turns up to the monitor's configured limit.
+     This may result in extra rows filled with zeros for turns where no real
      data was recorded, which might not be desirable for your analysis.
 
   2. Before conversion, you must:
@@ -39,12 +39,10 @@ Once these conditions are met, pass the tracked ``Line`` to ``convert_to_tbt`` t
 extract the data from each particle monitor into a ``TbtData`` object.
 """
 
-
 from __future__ import annotations
 
 import logging
 from typing import TYPE_CHECKING
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -52,6 +50,8 @@ import pandas as pd
 from turn_by_turn.structures import TbtData, TransverseData
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     import xtrack as xt
 
 LOGGER = logging.getLogger(__name__)
@@ -83,7 +83,7 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
         raise ImportError(
             "The 'xtrack' package is required to convert xtrack Line objects. Install it with: pip install 'turn_by_turn[xtrack]'"
         ) from e
-    
+
     if not isinstance(xline, xt.Line):
         raise TypeError(f"Expected an xtrack Line object, got {type(xline)} instead.")
 
@@ -91,14 +91,23 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
     monitor_pairs = [
         (name, elem)
         for name, elem in zip(xline.element_names, xline.elements)
-        if isinstance(elem, xt.ParticlesMonitor)
+        if isinstance(elem, xt.ParticlesMonitor | xt.BeamPositionMonitor)
     ]
     # Check that we have at least one monitor
     if not monitor_pairs:
         raise ValueError(
-            "No ParticlesMonitor found in the Line. Please add a ParticlesMonitor to the Line."
+            "No ParticlesMonitor or BeamPositionMonitor found in the Line. Please add a ParticlesMonitor or BeamPositionMonitor to the Line."
         )
     monitor_names, monitors = zip(*monitor_pairs)
+
+    # First check that no particles were lost during tracking. There will be trailing
+    # zeros in the data if particles were lost. This might be difficult to detect.
+    assert all(
+        mon.data.particle_id[-1] == mon.data.particle_id.max() for mon in monitors
+    ), (
+        "Some particles were lost during tracking, which is not supported by this function. "
+        "Ensure that all particles are tracked through the entire line without loss."
+    )
 
     # Check that all monitors have the same number of turns
     nturns_set = {mon.data.at_turn.max() + 1 for mon in monitors}
@@ -118,8 +127,7 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
 
     # Precompute masks for each monitor and particle_id
     monitor_particle_masks = [
-        mon.data.particle_id[:, None] == np.arange(npart)[None, :]
-        for mon in monitors
+        mon.data.particle_id[:, None] == np.arange(npart)[None, :] for mon in monitors
     ]
 
     matrices = []
@@ -128,10 +136,14 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
         # For each plane (e.g., 'X', 'Y'), build a DataFrame: rows=BPMs, cols=turns
         tracking_data_dict = {}
         for plane in TransverseData.fieldnames():
-            stacked = np.vstack([
-                getattr(mon.data, plane.lower())[monitor_particle_masks[i][:, particle_id]]
-                for i, mon in enumerate(monitors)
-            ])
+            stacked = np.vstack(
+                [
+                    getattr(mon.data, plane.lower())[
+                        monitor_particle_masks[i][:, particle_id]
+                    ]
+                    for i, mon in enumerate(monitors)
+                ]
+            )
             tracking_data_dict[plane] = pd.DataFrame(
                 stacked,
                 index=monitor_names,
@@ -144,7 +156,8 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
         matrices=matrices, bunch_ids=list(range(npart)), nturns=nturns, date=None
     )
 
-# Added this function to match the interface, but it is not implemented - should I not include it?
+
+# Added this function to match the interface, but it is not implemented.
 def read_tbt(path: str | Path) -> None:
     """
     Not implemented.
