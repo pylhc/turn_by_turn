@@ -119,6 +119,9 @@ pygments_style = "sphinx"
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
+# Activate nitpicky mode for sphinx to warn about missing references
+# nitpicky = True
+
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -149,11 +152,9 @@ smartquotes_action = "qe"
 #
 html_theme_options = {
     "collapse_navigation": False,
-    # the followingreplaces 'display_version' since sphinx-rtd-theme 3.0
-    # but only works on ReadTheDocs
-    "version_selector": True,
+    "version_selector": True,  # sphinx-rtd-theme>=3.0, formerly 'display_version'
     "logo_only": True,
-    "navigation_depth": 1,
+    "navigation_depth": 2,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -240,3 +241,19 @@ texinfo_documents = [
         "Miscellaneous",
     ),
 ]
+
+# -- Instersphinx Configuration ----------------------------------------------
+
+# Example configuration for intersphinx: refer to the Python standard library.
+# use in refs e.g:
+# :ref:`comparison manual <python:comparisons>`
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "matplotlib": ("https://matplotlib.org/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "cpymad": ("https://hibtc.github.io/cpymad/", None),
+    "tfs": ("https://pylhc.github.io/tfs/", None),
+    "sdds": ("https://pylhc.github.io/sdds/", None),
+}
