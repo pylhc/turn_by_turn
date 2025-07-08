@@ -126,24 +126,22 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
     npart = npart_set.pop()
 
     # Precompute masks for each monitor and particle_id
-    monitor_particle_masks = [
+    monitor_pid_masks = [
         mon.data.particle_id[:, None] == np.arange(npart)[None, :] for mon in monitors
     ]
 
     matrices = []
-    # Loop over each particle ID
-    for particle_id in range(npart):
+    # Loop over each particle ID (pid)
+    for pid in range(npart):
         # For each plane (e.g., 'X', 'Y'), build a DataFrame: rows=BPMs, cols=turns
         tracking_data_dict = {}
         for plane in TransverseData.fieldnames():
-            stacked = np.vstack(
-                [
-                    getattr(mon.data, plane.lower())[
-                        monitor_particle_masks[i][:, particle_id]
-                    ]
-                    for i, mon in enumerate(monitors)
-                ]
-            )
+            # fmt: off
+            stacked = np.vstack([
+                getattr(mon.data, plane.lower())[monitor_pid_masks[i][:, pid]]
+                for i, mon in enumerate(monitors)
+            ])
+            # fmt: on
             tracking_data_dict[plane] = pd.DataFrame(
                 stacked,
                 index=monitor_names,
