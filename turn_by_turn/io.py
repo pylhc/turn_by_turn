@@ -68,6 +68,9 @@ The following table summarizes which modules support disk reading and in-memory 
 - Only ``madng`` and ``xtrack`` support in-memory conversion.
 - Most modules are for disk reading only.
 - Some modules (e.g., ``esrf``) are experimental or have limited support.
+
+API
+===
 """
 
 from __future__ import annotations
