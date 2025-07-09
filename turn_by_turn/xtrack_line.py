@@ -91,12 +91,12 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
     monitor_pairs = [
         (name, elem)
         for name, elem in zip(xline.element_names, xline.elements)
-        if isinstance(elem, xt.ParticlesMonitor | xt.BeamPositionMonitor)
+        if isinstance(elem, xt.ParticlesMonitor)
     ]
     # Check that we have at least one monitor
     if not monitor_pairs:
         raise ValueError(
-            "No ParticlesMonitor or BeamPositionMonitor found in the Line. Please add a ParticlesMonitor or BeamPositionMonitor to the Line."
+            "No ParticlesMonitor found in the Line. Please add a ParticlesMonitor to the Line."
         )
     monitor_names, monitors = zip(*monitor_pairs)
 

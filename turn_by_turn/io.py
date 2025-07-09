@@ -164,9 +164,9 @@ def read_tbt(file_path: str | Path, datatype: str = "lhc") -> TbtData:
 # Note: I don't specify tfs.TfsDataFrame as this inherits from pandas.DataFrame
 def convert_to_tbt(file_data: DataFrame | Line, datatype: str = "xtrack") -> TbtData:
     """
-    Convert a pandas or tfs DataFrame (MAD-NG) or a Table (XTrack) to a TbtData object.
+    Convert a pandas or tfs DataFrame (MAD-NG) or a Line (XTrack) to a TbtData object.
     Args:
-        file_data (Union[DataFrame, Table]): The data to convert.
+        file_data (Union[DataFrame, xt.Line]): The data to convert.
         datatype (str): The type of the data, either 'xtrack' or 'madng'. Defaults to 'xtrack'.
     Returns:
         TbtData: The converted TbtData object.
