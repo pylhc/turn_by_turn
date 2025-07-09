@@ -16,7 +16,7 @@ import numpy as np
 from turn_by_turn.structures import TbtData, TrackingData, TransverseData
 from turn_by_turn.utils import numpy_to_tbt
 
-LOGGER = logging.getLogger()
+LOGGER = logging.getLogger(__name__)
 
 
 def read_tbt(file_path: Union[str, Path], is_tracking_data: bool = False) -> TbtData:

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # TFS-Pandas documentation build configuration file, created by
 # sphinx-quickstart on Tue Feb  6 12:10:18 2018.
@@ -90,7 +89,7 @@ author = ABOUT_TBT["__author__"]
 
 # Override link in 'Edit on Github'
 rst_prolog = f"""
-:github_url: {ABOUT_TBT['__url__']}
+:github_url: {ABOUT_TBT["__url__"]}
 """
 
 # The version info for the project you're documenting, acts as replacement for
@@ -120,6 +119,9 @@ pygments_style = "sphinx"
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
+# Activate nitpicky mode for sphinx to warn about missing references
+# nitpicky = True
+
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -130,7 +132,7 @@ html_theme = "sphinx_rtd_theme"
 html_logo = "_static/img/omc_logo.svg"
 html_static_path = ["_static"]
 html_context = {
-#    "css_files": ["_static/css/custom.css"],
+    #    "css_files": ["_static/css/custom.css"],
     "display_github": True,
     # the following are only needed if :github_url: is not set
     "github_user": author,
@@ -141,17 +143,18 @@ html_css_files = [
     "css/custom.css",
 ]
 
-smartquotes_action = "qe"  # renders only quotes and ellipses (...) but not dashes (option: D)
+# renders only quotes and ellipses (...) but not dashes (option: D)
+smartquotes_action = "qe"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
 html_theme_options = {
-    'collapse_navigation': False,
-    'display_version': True,
-    'logo_only': True,
-    'navigation_depth': 1,
+    "collapse_navigation": False,
+    "version_selector": True,  # sphinx-rtd-theme>=3.0, formerly 'display_version'
+    "logo_only": True,
+    "navigation_depth": 2,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -163,11 +166,11 @@ html_theme_options = {
 # pages. Single values can also be put in this dictionary using the
 # -A command-line option of sphinx-build.
 html_context = {
-    'display_github': True,
+    "display_github": True,
     # the following are only needed if :github_url: is not set
-    'github_user': author,
-    'github_repo': project,
-    'github_version': 'master/doc/',
+    "github_user": author,
+    "github_repo": project,
+    "github_version": "master/doc/",
 }
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -207,7 +210,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "turn_by_turn.tex", "turn_by_turn Documentation", "pyLHC/OMC-TEAM", "manual"),
+    (
+        master_doc,
+        "turn_by_turn.tex",
+        "turn_by_turn Documentation",
+        "pyLHC/OMC-TEAM",
+        "manual",
+    ),
 ]
 
 # -- Options for manual page output ---------------------------------------
@@ -232,3 +241,19 @@ texinfo_documents = [
         "Miscellaneous",
     ),
 ]
+
+# -- Instersphinx Configuration ----------------------------------------------
+
+# Example configuration for intersphinx: refer to the Python standard library.
+# use in refs e.g:
+# :ref:`comparison manual <python:comparisons>`
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "matplotlib": ("https://matplotlib.org/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "cpymad": ("https://hibtc.github.io/cpymad/", None),
+    "tfs": ("https://pylhc.github.io/tfs/", None),
+    "sdds": ("https://pylhc.github.io/sdds/", None),
+}

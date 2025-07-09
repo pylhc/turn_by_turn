@@ -2,23 +2,35 @@
 MAD-NG
 ------
 
-This module provides functions to read and write ``MAD-NG`` turn-by-turn measurement files. These files
-are in the **TFS** format.
+This module provides functions to read and write turn-by-turn measurement data
+produced by the ``MAD-NG`` code. MAD-NG stores its tracking data in the **TFS**
+(Table File System) file format.
+
+Data is loaded into the standardized ``TbtData`` structure used by ``turn_by_turn``,
+allowing easy post-processing and conversion between formats.
+
+Dependencies:
+    - Requires the ``tfs-pandas >= 4.0.0`` package for compatibility with MAD-NG
+      features. Earlier versions does not support MAD-NG TFS files.
 
 """
 
 from __future__ import annotations
 
-from datetime import datetime
 import logging
-from pathlib import Path
+from datetime import datetime
+from typing import TYPE_CHECKING
 
 import pandas as pd
-import tfs
+
+if TYPE_CHECKING:
+    from pathlib import Path  # Only used for type hinting
+
+    import tfs
 
 from turn_by_turn.structures import TbtData, TransverseData
 
-LOGGER = logging.getLogger()
+LOGGER = logging.getLogger(__name__)
 
 # Define the column names in the TFS file
 NAME = "name"
@@ -36,21 +48,69 @@ REFCOL = "refcol"
 
 def read_tbt(file_path: str | Path) -> TbtData:
     """
-    Reads turn-by-turn data from the ``MAD-NG`` **TFS** format file.
+    Read turn-by-turn data from a MAD-NG TFS file.
+
+    Loads the TFS file using ``tfs-pandas`` and converts its contents into a
+    ``TbtData`` object for use with the ``turn_by_turn`` toolkit.
 
     Args:
-        file_path (str | Path): path to the turn-by-turn measurement file.
+        file_path (str | Path): Path to the MAD-NG TFS measurement file.
 
     Returns:
-        A ``TbTData`` object with the loaded data.
+        TbtData: The loaded turn-by-turn data.
+
+    Raises:
+        ImportError: If the ``tfs-pandas`` package is not installed.
     """
+    try:
+        import tfs
+    except ImportError as e:
+        raise ImportError(
+            "The 'tfs' package is required to read MAD-NG TFS files. "
+            "Install it with: pip install 'turn_by_turn[madng]'"
+        ) from e
+
     LOGGER.debug("Starting to read TBT data from dataframe")
     df = tfs.read(file_path)
+    return convert_to_tbt(df)
+
+
+def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
+    """
+    Convert a TFS or pandas DataFrame to a ``TbtData`` object.
+
+    This function parses the required turn-by-turn columns, reconstructs the
+    particle-by-particle tracking data, and returns a ``TbtData`` instance
+    that can be written or converted to other formats.
+
+    Args:
+        df (pd.DataFrame | TfsDataFrame):
+            DataFrame containing MAD-NG turn-by-turn tracking data.
+
+    Returns:
+        TbtData: The extracted and structured turn-by-turn data.
+
+    Raises:
+        TypeError: If the input is not a recognized DataFrame type.
+        ValueError: If the data structure is inconsistent (e.g., lost particles).
+    """
 
     # Get the date and time from the headers (return None if not found)
-    date_str = df.headers.get(DATE)
-    time_str = df.headers.get(TIME)
-    
+    try:
+        import tfs
+
+        is_tfs_df = isinstance(df, tfs.TfsDataFrame)
+    except ImportError:
+        LOGGER.debug("The 'tfs' package is not installed. Assuming a pandas DataFrame.")
+        is_tfs_df = False
+
+    if is_tfs_df:
+        date_str = df.headers.get(DATE)
+        time_str = df.headers.get(TIME)
+    else:
+        date_str = df.attrs.get(DATE)
+        time_str = df.attrs.get(TIME)
+
     # Combine the date and time into a datetime object
     date = None
     if date_str and time_str:
@@ -70,17 +130,19 @@ def read_tbt(file_path: str | Path) -> TbtData:
     # Check if the number of observed points is consistent for all particles/turns
     if len(df[NAME]) / nturns / npart != num_observables:
         raise ValueError(
-            "The number of BPMs (or observed points) is not consistent for all particles/turns. Simulation may have lost particles."
+            "The number of observed points is not consistent for all particles/turns. "
+            "Simulation may have lost particles."
         )
 
     matrices = []
-    bunch_ids = range(1, npart + 1)  # Particle IDs start from 1 (not 0)
 
-    for particle_id in bunch_ids:
+    # Particle IDs start from 1, but we use 0-based indexing in Python
+    particle_ids = range(npart)
+    for particle_id in particle_ids:
         LOGGER.info(f"Processing particle ID: {particle_id}")
 
         # Filter the dataframe for the current particle
-        df_particle = df.loc[particle_id]
+        df_particle = df.loc[particle_id + 1]
 
         # Create a dictionary of the TransverseData fields
         tracking_data_dict = {
@@ -99,17 +161,32 @@ def read_tbt(file_path: str | Path) -> TbtData:
         matrices.append(TransverseData(**tracking_data_dict))
 
     LOGGER.debug("Finished reading TBT data")
-    return TbtData(matrices=matrices, bunch_ids=list(bunch_ids), nturns=nturns, date=date)
+    return TbtData(
+        matrices=matrices, bunch_ids=list(particle_ids), nturns=nturns, date=date
+    )
 
 
 def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
     """
-    Writes turn-by-turn data to a TFS file for MAD-NG.
+    Write turn-by-turn data to a MAD-NG TFS file.
+
+    Takes a ``TbtData`` object and writes its contents to disk in the standard
+    TFS format used by MAD-NG, including relevant headers (date, time, origin).
 
     Args:
-        tbt_data (TbtData): Turn-by-turn data to write.
-        file_path (str | Path): Target file path.
+        output_path (str | Path): Destination file path for the TFS file.
+        tbt_data (TbtData): The turn-by-turn data to write.
+
+    Raises:
+        ImportError: If the ``tfs-pandas`` package is not installed.
     """
+    try:
+        import tfs
+    except ImportError as e:
+        raise ImportError(
+            "The 'tfs' package is required to write MAD-NG TFS files. Install it with: pip install 'turn_by_turn[madng]'"
+        ) from e
+
     planes = [plane.lower() for plane in TransverseData.fieldnames()]  # x, y
     plane_dfs = {plane: [] for plane in planes}
 
@@ -134,7 +211,7 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
             )
 
             # Add the particle ID column
-            particle_df[PARTICLE_ID] = particle_id
+            particle_df[PARTICLE_ID] = particle_id + 1
 
             # Convert the turn column to integer and increment by 1 (MAD-NG uses 1-based indexing)
             particle_df[TURN] = particle_df[TURN].astype(int) + 1

@@ -29,7 +29,6 @@ requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3 :: Only",
@@ -48,14 +47,26 @@ dependencies = [
     "pandas >= 2.1",
     "sdds >= 0.4",
     "h5py >= 2.9",
-    "tfs-pandas >= 4.0.0", # for madng (could be an optional dependency)
 ]
 
 [project.optional-dependencies]
+madng = [
+    "tfs-pandas >= 4.0.0",   # for reading MAD-NG files (Could do everything in memory with just pandas)
+]
+
+xtrack = [
+    "xtrack >= 0.84.7",      # for xtrack
+    "setuptools >= 65",      # for xtrack
+    "xpart >= 0.23.0",       # for xtrack
+]
+
 test = [
     "pytest>=7.0",
     "pytest-cov>=2.9",
+    "turn_by_turn[madng]",
+    "turn_by_turn[xtrack]",
 ]
+
 doc = [
     "sphinx >= 7.0",
     "sphinx_rtd_theme >= 2.0",
@@ -64,6 +75,8 @@ doc = [
 all = [
     "turn_by_turn[test]",
     "turn_by_turn[doc]",
+    "turn_by_turn[madng]",
+    "turn_by_turn[xtrack]",
 ]
 
 [project.urls]
