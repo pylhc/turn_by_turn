@@ -1,0 +1,298 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>turn_by_turn.xtrack_line &mdash; turn_by_turn 0.9.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=988d0652" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/omc_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#io">IO</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#reading-data">Reading Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#writing-data">Writing Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#supported-modules-and-limitations">Supported Modules and Limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#api">API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#structures">Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#utils">Utils</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Readers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html">DOROS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#esrf">ESRF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#iota">Iota</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#lhc">LHC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#sps">SPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#ptc">PTC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#trackone">Trackone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#mad-ng">MAD-NG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#xtrack-line">XTRACK_LINE</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">turn_by_turn</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">turn_by_turn.xtrack_line</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for turn_by_turn.xtrack_line</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">XTRACK_LINE</span>
+<span class="sd">-----------</span>
+
+<span class="sd">This module provides functions to convert tracking results from an ``xtrack.Line``</span>
+<span class="sd">into the standardized ``TbtData`` format used by ``turn_by_turn``.</span>
+
+<span class="sd">Prerequisites for using ``convert_to_tbt``:</span>
+
+<span class="sd">  1. The input ``Line`` must contain one or more ``ParticlesMonitor`` elements</span>
+<span class="sd">     positioned at each location where turn-by-turn data is required (e.g., all BPMs).</span>
+
+<span class="sd">     A valid monitor setup involves:</span>
+
+<span class="sd">       - Placing a ``xt.ParticlesMonitor`` instance in the line&#39;s element sequence</span>
+<span class="sd">         at all the places you would like to observe.</span>
+<span class="sd">       - Configuring each monitor with identical settings:</span>
+
+<span class="sd">           * ``start_at_turn`` (first turn to record, usually 0)</span>
+<span class="sd">           * ``stop_at_turn`` (The total number of turns to record, e.g., 100)</span>
+<span class="sd">           * ``num_particles`` (number of tracked particles)</span>
+
+<span class="sd">     If any monitor is configured with different parameters, ``convert_to_tbt``</span>
+<span class="sd">     will either find no data or raise an inconsistency error.</span>
+
+<span class="sd">     Also, if you specify more turns than were actually tracked, the resulting</span>
+<span class="sd">     TBT data will include all turns up to the monitor&#39;s configured limit.</span>
+<span class="sd">     This may result in extra rows filled with zeros for turns where no real</span>
+<span class="sd">     data was recorded, which might not be desirable for your analysis.</span>
+
+<span class="sd">  2. Before conversion, you must:</span>
+
+<span class="sd">       - Build particles with the desired initial coordinates</span>
+<span class="sd">         (using ``line.build_particles(...)``).</span>
+<span class="sd">       - Track those particles through the line for the intended number of turns</span>
+<span class="sd">         (using ``line.track(..., num_turns=num_turns)``).</span>
+
+<span class="sd">Once these conditions are met, pass the tracked ``Line`` to ``convert_to_tbt`` to</span>
+<span class="sd">extract the data from each particle monitor into a ``TbtData`` object.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.structures</span><span class="w"> </span><span class="kn">import</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">TransverseData</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">xtrack</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xt</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="convert_to_tbt">
+<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.xtrack_line.convert_to_tbt">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_to_tbt</span><span class="p">(</span><span class="n">xline</span><span class="p">:</span> <span class="n">xt</span><span class="o">.</span><span class="n">Line</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert tracking results from an ``xtrack`` Line into a ``TbtData`` object.</span>
+
+<span class="sd">    This function extracts all ``ParticlesMonitor`` elements found in the Line,</span>
+<span class="sd">    verifies they contain consistent turn-by-turn data, and assembles the results</span>
+<span class="sd">    into the standard ``TbtData`` format. One ``TransverseData`` matrix is created</span>
+<span class="sd">    per tracked particle.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        xline (Line): An ``xtrack.Line`` containing at least one ``ParticlesMonitor``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        TbtData: The extracted turn-by-turn data for all particles and monitors.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ImportError: If the ``xtrack`` library is not installed.</span>
+<span class="sd">        TypeError: If the input is not a valid ``xtrack.Line``.</span>
+<span class="sd">        ValueError: If no monitors are found or data is inconsistent.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">xtrack</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xt</span>
+    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s2">&quot;The &#39;xtrack&#39; package is required to convert xtrack Line objects. Install it with: pip install &#39;turn_by_turn[xtrack]&#39;&quot;</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xline</span><span class="p">,</span> <span class="n">xt</span><span class="o">.</span><span class="n">Line</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected an xtrack Line object, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">xline</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Collect monitor names and monitor objects in order from the line</span>
+    <span class="n">monitor_pairs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">elem</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xline</span><span class="o">.</span><span class="n">element_names</span><span class="p">,</span> <span class="n">xline</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">xt</span><span class="o">.</span><span class="n">ParticlesMonitor</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="c1"># Check that we have at least one monitor</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">monitor_pairs</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;No ParticlesMonitor found in the Line. Please add a ParticlesMonitor to the Line.&quot;</span>
+        <span class="p">)</span>
+    <span class="n">monitor_names</span><span class="p">,</span> <span class="n">monitors</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">monitor_pairs</span><span class="p">)</span>
+
+    <span class="c1"># First check that no particles were lost during tracking. There will be trailing</span>
+    <span class="c1"># zeros in the data if particles were lost. This might be difficult to detect.</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span>
+        <span class="n">mon</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">particle_id</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">mon</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">particle_id</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="n">monitors</span>
+    <span class="p">),</span> <span class="p">(</span>
+        <span class="s2">&quot;Some particles were lost during tracking, which is not supported by this function. &quot;</span>
+        <span class="s2">&quot;Ensure that all particles are tracked through the entire line without loss.&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Check that all monitors have the same number of turns</span>
+    <span class="n">nturns_set</span> <span class="o">=</span> <span class="p">{</span><span class="n">mon</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">at_turn</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="n">monitors</span><span class="p">}</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nturns_set</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Monitors have different number of turns, have you set the monitors with different &#39;start_at_turn&#39; or &#39;stop_at_turn&#39; parameters?&quot;</span>
+        <span class="p">)</span>
+    <span class="n">nturns</span> <span class="o">=</span> <span class="n">nturns_set</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+    <span class="c1"># Check that all monitors have the same number of particles</span>
+    <span class="n">npart_set</span> <span class="o">=</span> <span class="p">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">mon</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">particle_id</span><span class="p">))</span> <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="n">monitors</span><span class="p">}</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">npart_set</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Monitors have different number of particles, maybe some lost particles?&quot;</span>
+        <span class="p">)</span>
+    <span class="n">npart</span> <span class="o">=</span> <span class="n">npart_set</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+    <span class="c1"># Precompute masks for each monitor and particle_id</span>
+    <span class="n">monitor_pid_masks</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">mon</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">particle_id</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">npart</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="n">monitors</span>
+    <span class="p">]</span>
+
+    <span class="n">matrices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Loop over each particle ID (pid)</span>
+    <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npart</span><span class="p">):</span>
+        <span class="c1"># For each plane (e.g., &#39;X&#39;, &#39;Y&#39;), build a DataFrame: rows=BPMs, cols=turns</span>
+        <span class="n">tracking_data_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">TransverseData</span><span class="o">.</span><span class="n">fieldnames</span><span class="p">():</span>
+            <span class="c1"># fmt: off</span>
+            <span class="n">stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="n">mon</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">plane</span><span class="o">.</span><span class="n">lower</span><span class="p">())[</span><span class="n">monitor_pid_masks</span><span class="p">[</span><span class="n">i</span><span class="p">][:,</span> <span class="n">pid</span><span class="p">]]</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mon</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">monitors</span><span class="p">)</span>
+            <span class="p">])</span>
+            <span class="c1"># fmt: on</span>
+            <span class="n">tracking_data_dict</span><span class="p">[</span><span class="n">plane</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="n">stacked</span><span class="p">,</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">monitor_names</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="c1"># Create a TransverseData object for this particle and add to the list</span>
+        <span class="n">matrices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TransverseData</span><span class="p">(</span><span class="o">**</span><span class="n">tracking_data_dict</span><span class="p">))</span>
+
+    <span class="c1"># Return the TbtData object containing all particles&#39; data</span>
+    <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span>
+        <span class="n">matrices</span><span class="o">=</span><span class="n">matrices</span><span class="p">,</span> <span class="n">bunch_ids</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">npart</span><span class="p">)),</span> <span class="n">nturns</span><span class="o">=</span><span class="n">nturns</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="c1"># Added this function to match the interface, but it is not implemented.</span>
+<div class="viewcode-block" id="read_tbt">
+<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.xtrack_line.read_tbt">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_tbt</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Not implemented.</span>
+
+<span class="sd">    Reading TBT data directly from files is not supported for xtrack.</span>
+<span class="sd">    Use ``convert_to_tbt`` to convert an in-memory ``xtrack.Line`` instead.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+        <span class="s2">&quot;Reading TBT data from xtrack Line files is not implemented.&quot;</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

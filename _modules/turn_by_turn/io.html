@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.io &mdash; turn_by_turn 0.8.0 documentation</title>
+  <title>turn_by_turn.io &mdash; turn_by_turn 0.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=988d0652" />
@@ -13,7 +13,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=486e5634"></script>
+      <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -44,7 +44,13 @@
               <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Constants</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#io">IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#io">IO</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#reading-data">Reading Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#writing-data">Writing Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#supported-modules-and-limitations">Supported Modules and Limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#api">API</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#structures">Structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#utils">Utils</a></li>
 </ul>
@@ -58,6 +64,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#ptc">PTC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#trackone">Trackone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#mad-ng">MAD-NG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#xtrack-line">XTRACK_LINE</a></li>
 </ul>
 
         </div>
@@ -89,43 +96,142 @@
 <span class="sd">IO</span>
 <span class="sd">--</span>
 
-<span class="sd">This module contains high-level I/O functions to read and write turn-by-turn data objects in different</span>
-<span class="sd">formats. While data can be loaded from the formats of different machines / codes, each format getting its</span>
-<span class="sd">own reader module, writing functionality is at the moment always done in the ``LHC``&#39;s **SDDS** format.</span>
+<span class="sd">This module contains high-level I/O functions to read and write turn-by-turn data objects to and from different formats.</span>
+
+<span class="sd">Reading Data</span>
+<span class="sd">============</span>
+<span class="sd">Since version ``0.9.0`` of the package, data can be loaded either from file or from in-memory structures exclusive to certain codes (for some tracking simulation in *MAD-NG* or *xtrack*).</span>
+<span class="sd">Two different APIs are provided for these use cases.</span>
+
+<span class="sd">1. **To read from file**, use the ``read_tbt`` function (exported as ``read`` at the package&#39;s level). The file format is detected or specified by the ``datatype`` parameter.</span>
+<span class="sd">2. **To load in-memory data**, use the ``convert_to_tbt`` function (exported as ``convert`` at the package&#39;s level). This is valid for tracking simulation results from e.g. *xtrack* or sent back by *MAD-NG*.</span>
+
+<span class="sd">In both cases, the returned value is a structured ``TbtData`` object.</span>
+
+<span class="sd">Writing Data</span>
+<span class="sd">============</span>
+<span class="sd">The single entry point for writing to disk is the ``write_tbt`` function (exported as ``write`` at the package&#39;s level). This writes a ``TbtData`` object to disk, typically in the LHC SDDS format (by default). The output file extension and format are determined by the ``datatype`` argument.</span>
+
+<span class="sd">The following cases arise:</span>
+<span class="sd">- If ``datatype`` is set to ``lhc``, ``sps`` or ``ascii``, the output will be in SDDS format and the file extension will be set to ``.sdds`` if not already present.</span>
+<span class="sd">- If ``datatype`` is set to ``madng``, the output will be in a TFS file (extension ``.tfs`` is recommended).</span>
+<span class="sd">- Other supported datatypes (see ``WRITERS``) will use their respective formats and conventions if implemented.</span>
+
+<span class="sd">The ``datatype`` parameter controls both the output format and any additional options passed to the underlying writer.</span>
+<span class="sd">Should the ``noise`` parameter be used, random noise will be added to the data before writing. A ``seed`` can be provided for reproducibility.</span>
+
+<span class="sd">Example::</span>
+
+<span class="sd">    from turn_by_turn import write</span>
+<span class="sd">    write(&quot;output.sdds&quot;, tbt_data)  # writes in SDDS format by default</span>
+<span class="sd">    write(&quot;output.tfs&quot;, tbt_data, datatype=&quot;madng&quot;)  # writes a TFS file in MAD-NG&#39;s tracking results format</span>
+<span class="sd">    write(&quot;output.sdds&quot;, tbt_data, noise=0.01, seed=42)  # reproducibly adds noise before writing</span>
+
+<span class="sd">While data can be loaded from the formats of different machines/codes (each through its own reader module), writing functionality is at the moment always done in the ``LHC``&#39;s **SDDS** format by default, unless another supported format is specified. The interface is designed to be future-proof and easy to extend for new formats.</span>
+
+
+<span class="sd">Supported Modules and Limitations</span>
+<span class="sd">=================================</span>
+
+<span class="sd">The following table summarizes which modules support disk reading and in-memory conversion, and any important limitations:</span>
+
+<span class="sd">+----------------+---------------------+-----------------------+----------------------------------------------------------+</span>
+<span class="sd">| Module         | Disk Reading        | In-Memory Conversion  | Notes / Limitations                                      |</span>
+<span class="sd">+================+=====================+=======================+==========================================================+</span>
+<span class="sd">| lhc            | Yes (SDDS, ASCII)   | No                    | Reads LHC SDDS and legacy ASCII files.                   |</span>
+<span class="sd">+----------------+---------------------+-----------------------+----------------------------------------------------------+</span>
+<span class="sd">| sps            | Yes (SDDS, ASCII)   | No                    | Reads SPS SDDS and legacy ASCII files.                   |</span>
+<span class="sd">+----------------+---------------------+-----------------------+----------------------------------------------------------+</span>
+<span class="sd">| doros          | Yes (HDF5)          | No                    | Reads DOROS HDF5 files.                                  |</span>
+<span class="sd">+----------------+---------------------+-----------------------+----------------------------------------------------------+</span>
+<span class="sd">| madng          | Yes (TFS)           | Yes                   | In-memory: only via pandas/tfs DataFrame.                |</span>
+<span class="sd">+----------------+---------------------+-----------------------+----------------------------------------------------------+</span>
+<span class="sd">| xtrack         | No                  | Yes                   | Only in-memory via xtrack.Line.                          |</span>
+<span class="sd">+----------------+---------------------+-----------------------+----------------------------------------------------------+</span>
+<span class="sd">| ptc            | Yes (trackone)      | No                    | Reads MAD-X PTC trackone files.                          |</span>
+<span class="sd">+----------------+---------------------+-----------------------+----------------------------------------------------------+</span>
+<span class="sd">| esrf           | Yes (Matlab .mat)   | No                    | Experimental/untested.                                   |</span>
+<span class="sd">+----------------+---------------------+-----------------------+----------------------------------------------------------+</span>
+<span class="sd">| iota           | Yes (HDF5)          | No                    | Reads IOTA HDF5 files.                                   |</span>
+<span class="sd">+----------------+---------------------+-----------------------+----------------------------------------------------------+</span>
+<span class="sd">| ascii          | Yes (legacy ASCII)  | No                    | For legacy ASCII files only.                             |</span>
+<span class="sd">+----------------+---------------------+-----------------------+----------------------------------------------------------+</span>
+<span class="sd">| trackone       | Yes (MAD-X)         | No                    | Reads MAD-X trackone files.                              |</span>
+<span class="sd">+----------------+---------------------+-----------------------+----------------------------------------------------------+</span>
+
+<span class="sd">- Only ``madng`` and ``xtrack`` support in-memory conversion.</span>
+<span class="sd">- Most modules are for disk reading only.</span>
+<span class="sd">- Some modules (e.g., ``esrf``) are experimental or have limited support.</span>
+
+<span class="sd">API</span>
+<span class="sd">===</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn</span><span class="w"> </span><span class="kn">import</span> <span class="n">ascii</span><span class="p">,</span> <span class="n">doros</span><span class="p">,</span> <span class="n">esrf</span><span class="p">,</span> <span class="n">iota</span><span class="p">,</span> <span class="n">lhc</span><span class="p">,</span> <span class="n">ptc</span><span class="p">,</span> <span class="n">sps</span><span class="p">,</span> <span class="n">trackone</span><span class="p">,</span> <span class="n">madng</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ascii</span><span class="p">,</span>  <span class="c1"># noqa: A004</span>
+    <span class="n">doros</span><span class="p">,</span>
+    <span class="n">esrf</span><span class="p">,</span>
+    <span class="n">iota</span><span class="p">,</span>
+    <span class="n">lhc</span><span class="p">,</span>
+    <span class="n">madng</span><span class="p">,</span>
+    <span class="n">ptc</span><span class="p">,</span>
+    <span class="n">sps</span><span class="p">,</span>
+    <span class="n">trackone</span><span class="p">,</span>
+    <span class="n">xtrack_line</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.ascii</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_ascii</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataTypeError</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.structures</span><span class="w"> </span><span class="kn">import</span> <span class="n">TbtData</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_noise_to_tbt</span>
 
-<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="n">TBT_MODULES</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-    <span class="n">lhc</span><span class="o">=</span><span class="n">lhc</span><span class="p">,</span>
-    <span class="n">doros</span><span class="o">=</span><span class="n">doros</span><span class="p">,</span>
-    <span class="n">doros_positions</span><span class="o">=</span><span class="n">doros</span><span class="p">,</span>
-    <span class="n">doros_oscillations</span><span class="o">=</span><span class="n">doros</span><span class="p">,</span>
-    <span class="n">sps</span><span class="o">=</span><span class="n">sps</span><span class="p">,</span>
-    <span class="n">iota</span><span class="o">=</span><span class="n">iota</span><span class="p">,</span>
-    <span class="n">esrf</span><span class="o">=</span><span class="n">esrf</span><span class="p">,</span>
-    <span class="n">ptc</span><span class="o">=</span><span class="n">ptc</span><span class="p">,</span>
-    <span class="n">trackone</span><span class="o">=</span><span class="n">trackone</span><span class="p">,</span>
-    <span class="n">ascii</span><span class="o">=</span><span class="n">ascii</span><span class="p">,</span>
-    <span class="n">madng</span><span class="o">=</span><span class="n">madng</span><span class="p">,</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">xtrack</span><span class="w"> </span><span class="kn">import</span> <span class="n">Line</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.structures</span><span class="w"> </span><span class="kn">import</span> <span class="n">TbtData</span>
+
+<span class="n">TBT_MODULES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;lhc&quot;</span><span class="p">:</span> <span class="n">lhc</span><span class="p">,</span>
+    <span class="s2">&quot;doros&quot;</span><span class="p">:</span> <span class="n">doros</span><span class="p">,</span>
+    <span class="s2">&quot;doros_positions&quot;</span><span class="p">:</span> <span class="n">doros</span><span class="p">,</span>
+    <span class="s2">&quot;doros_oscillations&quot;</span><span class="p">:</span> <span class="n">doros</span><span class="p">,</span>
+    <span class="s2">&quot;sps&quot;</span><span class="p">:</span> <span class="n">sps</span><span class="p">,</span>
+    <span class="s2">&quot;iota&quot;</span><span class="p">:</span> <span class="n">iota</span><span class="p">,</span>
+    <span class="s2">&quot;esrf&quot;</span><span class="p">:</span> <span class="n">esrf</span><span class="p">,</span>
+    <span class="s2">&quot;ptc&quot;</span><span class="p">:</span> <span class="n">ptc</span><span class="p">,</span>
+    <span class="s2">&quot;trackone&quot;</span><span class="p">:</span> <span class="n">trackone</span><span class="p">,</span>
+    <span class="s2">&quot;ascii&quot;</span><span class="p">:</span> <span class="n">ascii</span><span class="p">,</span>
+    <span class="s2">&quot;madng&quot;</span><span class="p">:</span> <span class="n">madng</span><span class="p">,</span>
+    <span class="s2">&quot;xtrack&quot;</span><span class="p">:</span> <span class="n">xtrack_line</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># Modules supporting in-memory conversion to TbtData (not file readers)</span>
+<span class="n">TBT_CONVERTERS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;madng&quot;</span><span class="p">,</span> <span class="s2">&quot;xtrack&quot;</span><span class="p">)</span>
+
+<span class="c1"># implemented writers</span>
+<span class="n">WRITERS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;lhc&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sps&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;doros&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;doros_positions&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;doros_oscillations&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ascii&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;madng&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">WRITERS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;lhc&quot;</span><span class="p">,</span> <span class="s2">&quot;sps&quot;</span><span class="p">,</span> <span class="s2">&quot;doros&quot;</span><span class="p">,</span> <span class="s2">&quot;doros_positions&quot;</span><span class="p">,</span> <span class="s2">&quot;doros_oscillations&quot;</span><span class="p">,</span> <span class="s2">&quot;ascii&quot;</span><span class="p">,</span> <span class="s2">&quot;madng&quot;</span><span class="p">)</span>  <span class="c1"># implemented writers</span>
 
 <span class="n">write_lhc_ascii</span> <span class="o">=</span> <span class="n">write_ascii</span>  <span class="c1"># Backwards compatibility &lt;0.4</span>
 
 
 <div class="viewcode-block" id="read_tbt">
 <a class="viewcode-back" href="../../modules/index.html#turn_by_turn.io.read_tbt">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">datatype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;lhc&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">datatype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;lhc&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calls the appropriate loader for the provided matrices type and returns a ``TbtData`` object of the</span>
 <span class="sd">    loaded matrices.</span>
@@ -152,9 +258,37 @@
 
 
 
+<span class="c1"># Note: I don&#39;t specify tfs.TfsDataFrame as this inherits from pandas.DataFrame</span>
+<div class="viewcode-block" id="convert_to_tbt">
+<a class="viewcode-back" href="../../modules/index.html#turn_by_turn.io.convert_to_tbt">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_to_tbt</span><span class="p">(</span><span class="n">file_data</span><span class="p">:</span> <span class="n">DataFrame</span> <span class="o">|</span> <span class="n">Line</span><span class="p">,</span> <span class="n">datatype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;xtrack&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a pandas or tfs DataFrame (MAD-NG) or a Line (XTrack) to a TbtData object.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        file_data (Union[DataFrame, xt.Line]): The data to convert.</span>
+<span class="sd">        datatype (str): The type of the data, either &#39;xtrack&#39; or &#39;madng&#39;. Defaults to &#39;xtrack&#39;.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        TbtData: The converted TbtData object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">datatype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TBT_CONVERTERS</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">DataTypeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Only </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TBT_CONVERTERS</span><span class="p">)</span><span class="si">}</span><span class="s2"> converters are implemented for now.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">module</span> <span class="o">=</span> <span class="n">TBT_MODULES</span><span class="p">[</span><span class="n">datatype</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="n">module</span><span class="o">.</span><span class="n">convert_to_tbt</span><span class="p">(</span><span class="n">file_data</span><span class="p">)</span>  <span class="c1"># No additional arguments as no doros.</span></div>
+
+
+
 <div class="viewcode-block" id="write_tbt">
 <a class="viewcode-back" href="../../modules/index.html#turn_by_turn.io.write_tbt">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">write_tbt</span><span class="p">(</span><span class="n">output_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datatype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;lhc&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_tbt</span><span class="p">(</span>
+    <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span>
+    <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">datatype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;lhc&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write a ``TbtData`` object&#39;s data to file, in the ``LHC``&#39;s **SDDS** format.</span>
 
@@ -163,26 +297,29 @@
 <span class="sd">        tbt_data (TbtData): the ``TbtData`` object to write to disk.</span>
 <span class="sd">        noise (float): optional noise to add to the data.</span>
 <span class="sd">        seed (int): A given seed to initialise the RNG if one chooses to add noise. This is useful</span>
-<span class="sd">            to ensure the exact same RNG state across operations. Defaults to `None`, which means</span>
+<span class="sd">            to ensure the exact same RNG state across operations. Defaults to ``None``, which means</span>
 <span class="sd">            any new RNG operation in noise addition will pull fresh entropy from the OS.</span>
 <span class="sd">        datatype (str): type of matrices in the file, determines the reader to use. Case-insensitive,</span>
 <span class="sd">            defaults to ``lhc``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">datatype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">WRITERS</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">DataTypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Only </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">WRITERS</span><span class="p">)</span><span class="si">}</span><span class="s2"> writers are implemented for now.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">DataTypeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Only </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">WRITERS</span><span class="p">)</span><span class="si">}</span><span class="s2"> writers are implemented for now.&quot;</span>
+        <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">datatype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;lhc&quot;</span><span class="p">,</span> <span class="s2">&quot;sps&quot;</span><span class="p">,</span> <span class="s2">&quot;ascii&quot;</span><span class="p">)</span> <span class="ow">and</span>  <span class="n">output_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">!=</span> <span class="s2">&quot;.sdds&quot;</span><span class="p">:</span>  
-        <span class="c1"># I would like to remove this, but I&#39;m afraid of compatibility issues with omc3 (jdilly, 2024) </span>
+    <span class="k">if</span> <span class="n">datatype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;lhc&quot;</span><span class="p">,</span> <span class="s2">&quot;sps&quot;</span><span class="p">,</span> <span class="s2">&quot;ascii&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">output_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">!=</span> <span class="s2">&quot;.sdds&quot;</span><span class="p">:</span>
+        <span class="c1"># I would like to remove this, but I&#39;m afraid of compatibility issues with omc3 (jdilly, 2024)</span>
         <span class="n">output_path</span> <span class="o">=</span> <span class="n">output_path</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.sdds&quot;</span><span class="p">)</span>
 
+    <span class="c1"># If the datatype is not in the list of writers, we raise an error. Therefore the datatype</span>
+    <span class="c1"># must be in the TBT_MODULES dictionary -&gt; No need for a try-except block here.</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">module</span> <span class="o">=</span> <span class="n">TBT_MODULES</span><span class="p">[</span><span class="n">datatype</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
-    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-        <span class="n">LOGGER</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Unsupported datatype &#39;</span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">&#39; was provided, should be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">TBT_MODULES</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">DataTypeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Invalid datatype: </span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">. Ensure it is one of </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TBT_MODULES</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
         <span class="p">)</span>
-        <span class="k">raise</span> <span class="n">DataTypeError</span><span class="p">(</span><span class="n">datatype</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">noise</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">tbt_data</span> <span class="o">=</span> <span class="n">add_noise_to_tbt</span><span class="p">(</span><span class="n">tbt_data</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
@@ -193,19 +330,18 @@
 <div class="viewcode-block" id="additional_args">
 <a class="viewcode-back" href="../../modules/index.html#turn_by_turn.io.additional_args">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">additional_args</span><span class="p">(</span><span class="n">datatype</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Additional parameters to be added to the reader/writer function. </span>
-<span class="sd">        </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Additional parameters to be added to the reader/writer function.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        datatype (str): Type of the data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">datatype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;doros_oscillations&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="n">doros</span><span class="o">.</span><span class="n">DataKeys</span><span class="o">.</span><span class="n">OSCILLATIONS</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;data_type&quot;</span><span class="p">:</span> <span class="n">doros</span><span class="o">.</span><span class="n">DataKeys</span><span class="o">.</span><span class="n">OSCILLATIONS</span><span class="p">}</span>
 
     <span class="k">if</span> <span class="n">datatype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;doros_positions&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data_type</span><span class="o">=</span><span class="n">doros</span><span class="o">.</span><span class="n">DataKeys</span><span class="o">.</span><span class="n">POSITIONS</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;data_type&quot;</span><span class="p">:</span> <span class="n">doros</span><span class="o">.</span><span class="n">DataKeys</span><span class="o">.</span><span class="n">POSITIONS</span><span class="p">}</span>
 
-    <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span></div>
-
+    <span class="k">return</span> <span class="p">{}</span></div>
 
 </pre></div>
 

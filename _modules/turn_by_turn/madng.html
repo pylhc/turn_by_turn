@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.madng &mdash; turn_by_turn 0.8.0 documentation</title>
+  <title>turn_by_turn.madng &mdash; turn_by_turn 0.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=988d0652" />
@@ -13,7 +13,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=486e5634"></script>
+      <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -44,7 +44,13 @@
               <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Constants</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#io">IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#io">IO</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#reading-data">Reading Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#writing-data">Writing Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#supported-modules-and-limitations">Supported Modules and Limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#api">API</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#structures">Structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#utils">Utils</a></li>
 </ul>
@@ -58,6 +64,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#ptc">PTC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#trackone">Trackone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#mad-ng">MAD-NG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#xtrack-line">XTRACK_LINE</a></li>
 </ul>
 
         </div>
@@ -89,23 +96,35 @@
 <span class="sd">MAD-NG</span>
 <span class="sd">------</span>
 
-<span class="sd">This module provides functions to read and write ``MAD-NG`` turn-by-turn measurement files. These files</span>
-<span class="sd">are in the **TFS** format.</span>
+<span class="sd">This module provides functions to read and write turn-by-turn measurement data</span>
+<span class="sd">produced by the ``MAD-NG`` code. MAD-NG stores its tracking data in the **TFS**</span>
+<span class="sd">(Table File System) file format.</span>
+
+<span class="sd">Data is loaded into the standardized ``TbtData`` structure used by ``turn_by_turn``,</span>
+<span class="sd">allowing easy post-processing and conversion between formats.</span>
+
+<span class="sd">Dependencies:</span>
+<span class="sd">    - Requires the ``tfs-pandas &gt;= 4.0.0`` package for compatibility with MAD-NG</span>
+<span class="sd">      features. Earlier versions does not support MAD-NG TFS files.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">tfs</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>  <span class="c1"># Only used for type hinting</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">tfs</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.structures</span><span class="w"> </span><span class="kn">import</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">TransverseData</span>
 
-<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="c1"># Define the column names in the TFS file</span>
 <span class="n">NAME</span> <span class="o">=</span> <span class="s2">&quot;name&quot;</span>
@@ -125,21 +144,72 @@
 <a class="viewcode-back" href="../../readers/index.html#turn_by_turn.madng.read_tbt">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Reads turn-by-turn data from the ``MAD-NG`` **TFS** format file.</span>
+<span class="sd">    Read turn-by-turn data from a MAD-NG TFS file.</span>
+
+<span class="sd">    Loads the TFS file using ``tfs-pandas`` and converts its contents into a</span>
+<span class="sd">    ``TbtData`` object for use with the ``turn_by_turn`` toolkit.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        file_path (str | Path): path to the turn-by-turn measurement file.</span>
+<span class="sd">        file_path (str | Path): Path to the MAD-NG TFS measurement file.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        A ``TbTData`` object with the loaded data.</span>
+<span class="sd">        TbtData: The loaded turn-by-turn data.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ImportError: If the ``tfs-pandas`` package is not installed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">tfs</span>
+    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s2">&quot;The &#39;tfs&#39; package is required to read MAD-NG TFS files. &quot;</span>
+            <span class="s2">&quot;Install it with: pip install &#39;turn_by_turn[madng]&#39;&quot;</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+
     <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Starting to read TBT data from dataframe&quot;</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">tfs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">convert_to_tbt</span><span class="p">(</span><span class="n">df</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="convert_to_tbt">
+<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.madng.convert_to_tbt">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_to_tbt</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="n">tfs</span><span class="o">.</span><span class="n">TfsDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a TFS or pandas DataFrame to a ``TbtData`` object.</span>
+
+<span class="sd">    This function parses the required turn-by-turn columns, reconstructs the</span>
+<span class="sd">    particle-by-particle tracking data, and returns a ``TbtData`` instance</span>
+<span class="sd">    that can be written or converted to other formats.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df (pd.DataFrame | TfsDataFrame):</span>
+<span class="sd">            DataFrame containing MAD-NG turn-by-turn tracking data.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        TbtData: The extracted and structured turn-by-turn data.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TypeError: If the input is not a recognized DataFrame type.</span>
+<span class="sd">        ValueError: If the data structure is inconsistent (e.g., lost particles).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Get the date and time from the headers (return None if not found)</span>
-    <span class="n">date_str</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">DATE</span><span class="p">)</span>
-    <span class="n">time_str</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">TIME</span><span class="p">)</span>
-    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">tfs</span>
+
+        <span class="n">is_tfs_df</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tfs</span><span class="o">.</span><span class="n">TfsDataFrame</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;The &#39;tfs&#39; package is not installed. Assuming a pandas DataFrame.&quot;</span><span class="p">)</span>
+        <span class="n">is_tfs_df</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">is_tfs_df</span><span class="p">:</span>
+        <span class="n">date_str</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">DATE</span><span class="p">)</span>
+        <span class="n">time_str</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">TIME</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">date_str</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">DATE</span><span class="p">)</span>
+        <span class="n">time_str</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">TIME</span><span class="p">)</span>
+
     <span class="c1"># Combine the date and time into a datetime object</span>
     <span class="n">date</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">date_str</span> <span class="ow">and</span> <span class="n">time_str</span><span class="p">:</span>
@@ -159,17 +229,19 @@
     <span class="c1"># Check if the number of observed points is consistent for all particles/turns</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">NAME</span><span class="p">])</span> <span class="o">/</span> <span class="n">nturns</span> <span class="o">/</span> <span class="n">npart</span> <span class="o">!=</span> <span class="n">num_observables</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;The number of BPMs (or observed points) is not consistent for all particles/turns. Simulation may have lost particles.&quot;</span>
+            <span class="s2">&quot;The number of observed points is not consistent for all particles/turns. &quot;</span>
+            <span class="s2">&quot;Simulation may have lost particles.&quot;</span>
         <span class="p">)</span>
 
     <span class="n">matrices</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">bunch_ids</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">npart</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Particle IDs start from 1 (not 0)</span>
 
-    <span class="k">for</span> <span class="n">particle_id</span> <span class="ow">in</span> <span class="n">bunch_ids</span><span class="p">:</span>
+    <span class="c1"># Particle IDs start from 1, but we use 0-based indexing in Python</span>
+    <span class="n">particle_ids</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">npart</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">particle_id</span> <span class="ow">in</span> <span class="n">particle_ids</span><span class="p">:</span>
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing particle ID: </span><span class="si">{</span><span class="n">particle_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Filter the dataframe for the current particle</span>
-        <span class="n">df_particle</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">particle_id</span><span class="p">]</span>
+        <span class="n">df_particle</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">particle_id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
 
         <span class="c1"># Create a dictionary of the TransverseData fields</span>
         <span class="n">tracking_data_dict</span> <span class="o">=</span> <span class="p">{</span>
@@ -188,7 +260,9 @@
         <span class="n">matrices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TransverseData</span><span class="p">(</span><span class="o">**</span><span class="n">tracking_data_dict</span><span class="p">))</span>
 
     <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finished reading TBT data&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span><span class="n">matrices</span><span class="o">=</span><span class="n">matrices</span><span class="p">,</span> <span class="n">bunch_ids</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">bunch_ids</span><span class="p">),</span> <span class="n">nturns</span><span class="o">=</span><span class="n">nturns</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span>
+        <span class="n">matrices</span><span class="o">=</span><span class="n">matrices</span><span class="p">,</span> <span class="n">bunch_ids</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">particle_ids</span><span class="p">),</span> <span class="n">nturns</span><span class="o">=</span><span class="n">nturns</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">date</span>
+    <span class="p">)</span></div>
 
 
 
@@ -196,12 +270,25 @@
 <a class="viewcode-back" href="../../readers/index.html#turn_by_turn.madng.write_tbt">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">write_tbt</span><span class="p">(</span><span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Writes turn-by-turn data to a TFS file for MAD-NG.</span>
+<span class="sd">    Write turn-by-turn data to a MAD-NG TFS file.</span>
+
+<span class="sd">    Takes a ``TbtData`` object and writes its contents to disk in the standard</span>
+<span class="sd">    TFS format used by MAD-NG, including relevant headers (date, time, origin).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        tbt_data (TbtData): Turn-by-turn data to write.</span>
-<span class="sd">        file_path (str | Path): Target file path.</span>
+<span class="sd">        output_path (str | Path): Destination file path for the TFS file.</span>
+<span class="sd">        tbt_data (TbtData): The turn-by-turn data to write.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ImportError: If the ``tfs-pandas`` package is not installed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">tfs</span>
+    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s2">&quot;The &#39;tfs&#39; package is required to write MAD-NG TFS files. Install it with: pip install &#39;turn_by_turn[madng]&#39;&quot;</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+
     <span class="n">planes</span> <span class="o">=</span> <span class="p">[</span><span class="n">plane</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">TransverseData</span><span class="o">.</span><span class="n">fieldnames</span><span class="p">()]</span>  <span class="c1"># x, y</span>
     <span class="n">plane_dfs</span> <span class="o">=</span> <span class="p">{</span><span class="n">plane</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">planes</span><span class="p">}</span>
 
@@ -226,7 +313,7 @@
             <span class="p">)</span>
 
             <span class="c1"># Add the particle ID column</span>
-            <span class="n">particle_df</span><span class="p">[</span><span class="n">PARTICLE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">particle_id</span>
+            <span class="n">particle_df</span><span class="p">[</span><span class="n">PARTICLE_ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">particle_id</span> <span class="o">+</span> <span class="mi">1</span>
 
             <span class="c1"># Convert the turn column to integer and increment by 1 (MAD-NG uses 1-based indexing)</span>
             <span class="n">particle_df</span><span class="p">[</span><span class="n">TURN</span><span class="p">]</span> <span class="o">=</span> <span class="n">particle_df</span><span class="p">[</span><span class="n">TURN</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>

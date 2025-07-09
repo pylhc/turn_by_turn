@@ -16,4 +16,3 @@
 .. automodule:: turn_by_turn.utils
     :members:
     :noindex:
-

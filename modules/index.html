@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Constants &mdash; turn_by_turn 0.8.0 documentation</title>
+  <title>Constants &mdash; turn_by_turn 0.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=988d0652" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=486e5634"></script>
+      <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -47,7 +47,13 @@
               <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Constants</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#io">IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#io">IO</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#reading-data">Reading Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#writing-data">Writing Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-modules-and-limitations">Supported Modules and Limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api">API</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="#structures">Structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#utils">Utils</a></li>
 </ul>
@@ -61,6 +67,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../readers/index.html#ptc">PTC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../readers/index.html#trackone">Trackone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../readers/index.html#mad-ng">MAD-NG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readers/index.html#xtrack-line">XTRACK_LINE</a></li>
 </ul>
 
         </div>
@@ -94,9 +101,108 @@
 </section>
 <section id="io">
 <h1>IO<a class="headerlink" href="#io" title="Link to this heading"></a></h1>
-<p>This module contains high-level I/O functions to read and write turn-by-turn data objects in different
-formats. While data can be loaded from the formats of different machines / codes, each format getting its
-own reader module, writing functionality is at the moment always done in the <code class="docutils literal notranslate"><span class="pre">LHC</span></code>’s <strong>SDDS</strong> format.</p>
+<p>This module contains high-level I/O functions to read and write turn-by-turn data objects to and from different formats.</p>
+<section id="reading-data">
+<h2>Reading Data<a class="headerlink" href="#reading-data" title="Link to this heading"></a></h2>
+<p>Since version <code class="docutils literal notranslate"><span class="pre">0.9.0</span></code> of the package, data can be loaded either from file or from in-memory structures exclusive to certain codes (for some tracking simulation in <em>MAD-NG</em> or <em>xtrack</em>).
+Two different APIs are provided for these use cases.</p>
+<ol class="arabic simple">
+<li><p><strong>To read from file</strong>, use the <code class="docutils literal notranslate"><span class="pre">read_tbt</span></code> function (exported as <code class="docutils literal notranslate"><span class="pre">read</span></code> at the package’s level). The file format is detected or specified by the <code class="docutils literal notranslate"><span class="pre">datatype</span></code> parameter.</p></li>
+<li><p><strong>To load in-memory data</strong>, use the <code class="docutils literal notranslate"><span class="pre">convert_to_tbt</span></code> function (exported as <code class="docutils literal notranslate"><span class="pre">convert</span></code> at the package’s level). This is valid for tracking simulation results from e.g. <em>xtrack</em> or sent back by <em>MAD-NG</em>.</p></li>
+</ol>
+<p>In both cases, the returned value is a structured <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object.</p>
+</section>
+<section id="writing-data">
+<h2>Writing Data<a class="headerlink" href="#writing-data" title="Link to this heading"></a></h2>
+<p>The single entry point for writing to disk is the <code class="docutils literal notranslate"><span class="pre">write_tbt</span></code> function (exported as <code class="docutils literal notranslate"><span class="pre">write</span></code> at the package’s level). This writes a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object to disk, typically in the LHC SDDS format (by default). The output file extension and format are determined by the <code class="docutils literal notranslate"><span class="pre">datatype</span></code> argument.</p>
+<p>The following cases arise:
+- If <code class="docutils literal notranslate"><span class="pre">datatype</span></code> is set to <code class="docutils literal notranslate"><span class="pre">lhc</span></code>, <code class="docutils literal notranslate"><span class="pre">sps</span></code> or <code class="docutils literal notranslate"><span class="pre">ascii</span></code>, the output will be in SDDS format and the file extension will be set to <code class="docutils literal notranslate"><span class="pre">.sdds</span></code> if not already present.
+- If <code class="docutils literal notranslate"><span class="pre">datatype</span></code> is set to <code class="docutils literal notranslate"><span class="pre">madng</span></code>, the output will be in a TFS file (extension <code class="docutils literal notranslate"><span class="pre">.tfs</span></code> is recommended).
+- Other supported datatypes (see <code class="docutils literal notranslate"><span class="pre">WRITERS</span></code>) will use their respective formats and conventions if implemented.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">datatype</span></code> parameter controls both the output format and any additional options passed to the underlying writer.
+Should the <code class="docutils literal notranslate"><span class="pre">noise</span></code> parameter be used, random noise will be added to the data before writing. A <code class="docutils literal notranslate"><span class="pre">seed</span></code> can be provided for reproducibility.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn</span><span class="w"> </span><span class="kn">import</span> <span class="n">write</span>
+<span class="n">write</span><span class="p">(</span><span class="s2">&quot;output.sdds&quot;</span><span class="p">,</span> <span class="n">tbt_data</span><span class="p">)</span>  <span class="c1"># writes in SDDS format by default</span>
+<span class="n">write</span><span class="p">(</span><span class="s2">&quot;output.tfs&quot;</span><span class="p">,</span> <span class="n">tbt_data</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="s2">&quot;madng&quot;</span><span class="p">)</span>  <span class="c1"># writes a TFS file in MAD-NG&#39;s tracking results format</span>
+<span class="n">write</span><span class="p">(</span><span class="s2">&quot;output.sdds&quot;</span><span class="p">,</span> <span class="n">tbt_data</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>  <span class="c1"># reproducibly adds noise before writing</span>
+</pre></div>
+</div>
+<p>While data can be loaded from the formats of different machines/codes (each through its own reader module), writing functionality is at the moment always done in the <code class="docutils literal notranslate"><span class="pre">LHC</span></code>’s <strong>SDDS</strong> format by default, unless another supported format is specified. The interface is designed to be future-proof and easy to extend for new formats.</p>
+</section>
+<section id="supported-modules-and-limitations">
+<h2>Supported Modules and Limitations<a class="headerlink" href="#supported-modules-and-limitations" title="Link to this heading"></a></h2>
+<p>The following table summarizes which modules support disk reading and in-memory conversion, and any important limitations:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Module</p></th>
+<th class="head"><p>Disk Reading</p></th>
+<th class="head"><p>In-Memory Conversion</p></th>
+<th class="head"><p>Notes / Limitations</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>lhc</p></td>
+<td><p>Yes (SDDS, ASCII)</p></td>
+<td><p>No</p></td>
+<td><p>Reads LHC SDDS and legacy ASCII files.</p></td>
+</tr>
+<tr class="row-odd"><td><p>sps</p></td>
+<td><p>Yes (SDDS, ASCII)</p></td>
+<td><p>No</p></td>
+<td><p>Reads SPS SDDS and legacy ASCII files.</p></td>
+</tr>
+<tr class="row-even"><td><p>doros</p></td>
+<td><p>Yes (HDF5)</p></td>
+<td><p>No</p></td>
+<td><p>Reads DOROS HDF5 files.</p></td>
+</tr>
+<tr class="row-odd"><td><p>madng</p></td>
+<td><p>Yes (TFS)</p></td>
+<td><p>Yes</p></td>
+<td><p>In-memory: only via pandas/tfs DataFrame.</p></td>
+</tr>
+<tr class="row-even"><td><p>xtrack</p></td>
+<td><p>No</p></td>
+<td><p>Yes</p></td>
+<td><p>Only in-memory via xtrack.Line.</p></td>
+</tr>
+<tr class="row-odd"><td><p>ptc</p></td>
+<td><p>Yes (trackone)</p></td>
+<td><p>No</p></td>
+<td><p>Reads MAD-X PTC trackone files.</p></td>
+</tr>
+<tr class="row-even"><td><p>esrf</p></td>
+<td><p>Yes (Matlab .mat)</p></td>
+<td><p>No</p></td>
+<td><p>Experimental/untested.</p></td>
+</tr>
+<tr class="row-odd"><td><p>iota</p></td>
+<td><p>Yes (HDF5)</p></td>
+<td><p>No</p></td>
+<td><p>Reads IOTA HDF5 files.</p></td>
+</tr>
+<tr class="row-even"><td><p>ascii</p></td>
+<td><p>Yes (legacy ASCII)</p></td>
+<td><p>No</p></td>
+<td><p>For legacy ASCII files only.</p></td>
+</tr>
+<tr class="row-odd"><td><p>trackone</p></td>
+<td><p>Yes (MAD-X)</p></td>
+<td><p>No</p></td>
+<td><p>Reads MAD-X trackone files.</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>Only <code class="docutils literal notranslate"><span class="pre">madng</span></code> and <code class="docutils literal notranslate"><span class="pre">xtrack</span></code> support in-memory conversion.</p></li>
+<li><p>Most modules are for disk reading only.</p></li>
+<li><p>Some modules (e.g., <code class="docutils literal notranslate"><span class="pre">esrf</span></code>) are experimental or have limited support.</p></li>
+</ul>
+</section>
+<section id="api">
+<h2>API<a class="headerlink" href="#api" title="Link to this heading"></a></h2>
+</section>
 </section>
 <dl class="py function">
 <dt class="sig sig-object py">
@@ -105,6 +211,24 @@ own reader module, writing functionality is at the moment always done in the <co
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>datatype</strong> (<em>str</em>) -- Type of the data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.io.</span></span><span class="sig-name descname"><span class="pre">convert_to_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'xtrack'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/io.html#convert_to_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Convert a pandas or tfs DataFrame (MAD-NG) or a Line (XTrack) to a TbtData object.
+:param file_data: The data to convert.
+:type file_data: Union[DataFrame, xt.Line]
+:param datatype: The type of the data, either ‘xtrack’ or ‘madng’. Defaults to ‘xtrack’.
+:type datatype: str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The converted TbtData object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>TbtData</p>
 </dd>
 </dl>
 </dd></dl>
@@ -139,7 +263,7 @@ defaults to <code class="docutils literal notranslate"><span class="pre">lhc</sp
 <li><p><strong>tbt_data</strong> (<em>TbtData</em>) -- the <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object to write to disk.</p></li>
 <li><p><strong>noise</strong> (<em>float</em>) -- optional noise to add to the data.</p></li>
 <li><p><strong>seed</strong> (<em>int</em>) -- A given seed to initialise the RNG if one chooses to add noise. This is useful
-to ensure the exact same RNG state across operations. Defaults to <cite>None</cite>, which means
+to ensure the exact same RNG state across operations. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>, which means
 any new RNG operation in noise addition will pull fresh entropy from the OS.</p></li>
 <li><p><strong>datatype</strong> (<em>str</em>) -- type of matrices in the file, determines the reader to use. Case-insensitive,
 defaults to <code class="docutils literal notranslate"><span class="pre">lhc</span></code>.</p></li>
@@ -154,18 +278,18 @@ defaults to <code class="docutils literal notranslate"><span class="pre">lhc</sp
 </section>
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.structures.</span></span><span class="sig-name descname"><span class="pre">TbtData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">TransverseData</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">TrackingData</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nturns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TbtData"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.structures.</span></span><span class="sig-name descname"><span class="pre">TbtData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">TransverseData</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">TrackingData</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bunch_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nturns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TbtData"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Object holding a representation of a Turn-by-Turn data measurement. The date of the measurement,
 the transverse data, number of turns and bunches as well as the bunch IDs are encapsulated in this object.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.structures.</span></span><span class="sig-name descname"><span class="pre">TrackingData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PX</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PY</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TrackingData"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.structures.</span></span><span class="sig-name descname"><span class="pre">TrackingData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PX</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PY</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TrackingData"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Object holding multidimensional turn-by-turn simulation data in the form of pandas DataFrames.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fieldnames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TrackingData.fieldnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fieldnames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TrackingData.fieldnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Return a list of the fields of this dataclass.</p>
 </dd></dl>
 
@@ -173,11 +297,11 @@ the transverse data, number of turns and bunches as well as the bunch IDs are en
 
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.structures.</span></span><span class="sig-name descname"><span class="pre">TransverseData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TransverseData"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.structures.</span></span><span class="sig-name descname"><span class="pre">TransverseData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TransverseData"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Object holding measured turn-by-turn data for both transverse planes in the form of pandas DataFrames.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fieldnames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TransverseData.fieldnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fieldnames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TransverseData.fieldnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Return a list of the fields of this dataclass.</p>
 </dd></dl>
 

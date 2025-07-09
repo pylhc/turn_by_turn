@@ -35,3 +35,7 @@
 .. automodule:: turn_by_turn.madng
     :members:
     :noindex:
+
+.. automodule:: turn_by_turn.xtrack_line
+    :members:
+    :noindex:

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DOROS &mdash; turn_by_turn 0.8.0 documentation</title>
+  <title>DOROS &mdash; turn_by_turn 0.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=988d0652" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=486e5634"></script>
+      <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -46,7 +46,13 @@
               <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Constants</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modules/index.html#io">IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html#io">IO</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#reading-data">Reading Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#writing-data">Writing Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#supported-modules-and-limitations">Supported Modules and Limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#api">API</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/index.html#structures">Structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../modules/index.html#utils">Utils</a></li>
 </ul>
@@ -60,6 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="#ptc">PTC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#trackone">Trackone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#mad-ng">MAD-NG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#xtrack-line">XTRACK_LINE</a></li>
 </ul>
 
         </div>
@@ -119,7 +126,7 @@ distinguish between the bunches.</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.doros.</span></span><span class="sig-name descname"><span class="pre">DataKeys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/doros.html#DataKeys"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.doros.</span></span><span class="sig-name descname"><span class="pre">DataKeys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/doros.html#DataKeys"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Class to handle the different entry keys for oscillations and positions.</p>
 </dd></dl>
 
@@ -298,7 +305,7 @@ containing data for a given observation point.</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.ptc.</span></span><span class="sig-name descname"><span class="pre">Segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.ptc.</span></span><span class="sig-name descname"><span class="pre">Segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span></dt>
 <dd><dl class="py attribute">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">element</span></span></dt>
@@ -413,19 +420,63 @@ into <code class="docutils literal notranslate"><span class="pre">TrackingData</
 
 <section id="mad-ng">
 <h1>MAD-NG<a class="headerlink" href="#mad-ng" title="Link to this heading"></a></h1>
-<p>This module provides functions to read and write <code class="docutils literal notranslate"><span class="pre">MAD-NG</span></code> turn-by-turn measurement files. These files
-are in the <strong>TFS</strong> format.</p>
+<p>This module provides functions to read and write turn-by-turn measurement data
+produced by the <code class="docutils literal notranslate"><span class="pre">MAD-NG</span></code> code. MAD-NG stores its tracking data in the <strong>TFS</strong>
+(Table File System) file format.</p>
+<p>Data is loaded into the standardized <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> structure used by <code class="docutils literal notranslate"><span class="pre">turn_by_turn</span></code>,
+allowing easy post-processing and conversion between formats.</p>
+<dl class="simple">
+<dt>Dependencies:</dt><dd><ul class="simple">
+<li><p>Requires the <code class="docutils literal notranslate"><span class="pre">tfs-pandas</span> <span class="pre">&gt;=</span> <span class="pre">4.0.0</span></code> package for compatibility with MAD-NG
+features. Earlier versions does not support MAD-NG TFS files.</p></li>
+</ul>
+</dd>
+</dl>
 </section>
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">turn_by_turn.madng.</span></span><span class="sig-name descname"><span class="pre">read_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/madng.html#read_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Reads turn-by-turn data from the <code class="docutils literal notranslate"><span class="pre">MAD-NG</span></code> <strong>TFS</strong> format file.</p>
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.madng.</span></span><span class="sig-name descname"><span class="pre">convert_to_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tfs.TfsDataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/madng.html#convert_to_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Convert a TFS or pandas DataFrame to a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object.</p>
+<p>This function parses the required turn-by-turn columns, reconstructs the
+particle-by-particle tracking data, and returns a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> instance
+that can be written or converted to other formats.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em><em> | </em><em>Path</em>) -- path to the turn-by-turn measurement file.</p>
+<dd class="field-odd"><p><strong>df</strong> (<em>pd.DataFrame</em><em> | </em><em>TfsDataFrame</em>) -- DataFrame containing MAD-NG turn-by-turn tracking data.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A <code class="docutils literal notranslate"><span class="pre">TbTData</span></code> object with the loaded data.</p>
+<dd class="field-even"><p>The extracted and structured turn-by-turn data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TbtData</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> -- If the input is not a recognized DataFrame type.</p></li>
+<li><p><strong>ValueError</strong> -- If the data structure is inconsistent (e.g., lost particles).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.madng.</span></span><span class="sig-name descname"><span class="pre">read_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/madng.html#read_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Read turn-by-turn data from a MAD-NG TFS file.</p>
+<p>Loads the TFS file using <code class="docutils literal notranslate"><span class="pre">tfs-pandas</span></code> and converts its contents into a
+<code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object for use with the <code class="docutils literal notranslate"><span class="pre">turn_by_turn</span></code> toolkit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em><em> | </em><em>Path</em>) -- Path to the MAD-NG TFS measurement file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The loaded turn-by-turn data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TbtData</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ImportError</strong> -- If the <code class="docutils literal notranslate"><span class="pre">tfs-pandas</span></code> package is not installed.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -433,15 +484,103 @@ are in the <strong>TFS</strong> format.</p>
 <dl class="py function">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">turn_by_turn.madng.</span></span><span class="sig-name descname"><span class="pre">write_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tbt_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TbtData</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/madng.html#write_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Writes turn-by-turn data to a TFS file for MAD-NG.</p>
+<dd><p>Write turn-by-turn data to a MAD-NG TFS file.</p>
+<p>Takes a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object and writes its contents to disk in the standard
+TFS format used by MAD-NG, including relevant headers (date, time, origin).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tbt_data</strong> (<em>TbtData</em>) -- Turn-by-turn data to write.</p></li>
-<li><p><strong>file_path</strong> (<em>str</em><em> | </em><em>Path</em>) -- Target file path.</p></li>
+<li><p><strong>output_path</strong> (<em>str</em><em> | </em><em>Path</em>) -- Destination file path for the TFS file.</p></li>
+<li><p><strong>tbt_data</strong> (<em>TbtData</em>) -- The turn-by-turn data to write.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ImportError</strong> -- If the <code class="docutils literal notranslate"><span class="pre">tfs-pandas</span></code> package is not installed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="xtrack-line">
+<h1>XTRACK_LINE<a class="headerlink" href="#xtrack-line" title="Link to this heading"></a></h1>
+<p>This module provides functions to convert tracking results from an <code class="docutils literal notranslate"><span class="pre">xtrack.Line</span></code>
+into the standardized <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> format used by <code class="docutils literal notranslate"><span class="pre">turn_by_turn</span></code>.</p>
+<p>Prerequisites for using <code class="docutils literal notranslate"><span class="pre">convert_to_tbt</span></code>:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>The input <code class="docutils literal notranslate"><span class="pre">Line</span></code> must contain one or more <code class="docutils literal notranslate"><span class="pre">ParticlesMonitor</span></code> elements
+positioned at each location where turn-by-turn data is required (e.g., all BPMs).</p>
+<p>A valid monitor setup involves:</p>
+<blockquote>
+<div><ul>
+<li><p>Placing a <code class="docutils literal notranslate"><span class="pre">xt.ParticlesMonitor</span></code> instance in the line’s element sequence
+at all the places you would like to observe.</p></li>
+<li><p>Configuring each monitor with identical settings:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">start_at_turn</span></code> (first turn to record, usually 0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stop_at_turn</span></code> (The total number of turns to record, e.g., 100)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_particles</span></code> (number of tracked particles)</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+<p>If any monitor is configured with different parameters, <code class="docutils literal notranslate"><span class="pre">convert_to_tbt</span></code>
+will either find no data or raise an inconsistency error.</p>
+<p>Also, if you specify more turns than were actually tracked, the resulting
+TBT data will include all turns up to the monitor’s configured limit.
+This may result in extra rows filled with zeros for turns where no real
+data was recorded, which might not be desirable for your analysis.</p>
+</li>
+<li><p>Before conversion, you must:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Build particles with the desired initial coordinates
+(using <code class="docutils literal notranslate"><span class="pre">line.build_particles(...)</span></code>).</p></li>
+<li><p>Track those particles through the line for the intended number of turns
+(using <code class="docutils literal notranslate"><span class="pre">line.track(...,</span> <span class="pre">num_turns=num_turns)</span></code>).</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+<p>Once these conditions are met, pass the tracked <code class="docutils literal notranslate"><span class="pre">Line</span></code> to <code class="docutils literal notranslate"><span class="pre">convert_to_tbt</span></code> to
+extract the data from each particle monitor into a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.xtrack_line.</span></span><span class="sig-name descname"><span class="pre">convert_to_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xt.Line</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/xtrack_line.html#convert_to_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Convert tracking results from an <code class="docutils literal notranslate"><span class="pre">xtrack</span></code> Line into a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object.</p>
+<p>This function extracts all <code class="docutils literal notranslate"><span class="pre">ParticlesMonitor</span></code> elements found in the Line,
+verifies they contain consistent turn-by-turn data, and assembles the results
+into the standard <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> format. One <code class="docutils literal notranslate"><span class="pre">TransverseData</span></code> matrix is created
+per tracked particle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>xline</strong> (<em>Line</em>) -- An <code class="docutils literal notranslate"><span class="pre">xtrack.Line</span></code> containing at least one <code class="docutils literal notranslate"><span class="pre">ParticlesMonitor</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The extracted turn-by-turn data for all particles and monitors.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TbtData</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ImportError</strong> -- If the <code class="docutils literal notranslate"><span class="pre">xtrack</span></code> library is not installed.</p></li>
+<li><p><strong>TypeError</strong> -- If the input is not a valid <code class="docutils literal notranslate"><span class="pre">xtrack.Line</span></code>.</p></li>
+<li><p><strong>ValueError</strong> -- If no monitors are found or data is inconsistent.</p></li>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.xtrack_line.</span></span><span class="sig-name descname"><span class="pre">read_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/xtrack_line.html#read_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Not implemented.</p>
+<p>Reading TBT data directly from files is not supported for xtrack.
+Use <code class="docutils literal notranslate"><span class="pre">convert_to_tbt</span></code> to convert an in-memory <code class="docutils literal notranslate"><span class="pre">xtrack.Line</span></code> instead.</p>
 </dd></dl>
 
 

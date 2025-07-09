@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to turn_by_turn’ documentation! &mdash; turn_by_turn 0.8.0 documentation</title>
+  <title>Welcome to turn_by_turn’ documentation! &mdash; turn_by_turn 0.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=988d0652" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=486e5634"></script>
+      <script src="_static/documentation_options.js?v=39bb1c6d"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -46,7 +46,13 @@
               <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules/index.html">Constants</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules/index.html#io">IO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/index.html#io">IO</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/index.html#reading-data">Reading Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/index.html#writing-data">Writing Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/index.html#supported-modules-and-limitations">Supported Modules and Limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/index.html#api">API</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="modules/index.html#structures">Structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules/index.html#utils">Utils</a></li>
 </ul>
@@ -60,6 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="readers/index.html#ptc">PTC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readers/index.html#trackone">Trackone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readers/index.html#mad-ng">MAD-NG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readers/index.html#xtrack-line">XTRACK_LINE</a></li>
 </ul>
 
         </div>
@@ -91,9 +98,38 @@
 <h1>Welcome to turn_by_turn’ documentation!<a class="headerlink" href="#welcome-to-turn-by-turn-documentation" title="Link to this heading"></a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">turn_by_turn</span></code> is a library for reading and writing from various particle accelerator measurement data formats used at <a class="reference external" href="https://home.cern/">CERN</a>.</p>
 <p>It provides a custom dataclass <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> to do so, with attributes corresponding to the relevant measurements information.</p>
+<section id="how-to-use-turn-by-turn">
+<h2>How to Use turn_by_turn<a class="headerlink" href="#how-to-use-turn-by-turn" title="Link to this heading"></a></h2>
+<p>There are two main ways to create a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object:</p>
+<ol class="arabic simple">
+<li><p><strong>Reading from file (disk):</strong>
+Use <code class="docutils literal notranslate"><span class="pre">read_tbt</span></code> to load measurement data from a file on disk. This is the standard entry point for working with measurement files in supported formats.</p></li>
+<li><p><strong>In-memory conversion:</strong>
+Use <code class="docutils literal notranslate"><span class="pre">convert_to_tbt</span></code> to convert data that is already loaded in memory (such as a pandas DataFrame, tfs DataFrame, or xtrack.Line) into a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object. This is useful for workflows where you generate or manipulate data in Python before standardizing it.</p></li>
+</ol>
+<p>Both methods produce a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object, which can then be used for further analysis or written out to supported formats.</p>
+</section>
+<section id="supported-modules-and-limitations">
+<h2>Supported Modules and Limitations<a class="headerlink" href="#supported-modules-and-limitations" title="Link to this heading"></a></h2>
+<p>Different modules support different file formats and workflows (disk reading vs. in-memory conversion). For a detailed table of which modules support which features, and any important limitations, see the documentation for the <code class="xref py py-mod docutils literal notranslate"><span class="pre">turn_by_turn.io</span></code> module.</p>
+<ul class="simple">
+<li><p>Only <code class="docutils literal notranslate"><span class="pre">madng</span></code> and <code class="docutils literal notranslate"><span class="pre">xtrack</span></code> support in-memory conversion.</p></li>
+<li><p>Most modules are for disk reading only.</p></li>
+<li><p>Some modules (e.g., <code class="docutils literal notranslate"><span class="pre">esrf</span></code>) are experimental or have limited support.</p></li>
+<li><p>For writing, see the next section.</p></li>
+</ul>
+</section>
+<section id="writing-data">
+<h2>Writing Data<a class="headerlink" href="#writing-data" title="Link to this heading"></a></h2>
+<p>To write a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object to disk, use the <code class="docutils literal notranslate"><span class="pre">write_tbt</span></code> function. This function supports writing in the LHC SDDS format by default, as well as other supported formats depending on the <code class="docutils literal notranslate"><span class="pre">datatype</span></code> argument. The output format is determined by the <code class="docutils literal notranslate"><span class="pre">datatype</span></code> you specify, but for most workflows, SDDS is the standard output.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_tbt</span>
+<span class="n">write_tbt</span><span class="p">(</span><span class="s2">&quot;output.sdds&quot;</span><span class="p">,</span> <span class="n">tbt_data</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="package-reference">
-<h1>Package Reference<a class="headerlink" href="#package-reference" title="Link to this heading"></a></h1>
+<h2>Package Reference<a class="headerlink" href="#package-reference" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
@@ -114,16 +150,18 @@
 <li class="toctree-l1"><a class="reference internal" href="readers/index.html#ptc">PTC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readers/index.html#trackone">Trackone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readers/index.html#mad-ng">MAD-NG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readers/index.html#xtrack-line">XTRACK_LINE</a></li>
 </ul>
 </div>
 </section>
 <section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
+</section>
 </section>
 
 
