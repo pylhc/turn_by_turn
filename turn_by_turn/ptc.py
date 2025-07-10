@@ -13,10 +13,9 @@ from __future__ import annotations
 import copy
 import logging
 from collections import namedtuple
-from typing import TYPE_CHECKING
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import pandas as pd

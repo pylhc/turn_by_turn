@@ -6,10 +6,10 @@ Data structures to be used in ``turn_by_turn`` to store turn-by-turn measurement
 """
 
 from __future__ import annotations
-from typing import TYPE_CHECKING
+
 from dataclasses import dataclass, field, fields
 from datetime import datetime
-from typing import Union
+from typing import TYPE_CHECKING, Union
 
 import pandas as pd
 from dateutil import tz
