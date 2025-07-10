@@ -74,8 +74,8 @@ def test_split_function():
     names_with_planes = ("bpm1.H", "bpm2.V", "bpm3.V", "bpm4.H")
     x, y = sps._split_bpm_names_to_planes(names_with_planes)
 
-    assert all([bpm in x for bpm in ("bpm1.H", "bpm4.H")])
-    assert all([bpm in y for bpm in ("bpm2.V", "bpm3.V")])
+    assert all(bpm in x for bpm in ("bpm1.H", "bpm4.H"))
+    assert all(bpm in y for bpm in ("bpm2.V", "bpm3.V"))
 
     names_without_planes = ("bpm1", "bpm2", "bpm3", "bpm4")
     planes = (0, 1, 1, 0)
