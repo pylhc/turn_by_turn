@@ -94,7 +94,7 @@ def test_add_noise_raises_on_both_arguments():
         _ = add_noise(array, noise=5, sigma=1)
 
 
-def test_compare_average_Tbtdata():
+def test_compare_average_tbtdata():
     npart = 10
     data = {
         plane: np.concatenate(
