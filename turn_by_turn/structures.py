@@ -4,9 +4,11 @@ Structures
 
 Data structures to be used in ``turn_by_turn`` to store turn-by-turn measurement data.
 """
+
+from collections.abc import Sequence
 from dataclasses import dataclass, field, fields
 from datetime import datetime
-from typing import List, Sequence, Union
+from typing import Union
 
 import pandas as pd
 from dateutil import tz
@@ -22,7 +24,7 @@ class TransverseData:
     Y: pd.DataFrame  # vertical data
 
     @classmethod
-    def fieldnames(self) -> List[str]:
+    def fieldnames(self) -> list[str]:
         """Return a list of the fields of this dataclass."""
         return list(f.name for f in fields(self))
 
@@ -48,7 +50,7 @@ class TrackingData:
     E: pd.DataFrame  # energy data
 
     @classmethod
-    def fieldnames(self) -> List[str]:
+    def fieldnames(self) -> list[str]:
         """Return a list of the fields of this dataclass."""
         return list(f.name for f in fields(self))
 
@@ -70,7 +72,7 @@ class TbtData:
 
     matrices: Sequence[DataType]  # each entry corresponds to a bunch
     date: datetime = None  # will default in post_init
-    bunch_ids: List[int] = None  # will default in post_init
+    bunch_ids: list[int] = None  # will default in post_init
     nturns: int = None
     nbunches: int = field(init=False)
 
@@ -83,7 +85,9 @@ class TbtData:
             raise ValueError("Number of turns need to be specified and larger than zero.")
 
         if self.date is None:
-            self.date = datetime.today().replace(tzinfo=tz.tzutc())  # to today, UTC if nothing is given
+            self.date = datetime.today().replace(
+                tzinfo=tz.tzutc()
+            )  # to today, UTC if nothing is given
 
         if self.bunch_ids is None:
             self.bunch_ids = list(range(self.nbunches))  # we always need bunch-ids

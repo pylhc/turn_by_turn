@@ -4,9 +4,10 @@ Iota
 
 Data handling for turn-by-turn measurement files from ``Iota`` (files in **hdf5** format).
 """
+
 import logging
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable, Dict, Union
 
 import h5py
 import numpy as np
@@ -18,13 +19,13 @@ from turn_by_turn.structures import TbtData, TransverseData
 LOGGER = logging.getLogger(__name__)
 
 VERSIONS = (1, 2)
-PLANES_CONV: Dict[int, Dict[str, str]] = {
+PLANES_CONV: dict[int, dict[str, str]] = {
     1: {"X": "H", "Y": "V"},
     2: {"X": "Horizontal", "Y": "Vertical"},
 }
 
 
-def read_tbt(file_path: Union[str, Path], hdf5_version: int = 2) -> TbtData:
+def read_tbt(file_path: str | Path, hdf5_version: int = 2) -> TbtData:
     """
     Reads turn-by-turn data from ``IOITA``'s **hdf5** format file.
     As there are 2 possible versions of the HDF5 format, this will try them both successively.
@@ -131,7 +132,7 @@ def check_key_v1(key) -> bool:
     return ("state" not in key) or key.startswith("N:")
 
 
-FUNCTIONS: Dict[int, Dict[str, Callable]] = {
+FUNCTIONS: dict[int, dict[str, Callable]] = {
     1: {
         "get_bpm_names": _get_list_of_bpmnames_v1,
         "get_nturns": _get_number_of_turns_v1,

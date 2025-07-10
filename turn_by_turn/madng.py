@@ -161,9 +161,7 @@ def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
         matrices.append(TransverseData(**tracking_data_dict))
 
     LOGGER.debug("Finished reading TBT data")
-    return TbtData(
-        matrices=matrices, bunch_ids=list(particle_ids), nturns=nturns, date=date
-    )
+    return TbtData(matrices=matrices, bunch_ids=list(particle_ids), nturns=nturns, date=date)
 
 
 def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:

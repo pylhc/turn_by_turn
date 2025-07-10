@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from tests.test_lhc_and_general import create_data, compare_tbt
+from tests.test_lhc_and_general import compare_tbt, create_data
 from turn_by_turn import iota
 from turn_by_turn.errors import HDF5VersionError
 from turn_by_turn.structures import TbtData, TransverseData
@@ -29,7 +29,7 @@ def test_tbt_raises_on_wrong_hdf5_version(_hdf5_file):
 
 
 def _hdf5_file_content() -> TbtData:
-    """ TbT data as had been written out to hdf5 files (see below). """
+    """TbT data as had been written out to hdf5 files (see below)."""
     return TbtData(
         matrices=[
             TransverseData(
@@ -53,7 +53,7 @@ def _hdf5_file_content() -> TbtData:
 
 @pytest.fixture()
 def _hdf5_file(tmp_path) -> h5py.File:
-    """ IOTA File standard. """
+    """IOTA File standard."""
     with h5py.File(tmp_path / "test_file.hdf5", "w") as hd5_file:
         hd5_file.create_dataset(
             "N:IBE2RH",
@@ -85,7 +85,7 @@ def _hdf5_file(tmp_path) -> h5py.File:
 
 @pytest.fixture()
 def _hdf5_file_v2(tmp_path) -> h5py.File:
-    """ IOTA File standard. """
+    """IOTA File standard."""
     with h5py.File(tmp_path / "test_file_v2.hdf5", "w") as hd5_file:
         hd5_file.create_group("A1C")
         hd5_file["A1C"].create_dataset(

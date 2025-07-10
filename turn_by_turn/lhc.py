@@ -4,18 +4,19 @@ LHC
 
 Data handling for turn-by-turn measurement files from the ``LHC`` (files in **SDDS** format).
 """
+
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Union
 
 import numpy as np
 import pandas as pd
 import sdds
 from dateutil import tz
 
-from turn_by_turn.ascii import is_ascii_file, read_tbt as read_ascii
-from turn_by_turn.constants import PLANES, PLANE_TO_NUM
+from turn_by_turn.ascii import is_ascii_file
+from turn_by_turn.ascii import read_tbt as read_ascii
+from turn_by_turn.constants import PLANE_TO_NUM, PLANES
 from turn_by_turn.structures import TbtData, TransverseData
 from turn_by_turn.utils import matrices_to_array
 
@@ -30,13 +31,13 @@ ACQ_STAMP: str = "acqStamp"
 BPM_NAMES: str = "bpmNames"
 
 
-POSITIONS: Dict[str, str] = {
+POSITIONS: dict[str, str] = {
     "X": "horPositionsConcentratedAndSorted",
     "Y": "verPositionsConcentratedAndSorted",
 }
 
 
-def read_tbt(file_path: Union[str, Path]) -> TbtData:
+def read_tbt(file_path: str | Path) -> TbtData:
     """
     Reads turn-by-turn data from the ``LHC``'s **SDDS** format file.
     Will first determine if it is in ASCII format to figure out which reading method to use.
@@ -55,9 +56,7 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
 
     sdds_file = sdds.read(file_path)
     nbunches = sdds_file.values[N_BUNCHES]
-    bunch_ids = sdds_file.values[
-        BUNCH_ID if BUNCH_ID in sdds_file.values else HOR_BUNCH_ID
-    ]
+    bunch_ids = sdds_file.values[BUNCH_ID if BUNCH_ID in sdds_file.values else HOR_BUNCH_ID]
 
     if len(bunch_ids) > nbunches:
         bunch_ids = bunch_ids[:nbunches]
@@ -66,10 +65,7 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     date = datetime.fromtimestamp(sdds_file.values[ACQ_STAMP] / 1e9, tz=tz.tzutc())
     bpm_names = sdds_file.values[BPM_NAMES]
     nbpms = len(bpm_names)
-    data = {
-        k: sdds_file.values[POSITIONS[k]].reshape((nbpms, nbunches, nturns))
-        for k in PLANES
-    }
+    data = {k: sdds_file.values[POSITIONS[k]].reshape((nbpms, nbunches, nturns)) for k in PLANES}
     matrices = [
         TransverseData(
             X=pd.DataFrame(index=bpm_names, data=data["X"][:, idx, :], dtype=float),
@@ -80,7 +76,7 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     return TbtData(matrices, date, bunch_ids, nturns)
 
 
-def write_tbt(output_path: Union[str, Path], tbt_data: TbtData) -> None:
+def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
     """
     Write a ``TbtData`` object's data to file, in the ``LHC``'s **SDDS** format.
 
@@ -110,5 +106,5 @@ def write_tbt(output_path: Union[str, Path], tbt_data: TbtData) -> None:
         tbt_data.matrices[0].X.index.to_numpy(),
         np.ravel(data[PLANE_TO_NUM["X"]]),
         np.ravel(data[PLANE_TO_NUM["Y"]]),
-        ]
+    ]
     sdds.write(sdds.SddsFile("SDDS1", None, definitions, values), output_path)

@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from tests.test_lhc_and_general import create_data, compare_tbt
+from tests.test_lhc_and_general import compare_tbt, create_data
 from turn_by_turn.constants import PLANES
 from turn_by_turn.errors import ExclusiveArgumentsError
 from turn_by_turn.structures import TbtData, TransverseData
@@ -41,11 +41,15 @@ def test_noise_addition_to_tbt():
             TransverseData(
                 X=pd.DataFrame(
                     index=[f"BPM{i}" for i in range(nbpms)],
-                    data=create_data(np.linspace(-np.pi, np.pi, nturns, endpoint=False), nbpms, np.sin)
+                    data=create_data(
+                        np.linspace(-np.pi, np.pi, nturns, endpoint=False), nbpms, np.sin
+                    ),
                 ),
                 Y=pd.DataFrame(
                     index=[f"BPM{i}" for i in range(nbpms)],
-                    data=create_data(np.linspace(-np.pi, np.pi, nturns, endpoint=False), nbpms, np.cos)
+                    data=create_data(
+                        np.linspace(-np.pi, np.pi, nturns, endpoint=False), nbpms, np.cos
+                    ),
                 ),
             )
             for _ in range(nbunches)

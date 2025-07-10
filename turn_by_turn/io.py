@@ -172,9 +172,7 @@ def convert_to_tbt(file_data: DataFrame | Line, datatype: str = "xtrack") -> Tbt
         TbtData: The converted TbtData object.
     """
     if datatype.lower() not in TBT_CONVERTERS:
-        raise DataTypeError(
-            f"Only {','.join(TBT_CONVERTERS)} converters are implemented for now."
-        )
+        raise DataTypeError(f"Only {','.join(TBT_CONVERTERS)} converters are implemented for now.")
 
     module = TBT_MODULES[datatype.lower()]
     return module.convert_to_tbt(file_data)  # No additional arguments as no doros.
@@ -202,9 +200,7 @@ def write_tbt(
     """
     output_path = Path(output_path)
     if datatype.lower() not in WRITERS:
-        raise DataTypeError(
-            f"Only {','.join(WRITERS)} writers are implemented for now."
-        )
+        raise DataTypeError(f"Only {','.join(WRITERS)} writers are implemented for now.")
 
     if datatype.lower() in ("lhc", "sps", "ascii") and output_path.suffix != ".sdds":
         # I would like to remove this, but I'm afraid of compatibility issues with omc3 (jdilly, 2024)

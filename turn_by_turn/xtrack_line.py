@@ -102,9 +102,7 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
 
     # First check that no particles were lost during tracking. There will be trailing
     # zeros in the data if particles were lost. This might be difficult to detect.
-    assert all(
-        mon.data.particle_id[-1] == mon.data.particle_id.max() for mon in monitors
-    ), (
+    assert all(mon.data.particle_id[-1] == mon.data.particle_id.max() for mon in monitors), (
         "Some particles were lost during tracking, which is not supported by this function. "
         "Ensure that all particles are tracked through the entire line without loss."
     )
@@ -120,9 +118,7 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
     # Check that all monitors have the same number of particles
     npart_set = {len(set(mon.data.particle_id)) for mon in monitors}
     if len(npart_set) != 1:
-        raise ValueError(
-            "Monitors have different number of particles, maybe some lost particles?"
-        )
+        raise ValueError("Monitors have different number of particles, maybe some lost particles?")
     npart = npart_set.pop()
 
     # Precompute masks for each monitor and particle_id
@@ -150,9 +146,7 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
         matrices.append(TransverseData(**tracking_data_dict))
 
     # Return the TbtData object containing all particles' data
-    return TbtData(
-        matrices=matrices, bunch_ids=list(range(npart)), nturns=nturns, date=None
-    )
+    return TbtData(matrices=matrices, bunch_ids=list(range(npart)), nturns=nturns, date=None)
 
 
 # Added this function to match the interface, but it is not implemented.
@@ -163,6 +157,4 @@ def read_tbt(path: str | Path) -> None:
     Reading TBT data directly from files is not supported for xtrack.
     Use ``convert_to_tbt`` to convert an in-memory ``xtrack.Line`` instead.
     """
-    raise NotImplementedError(
-        "Reading TBT data from xtrack Line files is not implemented."
-    )
+    raise NotImplementedError("Reading TBT data from xtrack Line files is not implemented.")
