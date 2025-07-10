@@ -38,20 +38,20 @@ def test_write_read(tmp_path):
     )
     tmp_sdds = tmp_path / "sps_fake_data.sdds"
     # Normal read/write test
-    sps.write_tbt(tmp_sdds, original, add_trailing_bpm_plane=False) 
+    sps.write_tbt(tmp_sdds, original, add_trailing_bpm_plane=False)
     read_sdds = sps.read_tbt(tmp_sdds, remove_trailing_bpm_plane=False)
     compare_tbt(original, read_sdds, no_binary=True)
 
     # Test no name changes when writing and planes already present
-    sps.write_tbt(tmp_sdds, original, add_trailing_bpm_plane=True) 
+    sps.write_tbt(tmp_sdds, original, add_trailing_bpm_plane=True)
     read_sdds = sps.read_tbt(tmp_sdds, remove_trailing_bpm_plane=False)
     compare_tbt(original, read_sdds, no_binary=True)
-    
+
     # Test plane removal on reading
     read_sdds = sps.read_tbt(tmp_sdds, remove_trailing_bpm_plane=True)
     assert not any(read_sdds.matrices[0].X.index.str.endswith(".H"))
     assert not any(read_sdds.matrices[0].Y.index.str.endswith(".V"))
-    
+
     # Test planes stay off when writing
     sps.write_tbt(tmp_sdds, read_sdds, add_trailing_bpm_plane=False)
     read_sdds = sps.read_tbt(tmp_sdds, remove_trailing_bpm_plane=False)
@@ -59,10 +59,34 @@ def test_write_read(tmp_path):
     assert not any(read_sdds.matrices[0].Y.index.str.endswith(".V"))
 
     # Test adding planes again
-    sps.write_tbt(tmp_sdds, read_sdds, add_trailing_bpm_plane=True) 
+    sps.write_tbt(tmp_sdds, read_sdds, add_trailing_bpm_plane=True)
     read_sdds = sps.read_tbt(tmp_sdds, remove_trailing_bpm_plane=False)
     compare_tbt(original, read_sdds, no_binary=True)
 
+
+def test_split_function():
+    """ Tests that the splitting function into planes works as expected. """
+
+    names_with_planes = ("bpm1.H", "bpm2.V", "bpm3.V", "bpm4.H")
+    x, y = sps._split_bpm_names_to_planes(names_with_planes)
+
+    assert all([bpm in x for bpm in ("bpm1.H", "bpm4.H")])
+    assert all([bpm in y for bpm in ("bpm2.V", "bpm3.V")])
+
+    names_without_planes = ("bpm1", "bpm2", "bpm3", "bpm4")
+    planes = (0, 1, 1, 0)
+    x, y = sps._split_bpm_names_to_planes(names_without_planes, planes)
+
+    for bpm, plane in zip(names_without_planes, planes):
+        assert bpm in x if plane == 0 else bpm in y
+        assert bpm not in x if plane == 1 else bpm not in y
+
+    planes = (1, 3, 1, 3)
+    x, y = sps._split_bpm_names_to_planes(names_without_planes, planes)
+
+    for bpm, plane in zip(names_without_planes, planes):
+        assert bpm in x if plane == 1 else bpm in y
+        assert bpm not in x if plane == 3 else bpm not in y
 
 
 @pytest.fixture()
