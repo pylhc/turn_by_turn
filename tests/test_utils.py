@@ -96,6 +96,7 @@ def test_add_noise_raises_on_both_arguments():
 
 def test_compare_average_tbtdata():
     npart = 10
+    rng = np.random.default_rng()
     data = {
         plane: np.concatenate(
             [
@@ -103,7 +104,7 @@ def test_compare_average_tbtdata():
                     create_data(
                         np.linspace(1, 10, 10, endpoint=False, dtype=int),
                         2,
-                        (lambda x: np.random.randn(len(x))),
+                        (lambda x: rng.standard_normal(len(x))),
                     )
                 ]
                 for _ in range(npart)

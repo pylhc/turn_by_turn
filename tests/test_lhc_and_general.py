@@ -79,8 +79,9 @@ def compare_tbt(
 
 
 def create_data(phases, nbpm, function, noise: float = 0) -> np.ndarray:
-    return np.ones((nbpm, len(phases))) * function(phases) + noise * np.random.randn(
-        nbpm, len(phases)
+    rng = np.random.default_rng()
+    return np.ones((nbpm, len(phases))) * function(phases) + noise * rng.standard_normal(
+        size=(nbpm, len(phases))
     )
 
 
