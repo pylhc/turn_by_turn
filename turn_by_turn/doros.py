@@ -135,11 +135,7 @@ def read_tbt(
 
     with h5py.File(file_path, "r") as hdf_file:
         # use "/" to keep track of bpm order, see https://github.com/h5py/h5py/issues/1471
-        bpm_names = [
-            name
-            for name in hdf_file["/"].keys()
-            if data_keys.n_samples in hdf_file[f"/{name}"].keys()
-        ]
+        bpm_names = [name for name in hdf_file["/"] if data_keys.n_samples in hdf_file[f"/{name}"]]
         LOGGER.debug(f"Found BPMs in DOROS-type file: {bpm_names}")
 
         _check_data_lengths(hdf_file, data_keys, bpm_names)

@@ -66,7 +66,7 @@ def read_tbt(file_path: str | Path, hdf5_version: int = 2) -> TbtData:
 
 def _get_turn_by_turn_data_v1(hdf5_v1_file: h5py.File, plane: str, version: int) -> np.ndarray:
     """Go through the file to determine the turn-by-turn data as a numpy array, for an hdf5 v1 file."""
-    keys = [key for key in hdf5_v1_file.keys() if (key.endswith(PLANES_CONV[version][plane]))]
+    keys = [key for key in hdf5_v1_file if (key.endswith(PLANES_CONV[version][plane]))]
     nbpm = len(keys)
     nturn = FUNCTIONS[version]["get_nturns"](hdf5_v1_file, version)
     data = np.zeros((nbpm, nturn))
@@ -77,19 +77,19 @@ def _get_turn_by_turn_data_v1(hdf5_v1_file: h5py.File, plane: str, version: int)
 
 def _get_list_of_bpmnames_v1(hdf5_v1_file: h5py.File) -> np.ndarray:
     """Go through the file to determine the list of BPMs, for an hdf5 v1 file."""
-    bpms = [f"IBPM{key[4:-1]}" for key in hdf5_v1_file.keys() if check_key_v1(key)]
+    bpms = [f"IBPM{key[4:-1]}" for key in hdf5_v1_file if check_key_v1(key)]
     return np.unique(bpms)
 
 
 def _get_number_of_turns_v1(hdf5_v1_file: h5py.File, version: int) -> int:
     """Go through the file to determine the number of turns, for an hdf5 v1 file."""
-    lengths = [len(hdf5_v1_file[key]) for key in hdf5_v1_file.keys() if check_key_v1(key)]
+    lengths = [len(hdf5_v1_file[key]) for key in hdf5_v1_file if check_key_v1(key)]
     return np.min(lengths)
 
 
 def _get_turn_by_turn_data_v2(hdf5_v2_file: h5py.File, plane: str, version: int) -> np.ndarray:
     """Go through the file to determine the turn-by-turn data as a numpy array, for an hdf5 v2 file."""
-    keys = [key for key in hdf5_v2_file.keys() if not key.startswith("N:")]
+    keys = [key for key in hdf5_v2_file if not key.startswith("N:")]
     if not keys:
         LOGGER.error("Wrong version of the HDF format was used")
         raise HDF5VersionError
@@ -104,7 +104,7 @@ def _get_turn_by_turn_data_v2(hdf5_v2_file: h5py.File, plane: str, version: int)
 
 def _get_list_of_bpmnames_v2(hdf5_v2_file: h5py.File) -> np.ndarray:
     """Go through the file to determine the list of BPMs, for an hdf5 v2 file."""
-    bpms = [f"IBPM{key}" for key in hdf5_v2_file.keys() if check_key_v2(key)]
+    bpms = [f"IBPM{key}" for key in hdf5_v2_file if check_key_v2(key)]
     if not bpms:
         LOGGER.error("Wrong version of the HDF format was used")
         raise HDF5VersionError

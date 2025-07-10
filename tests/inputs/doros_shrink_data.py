@@ -24,11 +24,7 @@ shutil.copyfile(file_in, file_temp)
 data_keys_list = [DataKeys.get_data_keys(datatype) for datatype in DataKeys.types()]
 
 with h5py.File(file_temp, "r+", track_order=True) as hdf_file:
-    bpms = [
-        name
-        for name in hdf_file["/"].keys()
-        if data_keys_list[0].n_samples in hdf_file[f"/{name}"].keys()
-    ]
+    bpms = [name for name in hdf_file["/"] if data_keys_list[0].n_samples in hdf_file[f"/{name}"]]
 
     for bpm in bpms[:N_BPMS]:
         for data_keys in data_keys_list:
