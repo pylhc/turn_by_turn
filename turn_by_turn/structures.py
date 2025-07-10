@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field, fields
 from datetime import datetime
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 import pandas as pd
 from dateutil import tz
@@ -64,7 +64,7 @@ class TrackingData:
         return getattr(self, item)
 
 
-DataType = Union[TransverseData, TrackingData]
+DataType = TransverseData | TrackingData
 
 
 @dataclass

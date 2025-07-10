@@ -102,7 +102,7 @@ def get_structure_from_trackone(
         A numpy array of BPM names and a 4D Numpy array [quantity, BPM, particle/bunch No.,
         turn No.] quantities in order [x, px, y, py, t, pt, s, E].
     """
-    bpms: dict[str, np.ndarray] = dict()
+    bpms: dict[str, np.ndarray] = {}
     with Path(file_path).open("r") as input_file:
         for line in input_file:
             if len(line.strip()) == 0:
