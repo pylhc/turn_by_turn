@@ -56,7 +56,7 @@ class TrackingData:
     @classmethod
     def fieldnames(cls) -> list[str]:
         """Return a list of the fields of this dataclass."""
-        return list(f.name for f in fields(cls))
+        return [f.name for f in fields(cls)]
 
     def __getitem__(self, item):  # to access fields like one would with a dictionary
         if item not in self.fieldnames():
