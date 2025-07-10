@@ -11,11 +11,12 @@ from dataclasses import dataclass, field, fields
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-import pandas as pd
 from dateutil import tz
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+
+    import pandas as pd
 
 
 @dataclass
