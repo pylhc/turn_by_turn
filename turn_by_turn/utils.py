@@ -8,14 +8,16 @@ Utility functions for convenience operations on turn-by-turn data objects in thi
 from __future__ import annotations
 
 import logging
-from collections.abc import Iterable, Sequence
-
+from typing import TYPE_CHECKING
 import numpy as np
 import pandas as pd
 
 from turn_by_turn.constants import PLANE_TO_NUM, PLANES
 from turn_by_turn.errors import ExclusiveArgumentsError
 from turn_by_turn.structures import DataType, TbtData, TransverseData
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Sequence
 
 LOGGER = logging.getLogger(__name__)
 

@@ -13,7 +13,7 @@ from __future__ import annotations
 import copy
 import logging
 from collections import namedtuple
-from collections.abc import Sequence
+from typing import TYPE_CHECKING
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -25,6 +25,9 @@ from dateutil import tz
 from turn_by_turn.constants import PLANES
 from turn_by_turn.errors import PTCFormatError
 from turn_by_turn.structures import TbtData, TransverseData
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 LOGGER = logging.getLogger(__name__)
 Segment = namedtuple("Segment", ["number", "turns", "particles", "element", "name"])

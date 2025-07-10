@@ -8,15 +8,17 @@ Data handling for turn-by-turn measurement files from ``Iota`` (files in **hdf5*
 from __future__ import annotations
 
 import logging
-from collections.abc import Callable
 from pathlib import Path
-
+from typing import TYPE_CHECKING
 import h5py
 import numpy as np
 import pandas as pd
 
 from turn_by_turn.errors import HDF5VersionError
 from turn_by_turn.structures import TbtData, TransverseData
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 LOGGER = logging.getLogger(__name__)
 
