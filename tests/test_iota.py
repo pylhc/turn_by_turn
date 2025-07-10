@@ -14,13 +14,13 @@ from turn_by_turn.structures import TbtData, TransverseData
 def test_tbt_read_hdf5(_hdf5_file):
     origin = _hdf5_file_content()
     new = iota.read_tbt(_hdf5_file, hdf5_version=1)
-    compare_tbt(origin, new, False)
+    compare_tbt(origin, new, no_binary=False)
 
 
 def test_tbt_read_hdf5_v2(_hdf5_file_v2):
     origin = _hdf5_file_content()
     new = iota.read_tbt(_hdf5_file_v2)
-    compare_tbt(origin, new, False)
+    compare_tbt(origin, new, no_binary=False)
 
 
 def test_tbt_raises_on_wrong_hdf5_version(_hdf5_file):

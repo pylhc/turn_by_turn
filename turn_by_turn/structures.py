@@ -13,7 +13,6 @@ from typing import TYPE_CHECKING, Union
 
 import pandas as pd
 from dateutil import tz
-from zmq import TYPE
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

@@ -14,7 +14,7 @@ from turn_by_turn.structures import TbtData, TrackingData, TransverseData
 def test_read_ptc(_ptc_file):
     new = ptc.read_tbt(_ptc_file)
     origin = _original_trackone()
-    compare_tbt(origin, new, True)
+    compare_tbt(origin, new, no_binary=True)
 
 
 def test_read_ptc_raises_on_invalid_file(_invalid_ptc_file):
@@ -31,7 +31,7 @@ def test_read_ptc_defaults_date(_ptc_file_no_date):
 def test_read_ptc_sci(_ptc_file_sci):
     new = ptc.read_tbt(_ptc_file_sci)
     origin = _original_trackone()
-    compare_tbt(origin, new, True)
+    compare_tbt(origin, new, no_binary=True)
 
 
 def test_read_ptc_looseparticles(_ptc_file_losses):
@@ -44,14 +44,14 @@ def test_read_ptc_looseparticles(_ptc_file_losses):
 
 def test_read_trackone(_ptc_file):
     new = trackone.read_tbt(_ptc_file)
-    origin = _original_trackone(True)
-    compare_tbt(origin, new, True)
+    origin = _original_trackone(track=True)
+    compare_tbt(origin, new, no_binary=True)
 
 
 def test_read_trackone_sci(_ptc_file_sci):
     new = trackone.read_tbt(_ptc_file_sci)
-    origin = _original_trackone(True)
-    compare_tbt(origin, new, True)
+    origin = _original_trackone(track=True)
+    compare_tbt(origin, new, no_binary=True)
 
 
 def test_read_trackone_looseparticles(_ptc_file_losses):
@@ -67,7 +67,7 @@ def test_read_trackone_simdata(_ptc_file):
         _ptc_file, is_tracking_data=True
     )  # read all fields (includes PX, PY, T, PT, S, E)
     origin = _original_simulation_data()
-    compare_tbt(origin, new, True, is_tracking_data=True)
+    compare_tbt(origin, new, no_binary=True, is_tracking_data=True)
 
 
 # ----- Helpers ----- #

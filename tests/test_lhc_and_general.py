@@ -34,7 +34,7 @@ def test_tbt_write_read_sdds_binary(_sdds_file, _test_file):
     origin = read_tbt(_sdds_file)
     write_tbt(_test_file, origin)
     new = read_tbt(f"{_test_file}.sdds")
-    compare_tbt(origin, new, False)
+    compare_tbt(origin, new, no_binary=False)
 
 
 def test_tbt_write_read_sdds_binary_with_noise(_sdds_file, _test_file):
@@ -43,14 +43,14 @@ def test_tbt_write_read_sdds_binary_with_noise(_sdds_file, _test_file):
     new = read_tbt(f"{_test_file}.sdds")
 
     with pytest.raises(AssertionError):  # should be different
-        compare_tbt(origin, new, False)
+        compare_tbt(origin, new, no_binary=False)
 
 
 def test_tbt_write_read_ascii(_sdds_file, _test_file):
     origin = read_tbt(_sdds_file)
     write_lhc_ascii(_test_file, origin)
     new = read_tbt(_test_file)
-    compare_tbt(origin, new, True)
+    compare_tbt(origin, new, no_binary=True)
 
 
 # ----- Helpers ----- #

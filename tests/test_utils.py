@@ -146,4 +146,4 @@ def test_compare_average_Tbtdata():
         nturns=10,
     )
 
-    compare_tbt(generate_average_tbtdata(origin), new, False)
+    compare_tbt(generate_average_tbtdata(origin), new, no_binary=False)
