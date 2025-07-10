@@ -120,11 +120,7 @@ def add_noise(
     if (noise is None and sigma is None) or (noise is not None and sigma is not None):
         raise ExclusiveArgumentsError("noise", "sigma")
 
-    if sigma is None:
-        scaling = noise
-    else:
-        scaling = sigma * np.std(data, dtype=np.float64)
-
+    scaling = noise if sigma is None else sigma * np.std(data, dtype=np.float64)
     return np.array(data + scaling * np.random.default_rng(seed).standard_normal(data.shape))
 
 
