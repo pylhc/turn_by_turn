@@ -25,7 +25,7 @@ def test_tbt_read_hdf5_v2(_hdf5_file_v2):
 
 def test_tbt_raises_on_wrong_hdf5_version(_hdf5_file):
     with pytest.raises(HDF5VersionError):
-        new = iota.read_tbt(_hdf5_file, hdf5_version=2)
+        iota.read_tbt(_hdf5_file, hdf5_version=2)
 
 
 def _hdf5_file_content() -> TbtData:
