@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.sps &mdash; turn_by_turn 0.9.0 documentation</title>
+  <title>turn_by_turn.sps &mdash; turn_by_turn 0.9.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=988d0652" />
@@ -13,7 +13,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
+      <script src="../../_static/documentation_options.js?v=9dc39874"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -98,11 +98,13 @@
 
 <span class="sd">Data handling for turn-by-turn measurement files from the ``SPS`` (files in **SDDS** format).</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -112,7 +114,11 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.ascii</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_ascii_file</span><span class="p">,</span> <span class="n">read_tbt</span> <span class="k">as</span> <span class="n">read_ascii</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.structures</span><span class="w"> </span><span class="kn">import</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">TransverseData</span>
 
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
 
 <span class="c1"># IDs</span>
 <span class="n">N_TURNS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;nbOfTurns&quot;</span>
@@ -123,15 +129,15 @@
 
 <div class="viewcode-block" id="read_tbt">
 <a class="viewcode-back" href="../../readers/index.html#turn_by_turn.sps.read_tbt">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">remove_trailing_bpm_plane</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">remove_trailing_bpm_plane</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads turn-by-turn data from the ``SPS``&#39;s **SDDS** format file.</span>
 <span class="sd">    Will first determine if it is in ASCII format to figure out which reading method to use.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        file_path (Union[str, Path]): path to the turn-by-turn measurement file.</span>
+<span class="sd">        file_path (str | Path): path to the turn-by-turn measurement file.</span>
 <span class="sd">        remove_trailing_bpm_plane (bool, optional): if ``True``, will remove the trailing</span>
-<span class="sd">            BPM plane (&#39;.H&#39;, &#39;.V&#39;) from the BPM-names. </span>
+<span class="sd">            BPM plane (&#39;.H&#39;, &#39;.V&#39;) from the BPM-names.</span>
 <span class="sd">            This makes the measurement data compatible with the madx-models.</span>
 <span class="sd">            Defaults to ``True``.</span>
 
@@ -147,16 +153,16 @@
     <span class="n">sdds_file</span> <span class="o">=</span> <span class="n">sdds</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
 
     <span class="n">nturns</span> <span class="o">=</span> <span class="n">sdds_file</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">N_TURNS</span><span class="p">]</span>
-    <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">sdds_file</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">TIMESTAMP</span><span class="p">]</span> <span class="o">/</span> <span class="mf">1e9</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">tzutc</span><span class="p">())</span> 
-    <span class="n">bpm_names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sdds_file</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">BPM_NAMES</span><span class="p">])</span>
-    <span class="n">bpm_planes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sdds_file</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">BPM_PLANES</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">sdds_file</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">TIMESTAMP</span><span class="p">]</span> <span class="o">/</span> <span class="mf">1e9</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">tzutc</span><span class="p">())</span>
 
-    <span class="n">bpm_names_y</span> <span class="o">=</span> <span class="n">bpm_names</span><span class="p">[</span><span class="n">bpm_planes</span><span class="p">]</span>
-    <span class="n">bpm_names_x</span> <span class="o">=</span> <span class="n">bpm_names</span><span class="p">[</span><span class="o">~</span><span class="n">bpm_planes</span><span class="p">]</span>
+    <span class="n">bpm_names_x</span><span class="p">,</span> <span class="n">bpm_names_y</span> <span class="o">=</span> <span class="n">_split_bpm_names_to_planes</span><span class="p">(</span>
+        <span class="n">sdds_file</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">BPM_NAMES</span><span class="p">],</span>
+        <span class="n">sdds_file</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">BPM_PLANES</span><span class="p">]</span>
+    <span class="p">)</span>
 
     <span class="n">tbt_data_x</span> <span class="o">=</span> <span class="p">[</span><span class="n">sdds_file</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">bpm</span><span class="p">]</span> <span class="k">for</span> <span class="n">bpm</span> <span class="ow">in</span> <span class="n">bpm_names_x</span><span class="p">]</span>
     <span class="n">tbt_data_y</span> <span class="o">=</span> <span class="p">[</span><span class="n">sdds_file</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">bpm</span><span class="p">]</span> <span class="k">for</span> <span class="n">bpm</span> <span class="ow">in</span> <span class="n">bpm_names_y</span><span class="p">]</span>
-    
+
     <span class="k">if</span> <span class="n">remove_trailing_bpm_plane</span><span class="p">:</span>
         <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\.[HV]$&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
         <span class="n">bpm_names_x</span>  <span class="o">=</span> <span class="p">[</span><span class="n">pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">bpm</span><span class="p">)</span> <span class="k">for</span> <span class="n">bpm</span> <span class="ow">in</span> <span class="n">bpm_names_x</span><span class="p">]</span>
@@ -173,19 +179,64 @@
 
 
 
-<div class="viewcode-block" id="write_tbt">
-<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.sps.write_tbt">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">write_tbt</span><span class="p">(</span><span class="n">output_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">add_trailing_bpm_plane</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Write a ``TbtData`` object&#39;s data to file, in a ``SPS``&#39;s **SDDS** format.</span>
-<span class="sd">    The format is reduced to the necessary parameters used by the reader.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_split_bpm_names_to_planes</span><span class="p">(</span><span class="n">bpm_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">bpm_planes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Splits BPM names into X and Y planes.</span>
+
+<span class="sd">    In the past, this was done by using the ``MonPlanes`` array, but in 2025 the SPS output changed from using</span>
+<span class="sd">    `1` for vertical and `0` for horizontal to `3` for vertical and `1` for horizontal.</span>
+<span class="sd">    It is therefore probably better to split based on the naming of the BPMs.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        output_path (Union[str, Path]): path to a the disk location where to write the data.</span>
+<span class="sd">        bpm_names (Sequence[str]): BPM names</span>
+<span class="sd">        bpm_planes (Sequence[int], optional): BPM planes</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[np.ndarray, np.ndarray]: BPM names for X and Y planes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">bpm_names</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">bpm_names</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">bpm_names</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;.+\.[HV]$&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="c1"># all names end in .V or .H -&gt; split by name</span>
+        <span class="n">vertical_bpms</span> <span class="o">=</span> <span class="n">bpm_names</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.V&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;Could not determine BPM planes from BPM names. &quot;</span>
+            <span class="s2">&quot;Splitting by the &#39;MonPlanes&#39; array, which might be subject to changes.&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="mi">3</span> <span class="ow">in</span> <span class="n">bpm_planes</span><span class="p">:</span> <span class="c1"># 2025 format splitting: 3 for vertical, 1 for horizontal</span>
+            <span class="n">vertical_bpms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bpm_planes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+
+        <span class="k">elif</span> <span class="mi">0</span> <span class="ow">in</span> <span class="n">bpm_planes</span><span class="p">:</span> <span class="c1"># pre-2025 format splitting: 1 for vertical, 0 for horizontal</span>
+            <span class="n">vertical_bpms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bpm_planes</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Could not determine SPS file format to split BPMs into planes.&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="n">bpm_names_y</span> <span class="o">=</span> <span class="n">bpm_names</span><span class="p">[</span><span class="n">vertical_bpms</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="n">bpm_names_x</span> <span class="o">=</span> <span class="n">bpm_names</span><span class="p">[</span><span class="o">~</span><span class="n">vertical_bpms</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">bpm_names_x</span><span class="p">,</span> <span class="n">bpm_names_y</span>
+
+
+<div class="viewcode-block" id="write_tbt">
+<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.sps.write_tbt">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_tbt</span><span class="p">(</span><span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">add_trailing_bpm_plane</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write a ``TbtData`` object&#39;s data to file, in a ``SPS``&#39;s **SDDS** format.</span>
+<span class="sd">    The format is reduced to the minimum parameters used by the reader.</span>
+
+<span class="sd">    WARNING: This writer uses ``0`` for horizontal and ``1`` for vertical BPMs</span>
+<span class="sd">             in the  ``MonPlanes`` array, i.e. the pre-2025 format.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_path (str | Path): path to a the disk location where to write the data.</span>
 <span class="sd">        tbt_data (TbtData): the ``TbtData`` object to write to disk.</span>
 <span class="sd">        add_trailing_bpm_plane (bool, optional): if ``True``, will add the trailing</span>
 <span class="sd">            BPM plane (&#39;.H&#39;, &#39;.V&#39;) to the BPM-names. This assures that all BPM-names are unique,</span>
 <span class="sd">            and that the measurement data is compatible with the sdds files from the FESA-class.</span>
+<span class="sd">            WARNING: If present, these will be used to determine the plane of the BPMs,</span>
+<span class="sd">            otherwise the ``MonPlanes`` array will be used.</span>
 <span class="sd">            Defaults to ``True``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
