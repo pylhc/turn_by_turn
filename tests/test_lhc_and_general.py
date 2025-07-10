@@ -86,7 +86,7 @@ def create_data(phases, nbpm, function, noise: float = 0) -> np.ndarray:
 
 @pytest.fixture()
 def _test_file(tmp_path) -> Path:
-    yield tmp_path / "test_file"
+    return tmp_path / "test_file"
 
 
 @pytest.fixture()
