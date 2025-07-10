@@ -85,8 +85,7 @@ def _original_trackone(track: bool = False) -> TbtData:
             Y=pd.DataFrame(index=names, data=[[0.0011, 0.00077614, -0.00022749, -0.00103188]]),
         ),
     ]
-    origin = TbtData(matrix, None, [0, 1] if track else [1, 2], 4)
-    return origin
+    return TbtData(matrix, None, [0, 1] if track else [1, 2], 4)
 
 
 def _original_simulation_data() -> TbtData:
@@ -113,10 +112,9 @@ def _original_simulation_data() -> TbtData:
             E=pd.DataFrame(index=names, data=[[500.00088, 500.00088, 500.00088, 500.00088]]),
         ),
     ]
-    origin = TbtData(
+    return TbtData(
         matrices, date=None, bunch_ids=[0, 1], nturns=4
     )  # [0, 1] for bunch_ids because it's from tracking
-    return origin
 
 
 # ----- Fixtures ----- #
