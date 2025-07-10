@@ -5,6 +5,8 @@ LHC
 Data handling for turn-by-turn measurement files from the ``LHC`` (files in **SDDS** format).
 """
 
+from __future__ import annotations
+
 import logging
 from datetime import datetime
 from pathlib import Path

@@ -6,6 +6,8 @@ Data handling for turn-by-turn measurement files from ``ESRF`` (files in **matla
 This module is untested and should be considered experimental at the moment.
 """
 
+from __future__ import annotations
+
 import json
 import logging
 from pathlib import Path

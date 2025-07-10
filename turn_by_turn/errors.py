@@ -5,6 +5,8 @@ Errors
 Errors that can be raised during the handling of turn-by-turn data files.
 """
 
+from __future__ import annotations
+
 
 class DataTypeError(Exception):
     """Raised when an unsupported or invalid datatype is given in I/O operations."""

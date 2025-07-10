@@ -5,6 +5,8 @@ Iota
 Data handling for turn-by-turn measurement files from ``Iota`` (files in **hdf5** format).
 """
 
+from __future__ import annotations
+
 import logging
 from collections.abc import Callable
 from pathlib import Path

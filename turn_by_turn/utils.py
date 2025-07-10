@@ -5,6 +5,8 @@ Utils
 Utility functions for convenience operations on turn-by-turn data objects in this package.
 """
 
+from __future__ import annotations
+
 import logging
 from collections.abc import Iterable, Sequence
 

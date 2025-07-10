@@ -5,6 +5,8 @@ Structures
 Data structures to be used in ``turn_by_turn`` to store turn-by-turn measurement data.
 """
 
+from __future__ import annotations
+
 from collections.abc import Sequence
 from dataclasses import dataclass, field, fields
 from datetime import datetime

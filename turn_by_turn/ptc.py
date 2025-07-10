@@ -8,6 +8,8 @@ structure to **TFS** files, with the difference that the data part is split into
 containing data for a given observation point.
 """
 
+from __future__ import annotations
+
 import copy
 import logging
 from collections import namedtuple

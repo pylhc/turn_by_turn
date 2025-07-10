@@ -8,6 +8,8 @@ files, with the difference that the data part is split into "segments" relating 
 observation point.
 """
 
+from __future__ import annotations
+
 import logging
 from pathlib import Path
 
