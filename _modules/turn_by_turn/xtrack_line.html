@@ -198,9 +198,7 @@
 
     <span class="c1"># First check that no particles were lost during tracking. There will be trailing</span>
     <span class="c1"># zeros in the data if particles were lost. This might be difficult to detect.</span>
-    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span>
-        <span class="n">mon</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">particle_id</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">mon</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">particle_id</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="n">monitors</span>
-    <span class="p">),</span> <span class="p">(</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">mon</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">particle_id</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">mon</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">particle_id</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="n">monitors</span><span class="p">),</span> <span class="p">(</span>
         <span class="s2">&quot;Some particles were lost during tracking, which is not supported by this function. &quot;</span>
         <span class="s2">&quot;Ensure that all particles are tracked through the entire line without loss.&quot;</span>
     <span class="p">)</span>
@@ -216,9 +214,7 @@
     <span class="c1"># Check that all monitors have the same number of particles</span>
     <span class="n">npart_set</span> <span class="o">=</span> <span class="p">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">mon</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">particle_id</span><span class="p">))</span> <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="n">monitors</span><span class="p">}</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">npart_set</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Monitors have different number of particles, maybe some lost particles?&quot;</span>
-        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Monitors have different number of particles, maybe some lost particles?&quot;</span><span class="p">)</span>
     <span class="n">npart</span> <span class="o">=</span> <span class="n">npart_set</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
 
     <span class="c1"># Precompute masks for each monitor and particle_id</span>
@@ -246,9 +242,7 @@
         <span class="n">matrices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TransverseData</span><span class="p">(</span><span class="o">**</span><span class="n">tracking_data_dict</span><span class="p">))</span>
 
     <span class="c1"># Return the TbtData object containing all particles&#39; data</span>
-    <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span>
-        <span class="n">matrices</span><span class="o">=</span><span class="n">matrices</span><span class="p">,</span> <span class="n">bunch_ids</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">npart</span><span class="p">)),</span> <span class="n">nturns</span><span class="o">=</span><span class="n">nturns</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span>
-    <span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span><span class="n">matrices</span><span class="o">=</span><span class="n">matrices</span><span class="p">,</span> <span class="n">bunch_ids</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">npart</span><span class="p">)),</span> <span class="n">nturns</span><span class="o">=</span><span class="n">nturns</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
 
 
 
@@ -262,9 +256,7 @@
 <span class="sd">    Reading TBT data directly from files is not supported for xtrack.</span>
 <span class="sd">    Use ``convert_to_tbt`` to convert an in-memory ``xtrack.Line`` instead.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-        <span class="s2">&quot;Reading TBT data from xtrack Line files is not implemented.&quot;</span>
-    <span class="p">)</span></div>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Reading TBT data from xtrack Line files is not implemented.&quot;</span><span class="p">)</span></div>
 
 </pre></div>
 

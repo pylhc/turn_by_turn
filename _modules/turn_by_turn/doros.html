@@ -96,11 +96,11 @@
 <span class="sd">DOROS</span>
 <span class="sd">-----</span>
 
-<span class="sd">Data handling for turn-by-turn measurement files from the </span>
+<span class="sd">Data handling for turn-by-turn measurement files from the</span>
 <span class="sd">``DOROS`` BPMs of the ``LHC``  (files in **hdf5** format).</span>
 
 <span class="sd">The file contains entries for ``METADATA``, ``TIMESTAMPS_INDEX`` and</span>
-<span class="sd">``TIMESTAMPS_TABLE``, which we do not use and </span>
+<span class="sd">``TIMESTAMPS_TABLE``, which we do not use and</span>
 <span class="sd">then the actual data per BPM.</span>
 
 <span class="sd">These entries are as follows:</span>
@@ -126,13 +126,14 @@
 <span class="sd">- ``horOscillationData``: horizontal oscillation data</span>
 <span class="sd">- ``verOscillationData``: vertical oscillation data</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">h5py</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">h5py</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dateutil</span><span class="w"> </span><span class="kn">import</span> <span class="n">tz</span>
 
@@ -141,19 +142,20 @@
 
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="n">DEFAULT_BUNCH_ID</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># bunch ID not saved in the DOROS file </span>
+<span class="n">DEFAULT_BUNCH_ID</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># bunch ID not saved in the DOROS file</span>
 
 <span class="n">METADATA</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;METADATA&quot;</span>
 
 <span class="c1"># tiemstamps</span>
-<span class="n">BST_TIMESTAMP</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bstTimestamp&quot;</span>   <span class="c1"># microseconds</span>
-<span class="n">ACQ_STAMP</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;acqStamp&quot;</span>           <span class="c1"># microseconds</span>
+<span class="n">BST_TIMESTAMP</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bstTimestamp&quot;</span>  <span class="c1"># microseconds</span>
+<span class="n">ACQ_STAMP</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;acqStamp&quot;</span>  <span class="c1"># microseconds</span>
 
 
 <div class="viewcode-block" id="DataKeys">
 <a class="viewcode-back" href="../../readers/index.html#turn_by_turn.doros.DataKeys">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DataKeys</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Class to handle the different entry keys for oscillations and positions. &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to handle the different entry keys for oscillations and positions.&quot;&quot;&quot;</span>
+
     <span class="n">OSCILLATIONS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;oscillations&quot;</span>
     <span class="n">POSITIONS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;positions&quot;</span>
 
@@ -162,8 +164,8 @@
 <span class="sd">        depending on the data to extract.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            default_value (int): Default value when the data is not present. </span>
-<span class="sd">            n_samples (str): Key for the number of samples present in file entry. </span>
+<span class="sd">            default_value (int): Default value when the data is not present.</span>
+<span class="sd">            n_samples (str): Key for the number of samples present in file entry.</span>
 <span class="sd">            names (dict[str, str]): Keys per plane for the actual tbt data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">default_value</span>
@@ -183,9 +185,9 @@
                 <span class="n">names</span><span class="o">=</span><span class="p">{</span>
                     <span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="s2">&quot;horOscillationData&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="s2">&quot;verOscillationData&quot;</span><span class="p">,</span>
-                <span class="p">}</span>
+                <span class="p">},</span>
             <span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="bp">cls</span><span class="o">.</span><span class="n">POSITIONS</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
                 <span class="n">default_value</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># from FESA class</span>
@@ -193,13 +195,12 @@
                 <span class="n">names</span><span class="o">=</span><span class="p">{</span>
                     <span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="s2">&quot;horPositions&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="s2">&quot;verPositions&quot;</span><span class="p">,</span>
-                <span class="p">}</span>
+                <span class="p">},</span>
             <span class="p">)</span>
-        
-        <span class="k">else</span><span class="p">:</span> 
-            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Unkown datatype &#39;</span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2">&#39;. Use one of </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">types</span><span class="p">()</span><span class="si">}</span><span class="s2">.&quot;</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-    
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Unkown datatype &#39;</span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2">&#39;. Use one of </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">types</span><span class="p">()</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_other_data_keys</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataKeys</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">data_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">types</span><span class="p">():</span>
@@ -213,7 +214,9 @@
 
 <div class="viewcode-block" id="read_tbt">
 <a class="viewcode-back" href="../../readers/index.html#turn_by_turn.doros.read_tbt">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="o">|</span><span class="n">Path</span><span class="p">,</span> <span class="n">bunch_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_BUNCH_ID</span><span class="p">,</span> <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DataKeys</span><span class="o">.</span><span class="n">OSCILLATIONS</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_tbt</span><span class="p">(</span>
+    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">bunch_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_BUNCH_ID</span><span class="p">,</span> <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DataKeys</span><span class="o">.</span><span class="n">OSCILLATIONS</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads turn-by-turn data from the ``DOROS``&#39;s **SDDS** format file.</span>
 
@@ -228,10 +231,10 @@
     <span class="n">file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reading DOROS </span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2"> data at path: &#39;</span><span class="si">{</span><span class="n">file_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
     <span class="n">data_keys</span> <span class="o">=</span> <span class="n">DataKeys</span><span class="o">.</span><span class="n">get_data_keys</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
-    
+
     <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdf_file</span><span class="p">:</span>
         <span class="c1"># use &quot;/&quot; to keep track of bpm order, see https://github.com/h5py/h5py/issues/1471</span>
-        <span class="n">bpm_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">hdf_file</span><span class="p">[</span><span class="s2">&quot;/&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">data_keys</span><span class="o">.</span><span class="n">n_samples</span> <span class="ow">in</span> <span class="n">hdf_file</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+        <span class="n">bpm_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">hdf_file</span><span class="p">[</span><span class="s2">&quot;/&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data_keys</span><span class="o">.</span><span class="n">n_samples</span> <span class="ow">in</span> <span class="n">hdf_file</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]]</span>
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found BPMs in DOROS-type file: </span><span class="si">{</span><span class="n">bpm_names</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">_check_data_lengths</span><span class="p">(</span><span class="n">hdf_file</span><span class="p">,</span> <span class="n">data_keys</span><span class="p">,</span> <span class="n">bpm_names</span><span class="p">)</span>
@@ -252,7 +255,9 @@
 
 <div class="viewcode-block" id="write_tbt">
 <a class="viewcode-back" href="../../readers/index.html#turn_by_turn.doros.write_tbt">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">write_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="o">|</span><span class="n">Path</span><span class="p">,</span> <span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DataKeys</span><span class="o">.</span><span class="n">OSCILLATIONS</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_tbt</span><span class="p">(</span>
+    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DataKeys</span><span class="o">.</span><span class="n">OSCILLATIONS</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Writes turn-by-turn data to the ``DOROS``&#39;s **SDDS** format file.</span>
 
@@ -287,7 +292,9 @@
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_create_dataframe</span><span class="p">(</span><span class="n">hdf_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">data_keys</span><span class="p">:</span> <span class="n">DataKeys</span><span class="p">,</span> <span class="n">bpm_names</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plane</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_dataframe</span><span class="p">(</span>
+    <span class="n">hdf_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">data_keys</span><span class="p">:</span> <span class="n">DataKeys</span><span class="p">,</span> <span class="n">bpm_names</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plane</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">hdf_file</span><span class="p">[</span><span class="n">bpm</span><span class="p">][</span><span class="n">data_keys</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">plane</span><span class="p">]]</span> <span class="k">for</span> <span class="n">bpm</span> <span class="ow">in</span> <span class="n">bpm_names</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">bpm_names</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 
@@ -297,9 +304,11 @@
     <span class="n">suspicious_bpms</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">bpm</span> <span class="ow">in</span> <span class="n">bpm_names</span><span class="p">:</span>
         <span class="n">n_turns</span> <span class="o">=</span> <span class="n">hdf_file</span><span class="p">[</span><span class="n">bpm</span><span class="p">][</span><span class="n">data_keys</span><span class="o">.</span><span class="n">n_samples</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">n_turns</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hdf_file</span><span class="p">[</span><span class="n">bpm</span><span class="p">][</span><span class="n">data_keys</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">]])</span> <span class="ow">or</span> <span class="n">n_turns</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hdf_file</span><span class="p">[</span><span class="n">bpm</span><span class="p">][</span><span class="n">data_keys</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Y&quot;</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="n">n_turns</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hdf_file</span><span class="p">[</span><span class="n">bpm</span><span class="p">][</span><span class="n">data_keys</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">]])</span> <span class="ow">or</span> <span class="n">n_turns</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span>
+            <span class="n">hdf_file</span><span class="p">[</span><span class="n">bpm</span><span class="p">][</span><span class="n">data_keys</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Y&quot;</span><span class="p">]]</span>
+        <span class="p">):</span>
             <span class="n">suspicious_bpms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bpm</span><span class="p">)</span>
-    
+
     <span class="k">if</span> <span class="n">suspicious_bpms</span><span class="p">:</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Found BPMs with different data lengths than defined in &#39;</span><span class="si">{</span><span class="n">data_keys</span><span class="o">.</span><span class="n">n_samples</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">suspicious_bpms</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>

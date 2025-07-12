@@ -271,9 +271,7 @@
 <span class="sd">        TbtData: The converted TbtData object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">datatype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TBT_CONVERTERS</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">DataTypeError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Only </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TBT_CONVERTERS</span><span class="p">)</span><span class="si">}</span><span class="s2"> converters are implemented for now.&quot;</span>
-        <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">DataTypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Only </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TBT_CONVERTERS</span><span class="p">)</span><span class="si">}</span><span class="s2"> converters are implemented for now.&quot;</span><span class="p">)</span>
 
     <span class="n">module</span> <span class="o">=</span> <span class="n">TBT_MODULES</span><span class="p">[</span><span class="n">datatype</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
     <span class="k">return</span> <span class="n">module</span><span class="o">.</span><span class="n">convert_to_tbt</span><span class="p">(</span><span class="n">file_data</span><span class="p">)</span>  <span class="c1"># No additional arguments as no doros.</span></div>
@@ -304,9 +302,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">datatype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">WRITERS</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">DataTypeError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Only </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">WRITERS</span><span class="p">)</span><span class="si">}</span><span class="s2"> writers are implemented for now.&quot;</span>
-        <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">DataTypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Only </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">WRITERS</span><span class="p">)</span><span class="si">}</span><span class="s2"> writers are implemented for now.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">datatype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;lhc&quot;</span><span class="p">,</span> <span class="s2">&quot;sps&quot;</span><span class="p">,</span> <span class="s2">&quot;ascii&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">output_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">!=</span> <span class="s2">&quot;.sdds&quot;</span><span class="p">:</span>
         <span class="c1"># I would like to remove this, but I&#39;m afraid of compatibility issues with omc3 (jdilly, 2024)</span>

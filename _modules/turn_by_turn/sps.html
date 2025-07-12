@@ -98,12 +98,13 @@
 
 <span class="sd">Data handling for turn-by-turn measurement files from the ``SPS`` (files in **SDDS** format).</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -111,7 +112,8 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">sdds</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dateutil</span><span class="w"> </span><span class="kn">import</span> <span class="n">tz</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.ascii</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_ascii_file</span><span class="p">,</span> <span class="n">read_tbt</span> <span class="k">as</span> <span class="n">read_ascii</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.ascii</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_ascii_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.ascii</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_tbt</span> <span class="k">as</span> <span class="n">read_ascii</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.structures</span><span class="w"> </span><span class="kn">import</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">TransverseData</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -156,8 +158,7 @@
     <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">sdds_file</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">TIMESTAMP</span><span class="p">]</span> <span class="o">/</span> <span class="mf">1e9</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">tzutc</span><span class="p">())</span>
 
     <span class="n">bpm_names_x</span><span class="p">,</span> <span class="n">bpm_names_y</span> <span class="o">=</span> <span class="n">_split_bpm_names_to_planes</span><span class="p">(</span>
-        <span class="n">sdds_file</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">BPM_NAMES</span><span class="p">],</span>
-        <span class="n">sdds_file</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">BPM_PLANES</span><span class="p">]</span>
+        <span class="n">sdds_file</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">BPM_NAMES</span><span class="p">],</span> <span class="n">sdds_file</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">BPM_PLANES</span><span class="p">]</span>
     <span class="p">)</span>
 
     <span class="n">tbt_data_x</span> <span class="o">=</span> <span class="p">[</span><span class="n">sdds_file</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">bpm</span><span class="p">]</span> <span class="k">for</span> <span class="n">bpm</span> <span class="ow">in</span> <span class="n">bpm_names_x</span><span class="p">]</span>
@@ -165,8 +166,8 @@
 
     <span class="k">if</span> <span class="n">remove_trailing_bpm_plane</span><span class="p">:</span>
         <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\.[HV]$&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
-        <span class="n">bpm_names_x</span>  <span class="o">=</span> <span class="p">[</span><span class="n">pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">bpm</span><span class="p">)</span> <span class="k">for</span> <span class="n">bpm</span> <span class="ow">in</span> <span class="n">bpm_names_x</span><span class="p">]</span>
-        <span class="n">bpm_names_y</span>  <span class="o">=</span> <span class="p">[</span><span class="n">pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">bpm</span><span class="p">)</span> <span class="k">for</span> <span class="n">bpm</span> <span class="ow">in</span> <span class="n">bpm_names_y</span><span class="p">]</span>
+        <span class="n">bpm_names_x</span> <span class="o">=</span> <span class="p">[</span><span class="n">pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">bpm</span><span class="p">)</span> <span class="k">for</span> <span class="n">bpm</span> <span class="ow">in</span> <span class="n">bpm_names_x</span><span class="p">]</span>
+        <span class="n">bpm_names_y</span> <span class="o">=</span> <span class="p">[</span><span class="n">pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">bpm</span><span class="p">)</span> <span class="k">for</span> <span class="n">bpm</span> <span class="ow">in</span> <span class="n">bpm_names_y</span><span class="p">]</span>
 
     <span class="n">matrices</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">TransverseData</span><span class="p">(</span>
@@ -179,8 +180,10 @@
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_split_bpm_names_to_planes</span><span class="p">(</span><span class="n">bpm_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">bpm_planes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Splits BPM names into X and Y planes.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_split_bpm_names_to_planes</span><span class="p">(</span>
+    <span class="n">bpm_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">bpm_planes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Splits BPM names into X and Y planes.</span>
 
 <span class="sd">    In the past, this was done by using the ``MonPlanes`` array, but in 2025 the SPS output changed from using</span>
 <span class="sd">    `1` for vertical and `0` for horizontal to `3` for vertical and `1` for horizontal.</span>
@@ -203,10 +206,10 @@
             <span class="s2">&quot;Could not determine BPM planes from BPM names. &quot;</span>
             <span class="s2">&quot;Splitting by the &#39;MonPlanes&#39; array, which might be subject to changes.&quot;</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="mi">3</span> <span class="ow">in</span> <span class="n">bpm_planes</span><span class="p">:</span> <span class="c1"># 2025 format splitting: 3 for vertical, 1 for horizontal</span>
+        <span class="k">if</span> <span class="mi">3</span> <span class="ow">in</span> <span class="n">bpm_planes</span><span class="p">:</span>  <span class="c1"># 2025 format splitting: 3 for vertical, 1 for horizontal</span>
             <span class="n">vertical_bpms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bpm_planes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
 
-        <span class="k">elif</span> <span class="mi">0</span> <span class="ow">in</span> <span class="n">bpm_planes</span><span class="p">:</span> <span class="c1"># pre-2025 format splitting: 1 for vertical, 0 for horizontal</span>
+        <span class="k">elif</span> <span class="mi">0</span> <span class="ow">in</span> <span class="n">bpm_planes</span><span class="p">:</span>  <span class="c1"># pre-2025 format splitting: 1 for vertical, 0 for horizontal</span>
             <span class="n">vertical_bpms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bpm_planes</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
@@ -221,7 +224,9 @@
 
 <div class="viewcode-block" id="write_tbt">
 <a class="viewcode-back" href="../../readers/index.html#turn_by_turn.sps.write_tbt">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">write_tbt</span><span class="p">(</span><span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">add_trailing_bpm_plane</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_tbt</span><span class="p">(</span>
+    <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">add_trailing_bpm_plane</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write a ``TbtData`` object&#39;s data to file, in a ``SPS``&#39;s **SDDS** format.</span>
 <span class="sd">    The format is reduced to the minimum parameters used by the reader.</span>
@@ -248,30 +253,34 @@
     <span class="n">bpm_names_x</span><span class="p">,</span> <span class="n">bpm_names_y</span> <span class="o">=</span> <span class="n">df_x</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_list</span><span class="p">(),</span> <span class="n">df_y</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">add_trailing_bpm_plane</span><span class="p">:</span>
-        <span class="n">bpm_names_x</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bpm_name</span><span class="si">}</span><span class="s2">.H&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">bpm_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.H&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">bpm_name</span> <span class="k">for</span> <span class="n">bpm_name</span> <span class="ow">in</span> <span class="n">bpm_names_x</span><span class="p">]</span>
-        <span class="n">bpm_names_y</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bpm_name</span><span class="si">}</span><span class="s2">.V&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">bpm_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.V&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">bpm_name</span> <span class="k">for</span> <span class="n">bpm_name</span> <span class="ow">in</span> <span class="n">bpm_names_y</span><span class="p">]</span>
+        <span class="n">bpm_names_x</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bpm_name</span><span class="si">}</span><span class="s2">.H&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">bpm_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.H&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">bpm_name</span> <span class="k">for</span> <span class="n">bpm_name</span> <span class="ow">in</span> <span class="n">bpm_names_x</span>
+        <span class="p">]</span>
+        <span class="n">bpm_names_y</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bpm_name</span><span class="si">}</span><span class="s2">.V&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">bpm_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.V&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">bpm_name</span> <span class="k">for</span> <span class="n">bpm_name</span> <span class="ow">in</span> <span class="n">bpm_names_y</span>
+        <span class="p">]</span>
 
     <span class="n">bpm_names</span> <span class="o">=</span> <span class="n">bpm_names_x</span> <span class="o">+</span> <span class="n">bpm_names_y</span>
 
     <span class="c1"># bpm planes</span>
     <span class="n">bpm_planes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">bpm_names</span><span class="p">)])</span>
-    <span class="n">bpm_planes</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">bpm_names_y</span><span class="p">):]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">bpm_planes</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">bpm_names_y</span><span class="p">)</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="n">list_of_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="p">(</span><span class="n">df_x</span><span class="p">,</span> <span class="n">df_y</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()]</span>
 
     <span class="n">definitions</span> <span class="o">=</span> <span class="p">[</span>
-                      <span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">TIMESTAMP</span><span class="p">,</span> <span class="s2">&quot;llong&quot;</span><span class="p">),</span>
-                      <span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">N_TURNS</span><span class="p">,</span> <span class="s2">&quot;long&quot;</span><span class="p">),</span>
-                      <span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">BPM_NAMES</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">),</span>
-                      <span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">BPM_PLANES</span><span class="p">,</span> <span class="s2">&quot;long&quot;</span><span class="p">),</span>
-                  <span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">bpm</span><span class="p">,</span> <span class="s2">&quot;double&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">bpm</span> <span class="ow">in</span> <span class="n">bpm_names</span><span class="p">]</span>
+        <span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">TIMESTAMP</span><span class="p">,</span> <span class="s2">&quot;llong&quot;</span><span class="p">),</span>
+        <span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">N_TURNS</span><span class="p">,</span> <span class="s2">&quot;long&quot;</span><span class="p">),</span>
+        <span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">BPM_NAMES</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">),</span>
+        <span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">BPM_PLANES</span><span class="p">,</span> <span class="s2">&quot;long&quot;</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">sdds</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">bpm</span><span class="p">,</span> <span class="s2">&quot;double&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">bpm</span> <span class="ow">in</span> <span class="n">bpm_names</span><span class="p">]</span>
 
     <span class="n">values</span> <span class="o">=</span> <span class="p">[</span>
-                 <span class="n">tbt_data</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e9</span><span class="p">,</span>
-                 <span class="n">tbt_data</span><span class="o">.</span><span class="n">nturns</span><span class="p">,</span>
-                 <span class="n">bpm_names</span><span class="p">,</span>
-                 <span class="n">bpm_planes</span><span class="p">,</span>
-                 <span class="p">]</span> <span class="o">+</span> <span class="n">list_of_data</span>
+        <span class="n">tbt_data</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e9</span><span class="p">,</span>
+        <span class="n">tbt_data</span><span class="o">.</span><span class="n">nturns</span><span class="p">,</span>
+        <span class="n">bpm_names</span><span class="p">,</span>
+        <span class="n">bpm_planes</span><span class="p">,</span>
+    <span class="p">]</span> <span class="o">+</span> <span class="n">list_of_data</span>
     <span class="n">sdds</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sdds</span><span class="o">.</span><span class="n">SddsFile</span><span class="p">(</span><span class="s2">&quot;SDDS1&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">definitions</span><span class="p">,</span> <span class="n">values</span><span class="p">),</span> <span class="n">output_path</span><span class="p">)</span></div>
 
 </pre></div>
