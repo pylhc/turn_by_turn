@@ -34,7 +34,7 @@ def test_tbt_write_read_sdds_binary(_sdds_file, _test_file):
     origin = read_tbt(_sdds_file)
     write_tbt(_test_file, origin)
     new = read_tbt(f"{_test_file}.sdds")
-    compare_tbt(origin, new, False)
+    compare_tbt(origin, new, no_binary=False)
 
 
 def test_tbt_write_read_sdds_binary_with_noise(_sdds_file, _test_file):
@@ -43,20 +43,26 @@ def test_tbt_write_read_sdds_binary_with_noise(_sdds_file, _test_file):
     new = read_tbt(f"{_test_file}.sdds")
 
     with pytest.raises(AssertionError):  # should be different
-        compare_tbt(origin, new, False)
+        compare_tbt(origin, new, no_binary=False)
 
 
 def test_tbt_write_read_ascii(_sdds_file, _test_file):
     origin = read_tbt(_sdds_file)
     write_lhc_ascii(_test_file, origin)
     new = read_tbt(_test_file)
-    compare_tbt(origin, new, True)
+    compare_tbt(origin, new, no_binary=True)
 
 
 # ----- Helpers ----- #
 
 
-def compare_tbt(origin: TbtData, new: TbtData, no_binary: bool, max_deviation = ASCII_PRECISION, is_tracking_data: bool = False) -> None:
+def compare_tbt(
+    origin: TbtData,
+    new: TbtData,
+    no_binary: bool,
+    max_deviation=ASCII_PRECISION,
+    is_tracking_data: bool = False,
+) -> None:
     assert new.nturns == origin.nturns
     assert new.nbunches == origin.nbunches
     assert new.bunch_ids == origin.bunch_ids
@@ -73,16 +79,17 @@ def compare_tbt(origin: TbtData, new: TbtData, no_binary: bool, max_deviation = 
 
 
 def create_data(phases, nbpm, function, noise: float = 0) -> np.ndarray:
-    return np.ones((nbpm, len(phases))) * function(phases) + noise * np.random.randn(nbpm, len(phases))
+    rng = np.random.default_rng()
+    return np.ones((nbpm, len(phases))) * function(phases) + noise * rng.standard_normal(
+        size=(nbpm, len(phases))
+    )
 
 
 @pytest.fixture()
 def _test_file(tmp_path) -> Path:
-    yield tmp_path / "test_file"
+    return tmp_path / "test_file"
 
 
 @pytest.fixture()
 def _sdds_file() -> Path:
     return INPUTS_DIR / "test_file.sdds"
-
-

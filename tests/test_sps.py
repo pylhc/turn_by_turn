@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from tests.test_lhc_and_general import compare_tbt, INPUTS_DIR, create_data
-from turn_by_turn import sps, TbtData, TransverseData
+from tests.test_lhc_and_general import INPUTS_DIR, compare_tbt, create_data
+from turn_by_turn import TbtData, TransverseData, sps
 
 
 @pytest.mark.parametrize("remove_planes", [True, False])
@@ -27,11 +27,15 @@ def test_write_read(tmp_path):
             TransverseData(
                 X=pd.DataFrame(
                     index=[f"BPMH{i}.H" for i in range(nbpms_x)],
-                    data=create_data(np.linspace(-np.pi, np.pi, nturns, endpoint=False), nbpms_x, np.sin)
+                    data=create_data(
+                        np.linspace(-np.pi, np.pi, nturns, endpoint=False), nbpms_x, np.sin
+                    ),
                 ),
                 Y=pd.DataFrame(
                     index=[f"BPMV{i}.V" for i in range(nbpms_y)],
-                    data=create_data(np.linspace(-np.pi, np.pi, nturns, endpoint=False), nbpms_y, np.cos)
+                    data=create_data(
+                        np.linspace(-np.pi, np.pi, nturns, endpoint=False), nbpms_y, np.cos
+                    ),
                 ),
             )
         ],
@@ -65,13 +69,13 @@ def test_write_read(tmp_path):
 
 
 def test_split_function():
-    """ Tests that the splitting function into planes works as expected. """
+    """Tests that the splitting function into planes works as expected."""
 
     names_with_planes = ("bpm1.H", "bpm2.V", "bpm3.V", "bpm4.H")
     x, y = sps._split_bpm_names_to_planes(names_with_planes)
 
-    assert all([bpm in x for bpm in ("bpm1.H", "bpm4.H")])
-    assert all([bpm in y for bpm in ("bpm2.V", "bpm3.V")])
+    assert all(bpm in x for bpm in ("bpm1.H", "bpm4.H"))
+    assert all(bpm in y for bpm in ("bpm2.V", "bpm3.V"))
 
     names_without_planes = ("bpm1", "bpm2", "bpm3", "bpm4")
     planes = (0, 1, 1, 0)

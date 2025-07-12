@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from tests.test_lhc_and_general import create_data, compare_tbt
+from tests.test_lhc_and_general import compare_tbt, create_data
 from turn_by_turn.constants import PLANES
 from turn_by_turn.errors import ExclusiveArgumentsError
 from turn_by_turn.structures import TbtData, TransverseData
@@ -41,11 +41,15 @@ def test_noise_addition_to_tbt():
             TransverseData(
                 X=pd.DataFrame(
                     index=[f"BPM{i}" for i in range(nbpms)],
-                    data=create_data(np.linspace(-np.pi, np.pi, nturns, endpoint=False), nbpms, np.sin)
+                    data=create_data(
+                        np.linspace(-np.pi, np.pi, nturns, endpoint=False), nbpms, np.sin
+                    ),
                 ),
                 Y=pd.DataFrame(
                     index=[f"BPM{i}" for i in range(nbpms)],
-                    data=create_data(np.linspace(-np.pi, np.pi, nturns, endpoint=False), nbpms, np.cos)
+                    data=create_data(
+                        np.linspace(-np.pi, np.pi, nturns, endpoint=False), nbpms, np.cos
+                    ),
                 ),
             )
             for _ in range(nbunches)
@@ -90,8 +94,9 @@ def test_add_noise_raises_on_both_arguments():
         _ = add_noise(array, noise=5, sigma=1)
 
 
-def test_compare_average_Tbtdata():
+def test_compare_average_tbtdata():
     npart = 10
+    rng = np.random.default_rng()
     data = {
         plane: np.concatenate(
             [
@@ -99,7 +104,7 @@ def test_compare_average_Tbtdata():
                     create_data(
                         np.linspace(1, 10, 10, endpoint=False, dtype=int),
                         2,
-                        (lambda x: np.random.randn(len(x))),
+                        (lambda x: rng.standard_normal(len(x))),
                     )
                 ]
                 for _ in range(npart)
@@ -142,4 +147,4 @@ def test_compare_average_Tbtdata():
         nturns=10,
     )
 
-    compare_tbt(generate_average_tbtdata(origin), new, False)
+    compare_tbt(generate_average_tbtdata(origin), new, no_binary=False)

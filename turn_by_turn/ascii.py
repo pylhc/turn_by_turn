@@ -10,19 +10,20 @@ containing the columns:
 - BPM index/longitunial location
 - Value Turn 1, Turn 2, etc.
 """
+
 from __future__ import annotations
 
 import logging
+import re
 from datetime import datetime
 from pathlib import Path
-import re
 from typing import TextIO
 
 import numpy as np
 import pandas as pd
 from dateutil import tz
 
-from turn_by_turn.constants import FORMAT_STRING, PLANE_TO_NUM, PLANES, NUM_TO_PLANE
+from turn_by_turn.constants import FORMAT_STRING, NUM_TO_PLANE, PLANE_TO_NUM, PLANES
 from turn_by_turn.structures import TbtData, TransverseData
 
 LOGGER = logging.getLogger(__name__)
@@ -59,6 +60,7 @@ def is_ascii_file(file_path: str | Path) -> bool:
 
 # ----- Writer ----- #
 
+
 def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
     """
     Write a ``TbtData`` object's data to file, in the TbT ASCII format.
@@ -83,9 +85,13 @@ def _write_header(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> None
     Write the appropriate headers for a ``TbtData`` object's given bunch_id in the ASCII format.
     """
     output_file.write(f"#{ASCII_ID} v1\n")
-    output_file.write(f"#Created: {datetime.now().strftime('%Y-%m-%d at %H:%M:%S')} By: Python turn_by_turn Package\n")
+    output_file.write(
+        f"#Created: {datetime.now().strftime('%Y-%m-%d at %H:%M:%S')} By: Python turn_by_turn Package\n"
+    )
     output_file.write(f"#Number of turns: {tbt_data.nturns}\n")
-    output_file.write(f"#Number of horizontal monitors: {tbt_data.matrices[bunch_id].X.index.size}\n")
+    output_file.write(
+        f"#Number of horizontal monitors: {tbt_data.matrices[bunch_id].X.index.size}\n"
+    )
     output_file.write(f"#Number of vertical monitors: {tbt_data.matrices[bunch_id].Y.index.size}\n")
     output_file.write(f"#Acquisition date: {tbt_data.date.strftime('%Y-%m-%d at %H:%M:%S')}\n")
 
@@ -101,6 +107,7 @@ def _write_tbt_data(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> No
 
 # ----- Reader ----- #
 
+
 def read_tbt(file_path: str | Path, bunch_id: int = None) -> TbtData:
     """
     Reads turn-by-turn data from an ASCII turn-by-turn format file, and return the date as well as
@@ -108,7 +115,7 @@ def read_tbt(file_path: str | Path, bunch_id: int = None) -> TbtData:
 
     Args:
         file_path (str | Path): path to the turn-by-turn measurement file.
-        bunch_id (int, optional): the bunch id associated with this file. 
+        bunch_id (int, optional): the bunch id associated with this file.
                                   Defaults to `None`, but is then attempted to parsed
                                   from the filename. If not found, `0` is used.
 
@@ -119,7 +126,7 @@ def read_tbt(file_path: str | Path, bunch_id: int = None) -> TbtData:
     bpm_names = {"X": [], "Y": []}
     bpm_data = {"X": [], "Y": []}
     date = None  # will switch to TbtData.date's default if not found in file
-    
+
     if bunch_id is None:
         bunch_id = _parse_bunch_id(file_path)
 
@@ -131,19 +138,19 @@ def read_tbt(file_path: str | Path, bunch_id: int = None) -> TbtData:
             date = _parse_date(line)
             continue
 
-        elif line == "" or line.startswith(ASCII_COMMENT):  # empty or comment line
+        if line == "" or line.startswith(ASCII_COMMENT):  # empty or comment line
             continue
 
-        else:  # data line, let's get samples
-            plane_num, bpm_name, bpm_samples = _parse_samples(line)
-            try:
-                bpm_names[NUM_TO_PLANE[plane_num]].append(bpm_name)
-                bpm_data[NUM_TO_PLANE[plane_num]].append(bpm_samples)
-            except KeyError as error:
-                raise ValueError(
-                    f"Plane number '{plane_num}' found in file '{file_path}'.\n"
-                    "Only '0' and '1' are allowed."
-                ) from error
+        # data line, let's get samples
+        plane_num, bpm_name, bpm_samples = _parse_samples(line)
+        try:
+            bpm_names[NUM_TO_PLANE[plane_num]].append(bpm_name)
+            bpm_data[NUM_TO_PLANE[plane_num]].append(bpm_samples)
+        except KeyError as error:
+            raise ValueError(
+                f"Plane number '{plane_num}' found in file '{file_path}'.\n"
+                "Only '0' and '1' are allowed."
+            ) from error
 
     matrices = [
         TransverseData(
@@ -151,7 +158,9 @@ def read_tbt(file_path: str | Path, bunch_id: int = None) -> TbtData:
             Y=pd.DataFrame(index=bpm_names["Y"], data=np.array(bpm_data["Y"])),
         )
     ]
-    return TbtData(matrices=matrices, date=date, bunch_ids=[bunch_id], nturns=matrices[0].X.shape[1])
+    return TbtData(
+        matrices=matrices, date=date, bunch_ids=[bunch_id], nturns=matrices[0].X.shape[1]
+    )
 
 
 # ----- Helpers ----- #

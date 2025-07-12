@@ -6,22 +6,26 @@ Data handling for turn-by-turn measurement files from ``ESRF`` (files in **matla
 This module is untested and should be considered experimental at the moment.
 """
 
+from __future__ import annotations
+
 import json
 import logging
 from pathlib import Path
-from typing import Tuple, Union
+from typing import TYPE_CHECKING
 
 import numpy as np
 from scipy.io import loadmat
 
-from turn_by_turn.structures import TbtData
 from turn_by_turn.utils import numpy_to_tbt
+
+if TYPE_CHECKING:
+    from turn_by_turn.structures import TbtData
 
 BPM_NAMES_FILE: str = "bpm_names.json"
 LOGGER = logging.getLogger(__name__)
 
 
-def read_tbt(file_path: Union[str, Path]) -> TbtData:
+def read_tbt(file_path: str | Path) -> TbtData:
     """
     Reads turn-by-turn data from the ``ESRF``'s **Matlab** format file.
 
@@ -37,7 +41,7 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     return numpy_to_tbt(names, matrix)
 
 
-def load_esrf_mat_file(infile: Union[str, Path]) -> Tuple[np.ndarray, np.ndarray]:
+def load_esrf_mat_file(infile: str | Path) -> tuple[np.ndarray, np.ndarray]:
     """
     Reads the **ESRF** TbT ``Matlab`` file, checks for nans and matrices duplicities from consecutive kicks.
 

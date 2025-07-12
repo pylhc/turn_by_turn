@@ -7,12 +7,15 @@ particle tracking of your machine through the ``MAD-X PTC`` interface. The files
 structure to **TFS** files, with the difference that the data part is split into "segments" relating
 containing data for a given observation point.
 """
+
+from __future__ import annotations
+
 import copy
 import logging
 from collections import namedtuple
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Sequence, Tuple, Union
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import pandas as pd
@@ -21,6 +24,9 @@ from dateutil import tz
 from turn_by_turn.constants import PLANES
 from turn_by_turn.errors import PTCFormatError
 from turn_by_turn.structures import TbtData, TransverseData
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 LOGGER = logging.getLogger(__name__)
 Segment = namedtuple("Segment", ["number", "turns", "particles", "element", "name"])
@@ -31,7 +37,7 @@ HEADER: str = "@"
 NAMES: str = "*"
 TYPES: str = "$"
 SEGMENTS: str = "#segment"
-SEGMENT_MARKER: Tuple[str, str] = ("start", "end")
+SEGMENT_MARKER: tuple[str, str] = ("start", "end")
 COLX: str = "X"
 COLY: str = "Y"
 COLTURN: str = "TURN"
@@ -41,7 +47,7 @@ TIME: str = "TIME"
 TIME_FORMAT: str = "%d/%m/%y %H.%M.%S"
 
 
-def read_tbt(file_path: Union[str, Path]) -> TbtData:
+def read_tbt(file_path: str | Path) -> TbtData:
     """
     Reads turn-by-turn data from the ``PTC`` **trackone** format file.
 
@@ -53,7 +59,7 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     """
     file_path = Path(file_path)
     LOGGER.debug(f"Reading PTC trackone file at path: '{file_path.absolute()}'")
-    lines: List[str] = file_path.read_text().splitlines()
+    lines: list[str] = file_path.read_text().splitlines()
 
     LOGGER.debug("Reading header from file")
     date, header_length = _read_header(lines)
@@ -63,7 +69,9 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     bpms, particles, column_indices, n_turns, n_particles = _read_from_first_turn(lines)
 
     # read into dict first for speed then convert to DFs
-    matrices = [{p: {bpm: np.zeros(n_turns) for bpm in bpms} for p in PLANES} for _ in range(n_particles)]
+    matrices = [
+        {p: {bpm: np.zeros(n_turns) for bpm in bpms} for p in PLANES} for _ in range(n_particles)
+    ]
     matrices = _read_data(lines, matrices, column_indices)
     for bunch in range(n_particles):
         matrices[bunch] = TransverseData(
@@ -75,10 +83,10 @@ def read_tbt(file_path: Union[str, Path]) -> TbtData:
     return TbtData(matrices=matrices, date=date, bunch_ids=particles, nturns=n_turns)
 
 
-def _read_header(lines: Sequence[str]) -> Tuple[datetime, int]:
+def _read_header(lines: Sequence[str]) -> tuple[datetime, int]:
     """Reads header length and datetime from header."""
     idx_line = 0
-    date_str = {k: None for k in [DATE, TIME]}
+    date_str = dict.fromkeys([DATE, TIME])
     for idx_line, line in enumerate(lines):
         parts = line.strip().split()
         if len(parts) == 0:
@@ -87,7 +95,7 @@ def _read_header(lines: Sequence[str]) -> Tuple[datetime, int]:
         if parts[0] != HEADER:
             break
 
-        if parts[1] in date_str.keys():
+        if parts[1] in date_str:
             date_str[parts[1]] = parts[-1].strip("'\" ")
 
     if any(datestring is None for datestring in date_str.values()):
@@ -99,7 +107,7 @@ def _read_header(lines: Sequence[str]) -> Tuple[datetime, int]:
 
 def _read_from_first_turn(
     lines: Sequence[str],
-) -> Tuple[List[str], List[int], Dict[Any, Any], int, int]:
+) -> tuple[list[str], list[int], dict[Any, Any], int, int]:
     """
     Reads the BPMs, particles, column indices and number of turns and particles from the matrices of
     the first turn.
@@ -152,8 +160,8 @@ def _read_from_first_turn(
 
 
 def _read_data(
-    lines: Sequence[str], matrices: Dict[str, Dict[str, np.ndarray]], column_indices: dict
-) -> Dict[str, Dict[str, np.ndarray]]:
+    lines: Sequence[str], matrices: dict[str, dict[str, np.ndarray]], column_indices: dict
+) -> dict[str, dict[str, np.ndarray]]:
     """Read the matrices into the matrices."""
     LOGGER.debug("Reading matrices.")
     matrices = copy.deepcopy(matrices)
@@ -194,7 +202,7 @@ def _parse_data(column_indices, parts: Sequence[str]) -> dict:
 
 def _parse_column_names_to_indices(parts: Sequence[str]) -> dict:
     """Parses the column names from the line into a dictionary with indices."""
-    col_idx = {k: None for k in [COLX, COLY, COLTURN, COLPARTICLE]}
+    col_idx = dict.fromkeys([COLX, COLY, COLTURN, COLPARTICLE])
     LOGGER.debug("Setting column names.")
 
     for idx, column_name in enumerate(parts):
