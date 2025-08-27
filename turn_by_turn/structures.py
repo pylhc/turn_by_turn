@@ -76,9 +76,9 @@ class TbtData:
     """
 
     matrices: Sequence[DataType]  # each entry corresponds to a bunch
-    date: datetime = None  # will default in post_init
-    bunch_ids: list[int] = None  # will default in post_init
-    nturns: int = None
+    date: datetime | None  = None  # will default in post_init
+    bunch_ids: list[int] | None  = None  # will default in post_init
+    nturns: int | None = None
     meta: dict | None = None
     nbunches: int = field(init=False)
 
