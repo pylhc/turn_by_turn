@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     import pandas as pd
 
 
-@dataclass
+@dataclass(slots=True)
 class TransverseData:
     """
     Object holding measured turn-by-turn data for both transverse planes in the form of pandas DataFrames.
@@ -39,7 +39,7 @@ class TransverseData:
         return getattr(self, item)
 
 
-@dataclass
+@dataclass(slots=True)
 class TrackingData:
     """
     Object holding multidimensional turn-by-turn simulation data in the form of pandas DataFrames.
@@ -68,7 +68,7 @@ class TrackingData:
 DataType = TransverseData | TrackingData
 
 
-@dataclass
+@dataclass(slots=True)
 class TbtData:
     """
     Object holding a representation of a Turn-by-Turn data measurement. The date of the measurement,
@@ -79,6 +79,7 @@ class TbtData:
     date: datetime = None  # will default in post_init
     bunch_ids: list[int] = None  # will default in post_init
     nturns: int = None
+    meta: dict | None = None
     nbunches: int = field(init=False)
 
     def __post_init__(self):
