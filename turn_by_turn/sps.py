@@ -25,6 +25,8 @@ from turn_by_turn.structures import TbtData, TransverseData
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
+    from turn_by_turn.constants import MetaDict
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -52,16 +54,19 @@ def read_tbt(file_path: str | Path, remove_trailing_bpm_plane: bool = True) -> T
     """
     file_path = Path(file_path)
     LOGGER.debug(f"Reading SPS file at path: '{file_path.absolute()}'")
-    meta = {}
 
     if is_ascii_file(file_path):
         return read_ascii(file_path)
 
     sdds_file = sdds.read(file_path)
 
-    nturns = sdds_file.values[N_TURNS]
-    meta["date"] = datetime.fromtimestamp(sdds_file.values[TIMESTAMP] / 1e9, tz=tz.tzutc())
+    meta: MetaDict = {
+        "file": file_path,
+        "source_datatype": "sps",
+        "date": datetime.fromtimestamp(sdds_file.values[TIMESTAMP] / 1e9, tz=tz.tzutc())
+    }
 
+    nturns = sdds_file.values[N_TURNS]
     bpm_names_x, bpm_names_y = _split_bpm_names_to_planes(
         sdds_file.values[BPM_NAMES], sdds_file.values[BPM_PLANES]
     )
@@ -81,7 +86,7 @@ def read_tbt(file_path: str | Path, remove_trailing_bpm_plane: bool = True) -> T
         )
     ]
 
-    return TbtData(matrices, date, [0], nturns)
+    return TbtData(matrices, nturns=nturns, bunch_ids=[0], meta=meta)
 
 
 def _split_bpm_names_to_planes(
@@ -178,7 +183,7 @@ def write_tbt(
     ] + [sdds.classes.Array(bpm, "double") for bpm in bpm_names]
 
     values = [
-        tbt_data.date.timestamp() * 1e9,
+        tbt_data.meta.get("date", datetime.now(tz=tz.tzutc())).timestamp() * 1e9,
         tbt_data.nturns,
         bpm_names,
         bpm_planes,

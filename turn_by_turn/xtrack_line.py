@@ -145,8 +145,13 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
         # Create a TransverseData object for this particle and add to the list
         matrices.append(TransverseData(**tracking_data_dict))
 
+    # Add meta-information
+    meta = {
+        "source_datatype": "xtrack",
+    }
+
     # Return the TbtData object containing all particles' data
-    return TbtData(matrices=matrices, bunch_ids=list(range(npart)), nturns=nturns, date=None)
+    return TbtData(matrices=matrices, bunch_ids=list(range(npart)), nturns=nturns, meta=meta)
 
 
 # Added this function to match the interface, but it is not implemented.

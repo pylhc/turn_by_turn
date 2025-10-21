@@ -8,10 +8,7 @@ Data structures to be used in ``turn_by_turn`` to store turn-by-turn measurement
 from __future__ import annotations
 
 from dataclasses import dataclass, field, fields
-from datetime import datetime
 from typing import TYPE_CHECKING
-
-from dateutil import tz
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -64,8 +61,8 @@ class TrackingData:
         PX (pd.DataFrame): Horizontal momentum data
         Y (pd.DataFrame): Vertical position data
         PY (pd.DataFrame): Vertical momentum data
-        T (pd.DataFrame):  Time data
-        PT (pd.DataFrame): Longitudinal momentum data
+        T (pd.DataFrame): Negative time difference wrt. the reference particle (multiplied by c)
+        PT (pd.DataFrame): Energy difference wrt. the reference particle divided by the ref. momentum (multiplied by c)
         S (pd.DataFrame): Longitudinal position data
         E (pd.DataFrame): Energy data
 

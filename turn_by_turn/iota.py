@@ -11,7 +11,7 @@ import abc
 import logging
 from enum import Enum
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal
+from typing import Literal
 
 import h5py
 import numpy as np

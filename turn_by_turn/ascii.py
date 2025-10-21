@@ -90,16 +90,16 @@ def _write_header(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> None
     """
     Write the appropriate headers for a ``TbtData`` object's given bunch_id in the ASCII format.
     """
+    # fmt: off
     output_file.write(f"#{ASCII_ID} v1\n")
-    output_file.write(
-        f"#Created: {datetime.now().strftime('%Y-%m-%d at %H:%M:%S')} By: Python turn_by_turn Package\n"
-    )
+    output_file.write(f"#Created: {datetime.now().strftime(ACQ_DATE_FORMAT)} By: Python turn_by_turn Package\n")
     output_file.write(f"#Number of turns: {tbt_data.nturns}\n")
-    output_file.write(
-        f"#Number of horizontal monitors: {tbt_data.matrices[bunch_id].X.index.size}\n"
-    )
+    output_file.write(f"#Number of horizontal monitors: {tbt_data.matrices[bunch_id].X.index.size}\n")
     output_file.write(f"#Number of vertical monitors: {tbt_data.matrices[bunch_id].Y.index.size}\n")
-    output_file.write(f"#Acquisition date: {tbt_data.date.strftime('%Y-%m-%d at %H:%M:%S')}\n")
+    # fmt: on
+
+    if date := tbt_data.meta.get("date"):
+        output_file.write(f"#Acquisition date: {date.strftime(ACQ_DATE_FORMAT)}\n")
 
 
 def _write_tbt_data(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> None:

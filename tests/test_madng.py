@@ -32,7 +32,7 @@ def test_write_ng(_ng_file: Path, tmp_path: Path, example_fake_tbt: TbtData):
 
     new_tbt = read_tbt(from_tbt, datatype="madng")
     compare_tbt(written_tbt, new_tbt, no_binary=True)
-    assert written_tbt.date == new_tbt.date
+    assert written_tbt.meta["date"] == new_tbt.meta["date"]
 
 
 def test_error_ng(_error_file: Path):

@@ -39,9 +39,14 @@ def read_tbt(file_path: str | Path, is_tracking_data: bool = False) -> TbtData:
     names, matrix = get_structure_from_trackone(nturns, npart, file_path)
     if is_tracking_data:
         # Converts full tracking output to TbTData.
-        return numpy_to_tbt(names, matrix, datatype=TrackingData)
-    # matrix[0, 2] contains just (x, y) samples.
-    return numpy_to_tbt(names, matrix[[0, 2]], datatype=TransverseData)
+        tbt_data = numpy_to_tbt(names, matrix, datatype=TrackingData)
+    else:
+        # matrix[0, 2] contains just (x, y) samples.
+        tbt_data = numpy_to_tbt(names, matrix[[0, 2]], datatype=TransverseData)
+
+    tbt_data.meta["file"] = file_path
+    tbt_data.meta["source_datatype"] = "trackone"
+    return tbt_data
 
 
 def get_trackone_stats(file_path: str | Path, write_out: bool = False) -> tuple[int, int]:
