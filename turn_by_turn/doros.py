@@ -38,6 +38,7 @@ from __future__ import annotations
 import logging
 from datetime import datetime
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import h5py
 import pandas as pd
@@ -45,6 +46,9 @@ from dateutil import tz
 
 from turn_by_turn.structures import TbtData, TransverseData
 from turn_by_turn.utils import all_elements_equal
+
+if TYPE_CHECKING:
+    from turn_by_turn.constants import MetaDict
 
 LOGGER = logging.getLogger(__name__)
 
@@ -132,6 +136,10 @@ def read_tbt(
     file_path = Path(file_path)
     LOGGER.debug(f"Reading DOROS {data_type} data at path: '{file_path.absolute()}'")
     data_keys = DataKeys.get_data_keys(data_type)
+    meta: MetaDict = {
+        "file": file_path,
+        "source_datatype": data_type,
+    }
 
     with h5py.File(file_path, "r") as hdf_file:
         # use "/" to keep track of bpm order, see https://github.com/h5py/h5py/issues/1471
@@ -141,7 +149,7 @@ def read_tbt(
         _check_data_lengths(hdf_file, data_keys, bpm_names)
 
         time_stamps = [hdf_file[bpm][ACQ_STAMP][0] for bpm in bpm_names]
-        date = datetime.fromtimestamp(min(time_stamps) / 1e6, tz=tz.tzutc())
+        meta["date"] = datetime.fromtimestamp(min(time_stamps) / 1e6, tz=tz.tzutc())
 
         nturns = hdf_file[bpm_names[0]][data_keys.n_samples][0]  # equal lengths checked before
         matrices = [
@@ -150,7 +158,7 @@ def read_tbt(
                 Y=_create_dataframe(hdf_file, data_keys, bpm_names, plane="Y"),
             )
         ]
-    return TbtData(matrices, date, [bunch_id], nturns)
+    return TbtData(matrices, bunch_ids=[bunch_id], nturns=nturns, meta=meta)
 
 
 def write_tbt(
@@ -172,13 +180,15 @@ def write_tbt(
     data_keys = DataKeys.get_data_keys(data_type)
     other_keys = DataKeys.get_other_data_keys(data_type)
 
+    timestamp = tbt_data.meta.get("date", datetime.now(tz=tz.tzutc())).timestamp() * 1e6
+
     data = tbt_data.matrices[0]
     with h5py.File(file_path, "w", track_order=True) as hdf_file:
         hdf_file.create_group(METADATA)
         for bpm in data.X.index:
             hdf_file.create_group(bpm)
-            hdf_file[bpm].create_dataset(ACQ_STAMP, data=[tbt_data.date.timestamp() * 1e6])
-            hdf_file[bpm].create_dataset(BST_TIMESTAMP, data=[tbt_data.date.timestamp() * 1e6])
+            hdf_file[bpm].create_dataset(ACQ_STAMP, data=[timestamp])
+            hdf_file[bpm].create_dataset(BST_TIMESTAMP, data=[timestamp])
 
             hdf_file[bpm].create_dataset(data_keys.n_samples, data=[tbt_data.nturns])
             hdf_file[bpm].create_dataset(data_keys.data["X"], data=data.X.loc[bpm, :].values)

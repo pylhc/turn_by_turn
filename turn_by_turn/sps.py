@@ -52,6 +52,7 @@ def read_tbt(file_path: str | Path, remove_trailing_bpm_plane: bool = True) -> T
     """
     file_path = Path(file_path)
     LOGGER.debug(f"Reading SPS file at path: '{file_path.absolute()}'")
+    meta = {}
 
     if is_ascii_file(file_path):
         return read_ascii(file_path)
@@ -59,7 +60,7 @@ def read_tbt(file_path: str | Path, remove_trailing_bpm_plane: bool = True) -> T
     sdds_file = sdds.read(file_path)
 
     nturns = sdds_file.values[N_TURNS]
-    date = datetime.fromtimestamp(sdds_file.values[TIMESTAMP] / 1e9, tz=tz.tzutc())
+    meta["date"] = datetime.fromtimestamp(sdds_file.values[TIMESTAMP] / 1e9, tz=tz.tzutc())
 
     bpm_names_x, bpm_names_y = _split_bpm_names_to_planes(
         sdds_file.values[BPM_NAMES], sdds_file.values[BPM_PLANES]

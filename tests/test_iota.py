@@ -1,4 +1,5 @@
 from datetime import datetime
+from pathlib import Path
 
 import h5py
 import numpy as np
@@ -11,9 +12,9 @@ from turn_by_turn.errors import HDF5VersionError
 from turn_by_turn.structures import TbtData, TransverseData
 
 
-def test_tbt_read_hdf5(_hdf5_file):
+def test_tbt_read_hdf5(_hdf5_file_v1):
     origin = _hdf5_file_content()
-    new = iota.read_tbt(_hdf5_file, hdf5_version=1)
+    new = iota.read_tbt(_hdf5_file_v1, version=1)
     compare_tbt(origin, new, no_binary=False)
 
 
@@ -23,9 +24,9 @@ def test_tbt_read_hdf5_v2(_hdf5_file_v2):
     compare_tbt(origin, new, no_binary=False)
 
 
-def test_tbt_raises_on_wrong_hdf5_version(_hdf5_file):
+def test_tbt_raises_on_wrong_hdf5_version(_hdf5_file_v1):
     with pytest.raises(HDF5VersionError):
-        iota.read_tbt(_hdf5_file, hdf5_version=2)
+        iota.read_tbt(_hdf5_file_v1, version=2)
 
 
 def _hdf5_file_content() -> TbtData:
@@ -45,15 +46,16 @@ def _hdf5_file_content() -> TbtData:
                 ),
             )
         ],
-        date=datetime.now(),
         bunch_ids=[1],
         nturns=2000,
     )
 
 
 @pytest.fixture()
-def _hdf5_file(tmp_path) -> h5py.File:
+def _hdf5_file_v1(tmp_path) -> Path:
     """IOTA File standard."""
+    content: TransverseData = _hdf5_file_content().matrices[0]
+
     with h5py.File(tmp_path / "test_file.hdf5", "w") as hd5_file:
         hd5_file.create_dataset(
             "N:IBE2RH",
@@ -80,11 +82,11 @@ def _hdf5_file(tmp_path) -> h5py.File:
             "N:IBA1CS",
             data=create_data(np.linspace(0, 20, 2000, endpoint=False), 1, np.exp).flatten(),
         )
-    yield tmp_path / "test_file.hdf5"
+    return tmp_path / "test_file.hdf5"
 
 
 @pytest.fixture()
-def _hdf5_file_v2(tmp_path) -> h5py.File:
+def _hdf5_file_v2(tmp_path) -> Path:
     """IOTA File standard."""
     with h5py.File(tmp_path / "test_file_v2.hdf5", "w") as hd5_file:
         hd5_file.create_group("A1C")
@@ -114,4 +116,4 @@ def _hdf5_file_v2(tmp_path) -> h5py.File:
             "Intensity",
             data=create_data(np.linspace(0, 20, 2000, endpoint=False), 1, np.exp).flatten(),
         )
-    yield tmp_path / "test_file_v2.hdf5"
+    return tmp_path / "test_file_v2.hdf5"

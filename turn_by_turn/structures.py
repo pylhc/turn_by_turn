@@ -18,15 +18,26 @@ if TYPE_CHECKING:
 
     import pandas as pd
 
+    from turn_by_turn.constants import MetaDict
+
 
 @dataclass(slots=True)
 class TransverseData:
     """
     Object holding measured turn-by-turn data for both transverse planes in the form of pandas DataFrames.
+
+    The DataFrames should be N_observation-points x M_turns matrices, and usually contain
+    the BPM/observation-point names as index, while the columns are simply numbered starting from ``0``.
+    All DtatFrames should have the same N x M size.
+
+    Attributes:
+        X (pd.DataFrame): Horizontal position data
+        Y (pd.DataFrame): Vertical position data
+
     """
 
-    X: pd.DataFrame  # horizontal data
-    Y: pd.DataFrame  # vertical data
+    X: pd.DataFrame
+    Y: pd.DataFrame
 
     @classmethod
     def fieldnames(cls) -> list[str]:
@@ -43,16 +54,31 @@ class TransverseData:
 class TrackingData:
     """
     Object holding multidimensional turn-by-turn simulation data in the form of pandas DataFrames.
+
+    The DataFrames should be N_observation-points x M_turns matrices, and usually contain
+    the BPM/observation-point names as index, while the columns are simply numbered starting from ``0``.
+    All DataFrames should have the same N x M size.
+
+    Attributes:
+        X (pd.DataFrame): Horizontal position data
+        PX (pd.DataFrame): Horizontal momentum data
+        Y (pd.DataFrame): Vertical position data
+        PY (pd.DataFrame): Vertical momentum data
+        T (pd.DataFrame):  Time data
+        PT (pd.DataFrame): Longitudinal momentum data
+        S (pd.DataFrame): Longitudinal position data
+        E (pd.DataFrame): Energy data
+
     """
 
-    X: pd.DataFrame  # horizontal data
-    PX: pd.DataFrame  # horizontal momentum data
-    Y: pd.DataFrame  # vertical data
-    PY: pd.DataFrame  # vertical momentum data
-    T: pd.DataFrame  # longitudinal data
-    PT: pd.DataFrame  # longitudinal momentum data
-    S: pd.DataFrame  # longitudinal position data
-    E: pd.DataFrame  # energy data
+    X: pd.DataFrame
+    PX: pd.DataFrame
+    Y: pd.DataFrame
+    PY: pd.DataFrame
+    T: pd.DataFrame
+    PT: pd.DataFrame
+    S: pd.DataFrame
+    E: pd.DataFrame
 
     @classmethod
     def fieldnames(cls) -> list[str]:
@@ -73,27 +99,32 @@ class TbtData:
     """
     Object holding a representation of a Turn-by-Turn data measurement. The date of the measurement,
     the transverse data, number of turns and bunches as well as the bunch IDs are encapsulated in this object.
+
+    Attributes:
+        matrices (Sequence[DataType]): Sequence of ``TransverseData`` or ``TrackingData`` objects.
+                                       Each entry corresponds to a "bunch" or "particle" (tracking).
+        nturns (int): Number of turns. Needs to be a positive integer.
+                      It is assumed all bunches (and observation points in all entries therein)
+                      have the same length in the turn-dimension (columns).
+        bunch_ids (list[int] | None): List of bunch/particle IDs.
+                                      Will default to ``[0, 1, ..., nbunches-1]`` if not set.
+        meta (MetaDict): Dictionary of metadata.
+        nbunches (int): Number of bunches/particles.
+                        Automatically set (i.e. cannot be set in the initialization of this object).
+
     """
 
-    matrices: Sequence[DataType]  # each entry corresponds to a bunch
-    date: datetime | None  = None  # will default in post_init
+    matrices: Sequence[DataType]
+    nturns: int
     bunch_ids: list[int] | None  = None  # will default in post_init
-    nturns: int | None = None
-    meta: dict | None = None
+    meta: MetaDict = field(default_factory=dict)
     nbunches: int = field(init=False)
 
     def __post_init__(self):
         self.nbunches = len(self.matrices)
 
         if self.nturns is None or self.nturns < 1:
-            # should have no default value, but breaks backwards compatibility to move
-            # up in dataclass definition
-            raise ValueError("Number of turns need to be specified and larger than zero.")
-
-        if self.date is None:
-            self.date = datetime.today().replace(
-                tzinfo=tz.tzutc()
-            )  # to today, UTC if nothing is given
+            raise ValueError("Number of turns need to be larger than zero.")
 
         if self.bunch_ids is None:
             self.bunch_ids = list(range(self.nbunches))  # we always need bunch-ids
