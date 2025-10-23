@@ -46,7 +46,7 @@ def read_tbt(file_path: str | Path) -> TbtData:
 
 def load_esrf_mat_file(infile: str | Path) -> tuple[np.ndarray, np.ndarray]:
     """
-    Reads the **ESRF** TbT ``Matlab`` file, checks for nans and matrices duplicities from consecutive kicks.
+    Reads the **ESRF** TbT ``Matlab`` file, checks for NaNs and matrices duplicities from consecutive kicks.
 
     Args:
         infile (Union[str, Path]): path to the turn-by-turn measurement file.
