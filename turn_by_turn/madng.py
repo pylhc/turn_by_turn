@@ -77,7 +77,6 @@ def read_tbt(file_path: str | Path) -> TbtData:
     df = tfs.read(file_path)
     tbt_data = convert_to_tbt(df)
     tbt_data.meta["file"] = file_path
-    tbt_data.meta["source_datatype"] = "madng"
     return tbt_data
 
 
@@ -110,7 +109,9 @@ def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
         LOGGER.debug("The 'tfs' package is not installed. Assuming a pandas DataFrame.")
         is_tfs_df = False
 
-    meta: MetaDict = {}
+    meta: MetaDict = {
+        "source_datatype": "madng",
+    }
 
     if is_tfs_df:
         date_str = df.headers.get(DATE)

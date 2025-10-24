@@ -46,17 +46,17 @@ def read_tbt(file_path: str | Path, version: Version = Version.two) -> TbtData:
 
     match version:
         case Version.one:
-            reader = VersionOne(file_path)
+            read_data = VersionOneReader(file_path)
         case Version.two:
-            reader = VersionTwo(file_path)
+            read_data = VersionTwoReader(file_path)
         case _:
             raise ValueError(f"Version {version} unknown for IOTA reader.")
 
-    return reader.tbt_data
+    return read_data.tbt_data
 
 
-class Reader(abc.ABC):
-    """ Class that reads the IOTA turn-by-turn data.
+class AbstractIotaReader(abc.ABC):
+    """Class that reads the IOTA turn-by-turn data.
 
     This abstract class implements the whole reading in its `__init__`,
     but cannot run by itself, as the version specific functions (see below)
@@ -75,7 +75,7 @@ class Reader(abc.ABC):
             self.tbt_data = self._read_turn_by_turn_data()
 
     def _prepare(self):
-        """ Prepare attributes and check that the correct version is used. """
+        """Prepare attributes and check that the correct version is used."""
         bpm_names = [self.map_bpm_name(key) for key in self.hdf5_file if self.is_bpm_key(key)]
         if not bpm_names:
             msg = f"Wrong version of the IOTA-HDF5 format was used for file {self.path!s}!"
@@ -87,7 +87,7 @@ class Reader(abc.ABC):
         self.nturns: int = self._get_number_of_turns()
 
     def _read_turn_by_turn_data(self) -> TbtData:
-        """ Create the turn-by-turn data object. """
+        """Read data and create the turn-by-turn data object."""
         return TbtData(
             bunch_ids=[1],
             nturns=self.nturns,
@@ -112,8 +112,8 @@ class Reader(abc.ABC):
         )
 
     def _get_data_for_plane(self, plane: str) -> np.ndarray:
-        """ Extract the turn-by-turn data for the given plane as numpy array,
-        truncated to the maximum common number of turns. """
+        """Extract the turn-by-turn data for the given plane as numpy array,
+        truncated to the maximum common number of turns."""
         data = np.zeros((self.nbpms, self.nturns))
         bpm_keys = [key for key in self.hdf5_file if self.is_bpm_key(key, plane)]
 
@@ -123,8 +123,8 @@ class Reader(abc.ABC):
         return data
 
     def _get_number_of_turns(self) -> int:
-        """ Get the maximum common number of tuns over all BPMs,
-        such that the arrays can be trimmed to be of equal lengths. """
+        """Get the maximum common number of tuns over all BPMs,
+        such that the arrays can be trimmed to be of equal lengths."""
         return min(
             len(self._get_data_for_key(key, plane))
             for plane in ("X", "Y")
@@ -133,59 +133,59 @@ class Reader(abc.ABC):
         )
 
     def _get_data_for_key(self, key: str, plane: Literal["X", "Y"]) -> np.ndarray:
-        """ Extract the turn-by-turn data for the given key and plane as numpy array. """
+        """Extract the turn-by-turn data for the given key and plane as numpy array."""
         ...
 
     @staticmethod
     def map_bpm_name(key: str) -> str:
-        """ Convert the given key to a BPM name. """
+        """Convert the given key to a BPM name."""
         ...
 
     @staticmethod
     def is_bpm_key(key: str, plane: Literal["X", "Y"] | None = None) -> bool:
-        """ Check if the entry of the file contains BPM data. """
+        """Check if the entry of the file contains BPM data."""
         ...
 
 
-class VersionOne(Reader):
-    """ Version 1 contains three keys per BPM: X, Y and Intensity. """
+class VersionOneReader(AbstractIotaReader):
+    """Version 1 contains three keys per BPM: X, Y and Intensity."""
 
     planes: dict[str, str] = {"X": "H", "Y": "V"}
 
     def _get_data_for_key(self, key: str, plane: Literal["X", "Y"]) -> np.ndarray:
-        """ Extract the turn-by-turn data for the given key and plane as numpy array. """
+        """Extract the turn-by-turn data for the given key and plane as numpy array."""
         return self.hdf5_file[key]  # assumes plane is already in key name
 
     @staticmethod
     def map_bpm_name(key: str) -> str:
-        """ Convert the given key to a BPM name. """
+        """Convert the given key to a BPM name."""
         return f"IBPM{key[4:-1]}"
 
     @staticmethod
     def is_bpm_key(key: str, plane: Literal["X", "Y"] | None = None) -> bool:
-        """ Check if the entry of the file contains BPM data. """
+        """Check if the entry of the file contains BPM data."""
         is_bpm = ("state" not in key) or key.startswith("N:")
         if plane is None:
-            return is_bpm and (key.endswith(VersionOne.planes["X"]) or key.endswith(VersionOne.planes["Y"]))
-        return is_bpm and key.endswith(VersionOne.planes[plane])
+            return is_bpm and (key.endswith(VersionOneReader.planes["X"]) or key.endswith(VersionOneReader.planes["Y"]))
+        return is_bpm and key.endswith(VersionOneReader.planes[plane])
 
 
-class VersionTwo(Reader):
-    """ Version 2 contains a single key per BPM, which contains data for both planes
-    (and possibly more which we ignore). """
+class VersionTwoReader(AbstractIotaReader):
+    """Version 2 contains a single key per BPM, which contains data for both planes
+    (and possibly more which we ignore)."""
 
     planes: dict[str, str] = {"X": "Horizontal", "Y": "Vertical"}
 
     def _get_data_for_key(self, key: str, plane: Literal["X", "Y"]) -> np.ndarray:
-        """ Extract the turn-by-turn data for the given key and plane as numpy array. """
+        """Extract the turn-by-turn data for the given key and plane as numpy array."""
         return self.hdf5_file[key][self.planes[plane]]
 
     @staticmethod
     def map_bpm_name(key: str) -> str:
-        """ Convert the given key to a BPM name. """
+        """Convert the given key to a BPM name."""
         return f"IBPM{key}"
 
     @staticmethod
     def is_bpm_key(key: str, plane: Literal["X", "Y"] | None = None) -> bool:
-        """ Check if the entry of the file contains BPM data. """
+        """Check if the entry of the file contains BPM data."""
         return "NL" not in key and not key.startswith("N:")  # latter: filter v1 data to be safe

@@ -23,9 +23,9 @@ class TransverseData:
     """
     Object holding measured turn-by-turn data for both transverse planes in the form of pandas DataFrames.
 
-    The DataFrames should be N_observation-points x M_turns matrices, and usually contain
+    The DataFrames should be N_(observation-points) x M_(turns) matrices, and usually contain
     the BPM/observation-point names as index, while the columns are simply numbered starting from ``0``.
-    All DtatFrames should have the same N x M size.
+    All DataFrames should have the same N x M size.
 
     Attributes:
         X (pd.DataFrame): Horizontal position data
@@ -121,7 +121,7 @@ class TbtData:
         self.nbunches = len(self.matrices)
 
         if self.nturns is None or self.nturns < 1:
-            raise ValueError("Number of turns need to be larger than zero.")
+            raise ValueError("Number of turns needs to be larger than zero.")
 
         if self.bunch_ids is None:
             self.bunch_ids = list(range(self.nbunches))  # we always need bunch-ids
