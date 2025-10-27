@@ -23,12 +23,15 @@ from typing import TYPE_CHECKING
 
 import pandas as pd
 
+from turn_by_turn.structures import TbtData, TransverseData
+
 if TYPE_CHECKING:
-    from pathlib import Path  # Only used for type hinting
+    from pathlib import Path
 
     import tfs
 
-from turn_by_turn.structures import TbtData, TransverseData
+    from turn_by_turn.constants import MetaDict
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -72,7 +75,9 @@ def read_tbt(file_path: str | Path) -> TbtData:
 
     LOGGER.debug("Starting to read TBT data from dataframe")
     df = tfs.read(file_path)
-    return convert_to_tbt(df)
+    tbt_data = convert_to_tbt(df)
+    tbt_data.meta["file"] = file_path
+    return tbt_data
 
 
 def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
@@ -104,6 +109,10 @@ def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
         LOGGER.debug("The 'tfs' package is not installed. Assuming a pandas DataFrame.")
         is_tfs_df = False
 
+    meta: MetaDict = {
+        "source_datatype": "madng",
+    }
+
     if is_tfs_df:
         date_str = df.headers.get(DATE)
         time_str = df.headers.get(TIME)
@@ -112,11 +121,10 @@ def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
         time_str = df.attrs.get(TIME)
 
     # Combine the date and time into a datetime object
-    date = None
     if date_str and time_str:
-        date = datetime.strptime(f"{date_str} {time_str}", "%d/%m/%y %H:%M:%S")
+        meta["date"] = datetime.strptime(f"{date_str} {time_str}", "%d/%m/%y %H:%M:%S")
     elif date_str:
-        date = datetime.strptime(date_str, "%d/%m/%y")
+        meta["date"] = datetime.strptime(date_str, "%d/%m/%y")
 
     nturns = int(df.iloc[-1].loc[TURN])
     npart = int(df.iloc[-1].loc[PARTICLE_ID])
@@ -161,7 +169,7 @@ def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
         matrices.append(TransverseData(**tracking_data_dict))
 
     LOGGER.debug("Finished reading TBT data")
-    return TbtData(matrices=matrices, bunch_ids=list(particle_ids), nturns=nturns, date=date)
+    return TbtData(matrices=matrices, bunch_ids=list(particle_ids), nturns=nturns, meta=meta)
 
 
 def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
@@ -236,8 +244,10 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
     headers = {
         HNAME: "TbtData",
         ORIGIN: "Python",
-        DATE: tbt_data.date.strftime("%d/%m/%y"),
-        TIME: tbt_data.date.strftime("%H:%M:%S"),
         REFCOL: NAME,
     }
+    if date := tbt_data.meta.get("date"):
+        headers[DATE] = date.strftime("%d/%m/%y")
+        headers[TIME] = date.strftime("%H:%M:%S")
+
     tfs.write(output_path, merged_df, headers_dict=headers, save_index=NAME)

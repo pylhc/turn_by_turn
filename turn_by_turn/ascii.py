@@ -23,7 +23,13 @@ import numpy as np
 import pandas as pd
 from dateutil import tz
 
-from turn_by_turn.constants import FORMAT_STRING, NUM_TO_PLANE, PLANE_TO_NUM, PLANES
+from turn_by_turn.constants import (
+    FORMAT_STRING,
+    NUM_TO_PLANE,
+    PLANE_TO_NUM,
+    PLANES,
+    MetaDict,
+)
 from turn_by_turn.structures import TbtData, TransverseData
 
 LOGGER = logging.getLogger(__name__)
@@ -84,16 +90,16 @@ def _write_header(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> None
     """
     Write the appropriate headers for a ``TbtData`` object's given bunch_id in the ASCII format.
     """
+    # fmt: off
     output_file.write(f"#{ASCII_ID} v1\n")
-    output_file.write(
-        f"#Created: {datetime.now().strftime('%Y-%m-%d at %H:%M:%S')} By: Python turn_by_turn Package\n"
-    )
+    output_file.write(f"#Created: {datetime.now().strftime(ACQ_DATE_FORMAT)} By: Python turn_by_turn Package\n")
     output_file.write(f"#Number of turns: {tbt_data.nturns}\n")
-    output_file.write(
-        f"#Number of horizontal monitors: {tbt_data.matrices[bunch_id].X.index.size}\n"
-    )
+    output_file.write(f"#Number of horizontal monitors: {tbt_data.matrices[bunch_id].X.index.size}\n")
     output_file.write(f"#Number of vertical monitors: {tbt_data.matrices[bunch_id].Y.index.size}\n")
-    output_file.write(f"#Acquisition date: {tbt_data.date.strftime('%Y-%m-%d at %H:%M:%S')}\n")
+    # fmt: on
+
+    if date := tbt_data.meta.get("date"):
+        output_file.write(f"#Acquisition date: {date.strftime(ACQ_DATE_FORMAT)}\n")
 
 
 def _write_tbt_data(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> None:
@@ -108,7 +114,7 @@ def _write_tbt_data(tbt_data: TbtData, bunch_id: int, output_file: TextIO) -> No
 # ----- Reader ----- #
 
 
-def read_tbt(file_path: str | Path, bunch_id: int = None) -> TbtData:
+def read_tbt(file_path: str | Path, bunch_id: int | None = None) -> TbtData:
     """
     Reads turn-by-turn data from an ASCII turn-by-turn format file, and return the date as well as
     parsed matrices for construction of a ``TbtData`` object.
@@ -125,7 +131,10 @@ def read_tbt(file_path: str | Path, bunch_id: int = None) -> TbtData:
     data_lines = Path(file_path).read_text().splitlines()
     bpm_names = {"X": [], "Y": []}
     bpm_data = {"X": [], "Y": []}
-    date = None  # will switch to TbtData.date's default if not found in file
+    meta: MetaDict = {
+        "file": file_path,
+        "source_datatype": "ascii",
+    }
 
     if bunch_id is None:
         bunch_id = _parse_bunch_id(file_path)
@@ -135,7 +144,7 @@ def read_tbt(file_path: str | Path, bunch_id: int = None) -> TbtData:
 
         if ACQ_DATE_PREFIX in line:
             LOGGER.debug("Acquiring date from file")
-            date = _parse_date(line)
+            meta["date"] = _parse_date(line)
             continue
 
         if line == "" or line.startswith(ASCII_COMMENT):  # empty or comment line
@@ -159,7 +168,7 @@ def read_tbt(file_path: str | Path, bunch_id: int = None) -> TbtData:
         )
     ]
     return TbtData(
-        matrices=matrices, date=date, bunch_ids=[bunch_id], nturns=matrices[0].X.shape[1]
+        matrices=matrices, meta=meta, bunch_ids=[bunch_id], nturns=matrices[0].X.shape[1]
     )
 
 

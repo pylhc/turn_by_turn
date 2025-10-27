@@ -122,7 +122,6 @@ def test_compare_average_tbtdata():
             )
             for i in range(npart)
         ],
-        date=datetime.now(),
         bunch_ids=range(npart),
         nturns=10,
     )
@@ -142,7 +141,6 @@ def test_compare_average_tbtdata():
                 ),
             )
         ],
-        date=datetime.now(),
         bunch_ids=[1],
         nturns=10,
     )

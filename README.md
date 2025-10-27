@@ -1,9 +1,7 @@
 # Turn-By-Turn
 
 [![Cron Testing](https://github.com/pylhc/turn_by_turn/workflows/Cron%20Testing/badge.svg)](https://github.com/pylhc/turn_by_turn/actions?query=workflow%3A%22Cron+Testing%22)
-[![Code Climate coverage](https://img.shields.io/codeclimate/coverage/pylhc/turn_by_turn.svg?style=popout)](https://codeclimate.com/github/pylhc/turn_by_turn)
-[![Code Climate maintainability (percentage)](https://img.shields.io/codeclimate/maintainability-percentage/pylhc/turn_by_turn.svg?style=popout)](https://codeclimate.com/github/pylhc/turn_by_turn)
-<!-- [![GitHub last commit](https://img.shields.io/github/last-commit/pylhc/turn_by_turn.svg?style=popout)](https://github.com/pylhc/turn_by_turn/) -->
+[![Coverage](https://raw.githubusercontent.com/pylhc/turn_by_turn/python-coverage-comment-action-data/badge.svg)](https://github.com/pylhc/turn_by_turn/tree/python-coverage-comment-action-data)
 [![PyPI Version](https://img.shields.io/pypi/v/turn_by_turn?label=PyPI&logo=pypi)](https://pypi.org/project/turn_by_turn/)
 [![GitHub release](https://img.shields.io/github/v/release/pylhc/turn_by_turn?logo=github)](https://github.com/pylhc/turn_by_turn/)
 [![Conda-forge Version](https://img.shields.io/conda/vn/conda-forge/turn_by_turn?color=orange&logo=anaconda)](https://anaconda.org/conda-forge/turn_by_turn)
@@ -18,11 +16,13 @@ See the [API documentation](https://pylhc.github.io/turn_by_turn/) for details.
 ## Installing
 
 Installation is easily done via `pip`:
+
 ```bash
 python -m pip install turn_by_turn
 ```
 
 One can also install in a `conda` environment via the `conda-forge` channel with:
+
 ```bash
 conda install -c conda-forge turn_by_turn
 ```
@@ -30,16 +30,16 @@ conda install -c conda-forge turn_by_turn
 ## Example Usage
 
  The package is imported as `turn_by_turn`, and exports top-level functions for reading and writing:
+
 ```python
 import turn_by_turn as tbt
 
 # Loading a file is simple and returns a custom dataclass named TbtData
 data: tbt.TbtData = tbt.read("Beam2@BunchTurn@2018_12_02@20_08_49_739.sdds", datatype="lhc")
 
-# Easily access relevant information from the loaded data: transverse data, measurement date, 
+# Easily access relevant information from the loaded data: transverse data,
 # number of turns, bunches and IDs of the recorded bunches
 first_bunch_transverse_positions: tbt.TransverseData = data.matrices[0]
-measurement_date = data.date  # a datetime.datetime object
 
 # Transverse positions are recorded as pandas DataFrames
 first_bunch_x = first_bunch_transverse_positions.X.copy()

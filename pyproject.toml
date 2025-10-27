@@ -85,6 +85,20 @@ repository = "https://github.com/pylhc/turn_by_turn"
 documentation = "https://pylhc.github.io/turn_by_turn/"
 # changelog = "https://github.com/pylhc/turn_by_turn/blob/master/CHANGELOG.md"
 
+# ----- Testing ----- #
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+# Helpful for pytest-debugging (leave commented out on commit):
+# log_cli = true
+# log_cli_level = "DEBUG"
+# log_format = "%(levelname)7s | %(message)s | %(name)s"
+
+[tool.coverage.run]
+relative_files = true
+
 # ----- Dev Tools Configuration ----- #
 
 [tool.ruff]

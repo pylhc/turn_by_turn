@@ -18,7 +18,7 @@ from dateutil import tz
 
 from turn_by_turn.ascii import is_ascii_file
 from turn_by_turn.ascii import read_tbt as read_ascii
-from turn_by_turn.constants import PLANE_TO_NUM, PLANES
+from turn_by_turn.constants import PLANE_TO_NUM, PLANES, MetaDict
 from turn_by_turn.structures import TbtData, TransverseData
 from turn_by_turn.utils import matrices_to_array
 
@@ -68,6 +68,7 @@ def read_tbt(file_path: str | Path) -> TbtData:
     bpm_names = sdds_file.values[BPM_NAMES]
     nbpms = len(bpm_names)
     data = {k: sdds_file.values[POSITIONS[k]].reshape((nbpms, nbunches, nturns)) for k in PLANES}
+
     matrices = [
         TransverseData(
             X=pd.DataFrame(index=bpm_names, data=data["X"][:, idx, :], dtype=float),
@@ -75,7 +76,13 @@ def read_tbt(file_path: str | Path) -> TbtData:
         )
         for idx in range(nbunches)
     ]
-    return TbtData(matrices, date, bunch_ids, nturns)
+
+    meta: MetaDict = {
+        "file": file_path,
+        "source_datatype": "lhc",
+        "date": date,
+    }
+    return TbtData(matrices, nturns=nturns, bunch_ids=bunch_ids, meta=meta)
 
 
 def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
@@ -101,7 +108,7 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
         sdds.classes.Array(POSITIONS["Y"], "float"),
     ]
     values = [
-        tbt_data.date.timestamp() * 1e9,
+        tbt_data.meta.get("date", datetime.now(tz=tz.tzutc())).timestamp() * 1e9,
         tbt_data.nbunches,
         tbt_data.nturns,
         tbt_data.bunch_ids,

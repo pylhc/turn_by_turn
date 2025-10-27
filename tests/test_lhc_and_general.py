@@ -78,8 +78,8 @@ def compare_tbt(
                 assert np.all(origin_mat == new_mat)
 
 
-def create_data(phases, nbpm, function, noise: float = 0) -> np.ndarray:
-    rng = np.random.default_rng()
+def create_data(phases, nbpm, function, noise: float = 0, seed: int = None) -> np.ndarray:
+    rng = np.random.default_rng(seed=seed)
     return np.ones((nbpm, len(phases))) * function(phases) + noise * rng.standard_normal(
         size=(nbpm, len(phases))
     )

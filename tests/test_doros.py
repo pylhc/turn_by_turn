@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 from datetime import datetime
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import h5py
 import numpy as np
@@ -10,6 +13,9 @@ import turn_by_turn as tbt
 from tests.test_lhc_and_general import compare_tbt, create_data
 from turn_by_turn.doros import DEFAULT_BUNCH_ID, DataKeys, read_tbt, write_tbt
 from turn_by_turn.structures import TbtData, TransverseData
+
+if TYPE_CHECKING:
+    from turn_by_turn.constants import MetaDict
 
 INPUTS_DIR = Path(__file__).parent / "inputs"
 
@@ -100,6 +106,9 @@ def _tbt_data() -> TbtData:
     """TbT data for testing. Adding random noise, so that the data is different per BPM."""
     nturns = 2000
     bpms = ["TBPM1", "TBPM2", "TBPM3", "TBPM4"]
+    meta: MetaDict = {
+        "date": datetime.now(),
+    }
 
     return TbtData(
         matrices=[
@@ -126,7 +135,7 @@ def _tbt_data() -> TbtData:
                 ),
             )
         ],
-        date=datetime.now(),
-        bunch_ids=[DEFAULT_BUNCH_ID],
         nturns=nturns,
+        bunch_ids=[DEFAULT_BUNCH_ID],
+        meta=meta,
     )

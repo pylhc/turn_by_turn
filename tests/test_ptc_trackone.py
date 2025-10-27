@@ -24,8 +24,8 @@ def test_read_ptc_raises_on_invalid_file(_invalid_ptc_file):
 
 def test_read_ptc_defaults_date(_ptc_file_no_date):
     new = ptc.read_tbt(_ptc_file_no_date)
-    assert new.date.day == datetime.today().day
-    assert new.date.tzname() == "UTC"
+    assert new.meta["date"].day == datetime.today().day
+    assert new.meta["date"].tzname() == "UTC"
 
 
 def test_read_ptc_sci(_ptc_file_sci):
@@ -85,7 +85,7 @@ def _original_trackone(track: bool = False) -> TbtData:
             Y=pd.DataFrame(index=names, data=[[0.0011, 0.00077614, -0.00022749, -0.00103188]]),
         ),
     ]
-    return TbtData(matrix, None, [0, 1] if track else [1, 2], 4)
+    return TbtData(matrix, nturns=4, bunch_ids=[0, 1] if track else [1, 2])
 
 
 def _original_simulation_data() -> TbtData:
@@ -112,9 +112,9 @@ def _original_simulation_data() -> TbtData:
             E=pd.DataFrame(index=names, data=[[500.00088, 500.00088, 500.00088, 500.00088]]),
         ),
     ]
-    return TbtData(
-        matrices, date=None, bunch_ids=[0, 1], nturns=4
-    )  # [0, 1] for bunch_ids because it's from tracking
+
+    # [0, 1] for bunch_ids because it's from tracking
+    return TbtData(matrices, bunch_ids=[0, 1], nturns=4)
 
 
 # ----- Fixtures ----- #

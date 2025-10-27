@@ -50,7 +50,7 @@ def generate_average_tbtdata(tbtdata: TbtData) -> TbtData:
             }
         )
     ]
-    return TbtData(new_matrices, tbtdata.date, [1], tbtdata.nturns)
+    return TbtData(new_matrices, bunch_ids=[1], nturns=tbtdata.nturns, meta=tbtdata.meta.copy())
 
 
 def get_averaged_data(
@@ -100,7 +100,7 @@ def matrices_to_array(tbt_data: TbtData) -> np.ndarray:
 
 
 def add_noise(
-    data: np.ndarray, noise: float = None, sigma: float = None, seed: int = None
+    data: np.ndarray, noise: float | None = None, sigma: float | None = None, seed: int | None = None
 ) -> np.ndarray:
     """
     Returns the given data with added noise. Noise is generated as a standard normal distribution (mean=0,
@@ -156,9 +156,9 @@ def add_noise_to_tbt(
             )
             for m in data.matrices
         ],
-        date=data.date,
         bunch_ids=data.bunch_ids,
         nturns=data.nturns,
+        meta=data.meta.copy(),
     )
 
 
