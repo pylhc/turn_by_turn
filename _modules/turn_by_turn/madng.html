@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.madng &mdash; turn_by_turn 0.9.1 documentation</title>
+  <title>turn_by_turn.madng &mdash; turn_by_turn 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=988d0652" />
@@ -13,7 +13,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=9dc39874"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -117,12 +117,15 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.structures</span><span class="w"> </span><span class="kn">import</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">TransverseData</span>
+
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>  <span class="c1"># Only used for type hinting</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
     <span class="kn">import</span><span class="w"> </span><span class="nn">tfs</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.structures</span><span class="w"> </span><span class="kn">import</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">TransverseData</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetaDict</span>
+
 
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -168,7 +171,9 @@
 
     <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Starting to read TBT data from dataframe&quot;</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">tfs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">convert_to_tbt</span><span class="p">(</span><span class="n">df</span><span class="p">)</span></div>
+    <span class="n">tbt_data</span> <span class="o">=</span> <span class="n">convert_to_tbt</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="n">tbt_data</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_path</span>
+    <span class="k">return</span> <span class="n">tbt_data</span></div>
 
 
 
@@ -203,6 +208,10 @@
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;The &#39;tfs&#39; package is not installed. Assuming a pandas DataFrame.&quot;</span><span class="p">)</span>
         <span class="n">is_tfs_df</span> <span class="o">=</span> <span class="kc">False</span>
 
+    <span class="n">meta</span><span class="p">:</span> <span class="n">MetaDict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;source_datatype&quot;</span><span class="p">:</span> <span class="s2">&quot;madng&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
     <span class="k">if</span> <span class="n">is_tfs_df</span><span class="p">:</span>
         <span class="n">date_str</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">DATE</span><span class="p">)</span>
         <span class="n">time_str</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">TIME</span><span class="p">)</span>
@@ -211,11 +220,10 @@
         <span class="n">time_str</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">TIME</span><span class="p">)</span>
 
     <span class="c1"># Combine the date and time into a datetime object</span>
-    <span class="n">date</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">date_str</span> <span class="ow">and</span> <span class="n">time_str</span><span class="p">:</span>
-        <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">date_str</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">time_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%y %H:%M:%S&quot;</span><span class="p">)</span>
+        <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">date_str</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">time_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%y %H:%M:%S&quot;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">date_str</span><span class="p">:</span>
-        <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date_str</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%y&quot;</span><span class="p">)</span>
+        <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date_str</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%y&quot;</span><span class="p">)</span>
 
     <span class="n">nturns</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">TURN</span><span class="p">])</span>
     <span class="n">npart</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">PARTICLE_ID</span><span class="p">])</span>
@@ -260,7 +268,7 @@
         <span class="n">matrices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TransverseData</span><span class="p">(</span><span class="o">**</span><span class="n">tracking_data_dict</span><span class="p">))</span>
 
     <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finished reading TBT data&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span><span class="n">matrices</span><span class="o">=</span><span class="n">matrices</span><span class="p">,</span> <span class="n">bunch_ids</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">particle_ids</span><span class="p">),</span> <span class="n">nturns</span><span class="o">=</span><span class="n">nturns</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span><span class="n">matrices</span><span class="o">=</span><span class="n">matrices</span><span class="p">,</span> <span class="n">bunch_ids</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">particle_ids</span><span class="p">),</span> <span class="n">nturns</span><span class="o">=</span><span class="n">nturns</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta</span><span class="p">)</span></div>
 
 
 
@@ -338,10 +346,12 @@
     <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">HNAME</span><span class="p">:</span> <span class="s2">&quot;TbtData&quot;</span><span class="p">,</span>
         <span class="n">ORIGIN</span><span class="p">:</span> <span class="s2">&quot;Python&quot;</span><span class="p">,</span>
-        <span class="n">DATE</span><span class="p">:</span> <span class="n">tbt_data</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%y&quot;</span><span class="p">),</span>
-        <span class="n">TIME</span><span class="p">:</span> <span class="n">tbt_data</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H:%M:%S&quot;</span><span class="p">),</span>
         <span class="n">REFCOL</span><span class="p">:</span> <span class="n">NAME</span><span class="p">,</span>
     <span class="p">}</span>
+    <span class="k">if</span> <span class="n">date</span> <span class="o">:=</span> <span class="n">tbt_data</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">):</span>
+        <span class="n">headers</span><span class="p">[</span><span class="n">DATE</span><span class="p">]</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%y&quot;</span><span class="p">)</span>
+        <span class="n">headers</span><span class="p">[</span><span class="n">TIME</span><span class="p">]</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H:%M:%S&quot;</span><span class="p">)</span>
+
     <span class="n">tfs</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">merged_df</span><span class="p">,</span> <span class="n">headers_dict</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">save_index</span><span class="o">=</span><span class="n">NAME</span><span class="p">)</span></div>
 
 </pre></div>

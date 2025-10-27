@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.iota &mdash; turn_by_turn 0.9.1 documentation</title>
+  <title>turn_by_turn.iota &mdash; turn_by_turn 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=988d0652" />
@@ -13,7 +13,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=9dc39874"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -101,9 +101,11 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">h5py</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -112,140 +114,208 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">HDF5VersionError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.structures</span><span class="w"> </span><span class="kn">import</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">TransverseData</span>
 
-<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
-
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="n">VERSIONS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">PLANES_CONV</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="mi">1</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="s2">&quot;V&quot;</span><span class="p">},</span>
-    <span class="mi">2</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="s2">&quot;Horizontal&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="s2">&quot;Vertical&quot;</span><span class="p">},</span>
-<span class="p">}</span>
+
+<div class="viewcode-block" id="Version">
+<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.iota.Version">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Version</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="n">one</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">two</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span></div>
+
 
 
 <div class="viewcode-block" id="read_tbt">
 <a class="viewcode-back" href="../../readers/index.html#turn_by_turn.iota.read_tbt">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">hdf5_version</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="n">Version</span> <span class="o">=</span> <span class="n">Version</span><span class="o">.</span><span class="n">two</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Reads turn-by-turn data from ``IOITA``&#39;s **hdf5** format file.</span>
-<span class="sd">    As there are 2 possible versions of the HDF5 format, this will try them both successively.</span>
+<span class="sd">    Reads turn-by-turn data from ``IOTA``&#39;s **hdf5** format file.</span>
+<span class="sd">    Beware, that there are two possible versions of the iota-HDF5 format.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        file_path (Union[str, Path]): path to the turn-by-turn measurement file.</span>
-<span class="sd">        hdf5_version (int): the HDF5 format version to use when reading the written file. Defaults to the</span>
-<span class="sd">            latest, a.k.a 2.</span>
+<span class="sd">        version (int): the format version to use when reading the written file.</span>
+<span class="sd">                       Defaults to the latest one, currently ``2``.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A ``TbTData`` object with the loaded data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reading Iota file at path: &#39;</span><span class="si">{</span><span class="n">file_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdf_file</span><span class="p">:</span>
-        <span class="n">bunch_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="n">bpm_names</span> <span class="o">=</span> <span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_bpm_names&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">)</span>
-        <span class="n">nturns</span> <span class="o">=</span> <span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_nturns&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">,</span> <span class="n">hdf5_version</span><span class="p">)</span>
-        <span class="n">matrices</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">TransverseData</span><span class="p">(</span>
-                <span class="n">X</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-                    <span class="n">index</span><span class="o">=</span><span class="n">bpm_names</span><span class="p">,</span>
-                    <span class="n">data</span><span class="o">=</span><span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_tbtdata&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="n">hdf5_version</span><span class="p">),</span>
-                    <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
-                <span class="p">),</span>
-                <span class="n">Y</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-                    <span class="n">index</span><span class="o">=</span><span class="n">bpm_names</span><span class="p">,</span>
-                    <span class="n">data</span><span class="o">=</span><span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">hdf5_version</span><span class="p">][</span><span class="s2">&quot;get_tbtdata&quot;</span><span class="p">](</span><span class="n">hdf_file</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="n">hdf5_version</span><span class="p">),</span>
-                    <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
-                <span class="p">),</span>
-            <span class="p">)</span>
-        <span class="p">]</span>
-    <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span><span class="n">matrices</span><span class="o">=</span><span class="n">matrices</span><span class="p">,</span> <span class="n">bunch_ids</span><span class="o">=</span><span class="n">bunch_ids</span><span class="p">,</span> <span class="n">nturns</span><span class="o">=</span><span class="n">nturns</span><span class="p">)</span></div>
+    <span class="k">match</span> <span class="n">version</span><span class="p">:</span>
+        <span class="k">case</span> <span class="n">Version</span><span class="o">.</span><span class="n">one</span><span class="p">:</span>
+            <span class="n">read_data</span> <span class="o">=</span> <span class="n">VersionOneReader</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="k">case</span> <span class="n">Version</span><span class="o">.</span><span class="n">two</span><span class="p">:</span>
+            <span class="n">read_data</span> <span class="o">=</span> <span class="n">VersionTwoReader</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2"> unknown for IOTA reader.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">read_data</span><span class="o">.</span><span class="n">tbt_data</span></div>
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_turn_by_turn_data_v1</span><span class="p">(</span><span class="n">hdf5_v1_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">plane</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Go through the file to determine the turn-by-turn data as a numpy array, for an hdf5 v1 file.&quot;&quot;&quot;</span>
-    <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">hdf5_v1_file</span> <span class="k">if</span> <span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">PLANES_CONV</span><span class="p">[</span><span class="n">version</span><span class="p">][</span><span class="n">plane</span><span class="p">]))]</span>
-    <span class="n">nbpm</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
-    <span class="n">nturn</span> <span class="o">=</span> <span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">version</span><span class="p">][</span><span class="s2">&quot;get_nturns&quot;</span><span class="p">](</span><span class="n">hdf5_v1_file</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nbpm</span><span class="p">,</span> <span class="n">nturn</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
-        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">hdf5_v1_file</span><span class="p">[</span><span class="n">key</span><span class="p">][:</span><span class="n">nturn</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">data</span>
+<div class="viewcode-block" id="AbstractIotaReader">
+<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.iota.AbstractIotaReader">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AbstractIotaReader</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class that reads the IOTA turn-by-turn data.</span>
+
+<span class="sd">    This abstract class implements the whole reading in its `__init__`,</span>
+<span class="sd">    but cannot run by itself, as the version specific functions (see below)</span>
+<span class="sd">    need to be implemented first.</span>
+
+<span class="sd">    The read data is stored as TbtData-object in the `tbt_data` attribute.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">path</span>
+
+        <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdf5_file</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdf5_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span> <span class="o">=</span> <span class="n">hdf5_file</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prepare</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tbt_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_turn_by_turn_data</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare attributes and check that the correct version is used.&quot;&quot;&quot;</span>
+        <span class="n">bpm_names</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">map_bpm_name</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdf5_file</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_bpm_key</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bpm_names</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Wrong version of the IOTA-HDF5 format was used for file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">!s}</span><span class="s2">!&quot;</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">HDF5VersionError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpm_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">bpm_names</span><span class="p">))</span>  <span class="c1"># unique and keep order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nbpms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bpm_names</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nturns</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_number_of_turns</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_turn_by_turn_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read data and create the turn-by-turn data object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">TbtData</span><span class="p">(</span>
+            <span class="n">bunch_ids</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">nturns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nturns</span><span class="p">,</span>
+            <span class="n">matrices</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">TransverseData</span><span class="p">(</span>
+                    <span class="n">X</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                        <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bpm_names</span><span class="p">,</span>
+                        <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_data_for_plane</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">),</span>
+                        <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">Y</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                        <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bpm_names</span><span class="p">,</span>
+                        <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_data_for_plane</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">),</span>
+                        <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">],</span>
+            <span class="n">meta</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                <span class="s2">&quot;source_datatype&quot;</span><span class="p">:</span> <span class="s2">&quot;iota&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_data_for_plane</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plane</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract the turn-by-turn data for the given plane as numpy array,</span>
+<span class="sd">        truncated to the maximum common number of turns.&quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nbpms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nturns</span><span class="p">))</span>
+        <span class="n">bpm_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdf5_file</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_bpm_key</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">plane</span><span class="p">)]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bpm_keys</span><span class="p">):</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_for_key</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">plane</span><span class="p">)[:</span><span class="bp">self</span><span class="o">.</span><span class="n">nturns</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">data</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_number_of_turns</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the maximum common number of tuns over all BPMs,</span>
+<span class="sd">        such that the arrays can be trimmed to be of equal lengths.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_data_for_key</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">plane</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdf5_file</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_bpm_key</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">plane</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_data_for_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plane</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract the turn-by-turn data for the given key and plane as numpy array.&quot;&quot;&quot;</span>
+        <span class="o">...</span>
+
+<div class="viewcode-block" id="AbstractIotaReader.map_bpm_name">
+<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.iota.AbstractIotaReader.map_bpm_name">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">map_bpm_name</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the given key to a BPM name.&quot;&quot;&quot;</span>
+        <span class="o">...</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_list_of_bpmnames_v1</span><span class="p">(</span><span class="n">hdf5_v1_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Go through the file to determine the list of BPMs, for an hdf5 v1 file.&quot;&quot;&quot;</span>
-    <span class="n">bpms</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;IBPM</span><span class="si">{</span><span class="n">key</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">hdf5_v1_file</span> <span class="k">if</span> <span class="n">check_key_v1</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">bpms</span><span class="p">)</span>
+<div class="viewcode-block" id="AbstractIotaReader.is_bpm_key">
+<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.iota.AbstractIotaReader.is_bpm_key">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_bpm_key</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plane</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the entry of the file contains BPM data.&quot;&quot;&quot;</span>
+        <span class="o">...</span></div>
+</div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_number_of_turns_v1</span><span class="p">(</span><span class="n">hdf5_v1_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Go through the file to determine the number of turns, for an hdf5 v1 file.&quot;&quot;&quot;</span>
-    <span class="n">lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">hdf5_v1_file</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">hdf5_v1_file</span> <span class="k">if</span> <span class="n">check_key_v1</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span>
+
+<div class="viewcode-block" id="VersionOneReader">
+<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.iota.VersionOneReader">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">VersionOneReader</span><span class="p">(</span><span class="n">AbstractIotaReader</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Version 1 contains three keys per BPM: X, Y and Intensity.&quot;&quot;&quot;</span>
+
+    <span class="n">planes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="s2">&quot;V&quot;</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_data_for_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plane</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract the turn-by-turn data for the given key and plane as numpy array.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdf5_file</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>  <span class="c1"># assumes plane is already in key name</span>
+
+<div class="viewcode-block" id="VersionOneReader.map_bpm_name">
+<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.iota.VersionOneReader.map_bpm_name">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">map_bpm_name</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the given key to a BPM name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;IBPM</span><span class="si">{</span><span class="n">key</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_turn_by_turn_data_v2</span><span class="p">(</span><span class="n">hdf5_v2_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">plane</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Go through the file to determine the turn-by-turn data as a numpy array, for an hdf5 v2 file.&quot;&quot;&quot;</span>
-    <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">hdf5_v2_file</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;N:&quot;</span><span class="p">)]</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">keys</span><span class="p">:</span>
-        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Wrong version of the HDF format was used&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">HDF5VersionError</span>
-    <span class="n">nbpm</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
-    <span class="n">nturn</span> <span class="o">=</span> <span class="n">FUNCTIONS</span><span class="p">[</span><span class="n">version</span><span class="p">][</span><span class="s2">&quot;get_nturns&quot;</span><span class="p">](</span><span class="n">hdf5_v2_file</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nbpm</span><span class="p">,</span> <span class="n">nturn</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
-        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">hdf5_v2_file</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">PLANES_CONV</span><span class="p">[</span><span class="n">version</span><span class="p">][</span><span class="n">plane</span><span class="p">]][:</span><span class="n">nturn</span><span class="p">]</span>
-
-    <span class="k">return</span> <span class="n">data</span>
+<div class="viewcode-block" id="VersionOneReader.is_bpm_key">
+<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.iota.VersionOneReader.is_bpm_key">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_bpm_key</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plane</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the entry of the file contains BPM data.&quot;&quot;&quot;</span>
+        <span class="n">is_bpm</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;state&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="p">)</span> <span class="ow">or</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;N:&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">plane</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">is_bpm</span> <span class="ow">and</span> <span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">VersionOneReader</span><span class="o">.</span><span class="n">planes</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">])</span> <span class="ow">or</span> <span class="n">key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">VersionOneReader</span><span class="o">.</span><span class="n">planes</span><span class="p">[</span><span class="s2">&quot;Y&quot;</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">is_bpm</span> <span class="ow">and</span> <span class="n">key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">VersionOneReader</span><span class="o">.</span><span class="n">planes</span><span class="p">[</span><span class="n">plane</span><span class="p">])</span></div>
+</div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_list_of_bpmnames_v2</span><span class="p">(</span><span class="n">hdf5_v2_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Go through the file to determine the list of BPMs, for an hdf5 v2 file.&quot;&quot;&quot;</span>
-    <span class="n">bpms</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;IBPM</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">hdf5_v2_file</span> <span class="k">if</span> <span class="n">check_key_v2</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">bpms</span><span class="p">:</span>
-        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Wrong version of the HDF format was used&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">HDF5VersionError</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">bpms</span><span class="p">)</span>
+
+<div class="viewcode-block" id="VersionTwoReader">
+<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.iota.VersionTwoReader">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">VersionTwoReader</span><span class="p">(</span><span class="n">AbstractIotaReader</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Version 2 contains a single key per BPM, which contains data for both planes</span>
+<span class="sd">    (and possibly more which we ignore).&quot;&quot;&quot;</span>
+
+    <span class="n">planes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="s2">&quot;Horizontal&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="s2">&quot;Vertical&quot;</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_data_for_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plane</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract the turn-by-turn data for the given key and plane as numpy array.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdf5_file</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">planes</span><span class="p">[</span><span class="n">plane</span><span class="p">]]</span>
+
+<div class="viewcode-block" id="VersionTwoReader.map_bpm_name">
+<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.iota.VersionTwoReader.map_bpm_name">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">map_bpm_name</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the given key to a BPM name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;IBPM</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_number_of_turns_v2</span><span class="p">(</span><span class="n">hdf5_v2_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Go through the file to determine the number of turns, for an hdf5 v2 file.&quot;&quot;&quot;</span>
-    <span class="n">lengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="p">[</span>
-            <span class="p">(</span>
-                <span class="nb">len</span><span class="p">(</span><span class="n">hdf5_v2_file</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">PLANES_CONV</span><span class="p">[</span><span class="n">version</span><span class="p">][</span><span class="s2">&quot;X&quot;</span><span class="p">]]),</span>
-                <span class="nb">len</span><span class="p">(</span><span class="n">hdf5_v2_file</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">PLANES_CONV</span><span class="p">[</span><span class="n">version</span><span class="p">][</span><span class="s2">&quot;Y&quot;</span><span class="p">]]),</span>
-            <span class="p">)</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">hdf5_v2_file</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-            <span class="k">if</span> <span class="n">check_key_v2</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-        <span class="p">]</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span>
+<div class="viewcode-block" id="VersionTwoReader.is_bpm_key">
+<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.iota.VersionTwoReader.is_bpm_key">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_bpm_key</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plane</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the entry of the file contains BPM data.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;NL&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;N:&quot;</span><span class="p">)</span>  <span class="c1"># latter: filter v1 data to be safe</span></div>
+</div>
 
-
-<span class="k">def</span><span class="w"> </span><span class="nf">check_key_v2</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">return</span> <span class="ow">not</span> <span class="p">((</span><span class="s2">&quot;NL&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">)</span> <span class="ow">or</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;N:&quot;</span><span class="p">))</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">check_key_v1</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;state&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="p">)</span> <span class="ow">or</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;N:&quot;</span><span class="p">)</span>
-
-
-<span class="n">FUNCTIONS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="mi">1</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;get_bpm_names&quot;</span><span class="p">:</span> <span class="n">_get_list_of_bpmnames_v1</span><span class="p">,</span>
-        <span class="s2">&quot;get_nturns&quot;</span><span class="p">:</span> <span class="n">_get_number_of_turns_v1</span><span class="p">,</span>
-        <span class="s2">&quot;get_tbtdata&quot;</span><span class="p">:</span> <span class="n">_get_turn_by_turn_data_v1</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="mi">2</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;get_bpm_names&quot;</span><span class="p">:</span> <span class="n">_get_list_of_bpmnames_v2</span><span class="p">,</span>
-        <span class="s2">&quot;get_nturns&quot;</span><span class="p">:</span> <span class="n">_get_number_of_turns_v2</span><span class="p">,</span>
-        <span class="s2">&quot;get_tbtdata&quot;</span><span class="p">:</span> <span class="n">_get_turn_by_turn_data_v2</span><span class="p">,</span>
-    <span class="p">},</span>
-<span class="p">}</span>
 </pre></div>
 
            </div>

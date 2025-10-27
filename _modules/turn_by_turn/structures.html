@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.structures &mdash; turn_by_turn 0.9.1 documentation</title>
+  <title>turn_by_turn.structures &mdash; turn_by_turn 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=988d0652" />
@@ -13,7 +13,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=9dc39874"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -102,27 +102,35 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">fields</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">dateutil</span><span class="w"> </span><span class="kn">import</span> <span class="n">tz</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 
     <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
+    <span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetaDict</span>
+
 
 <div class="viewcode-block" id="TransverseData">
 <a class="viewcode-back" href="../../modules/index.html#turn_by_turn.structures.TransverseData">[docs]</a>
-<span class="nd">@dataclass</span>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TransverseData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Object holding measured turn-by-turn data for both transverse planes in the form of pandas DataFrames.</span>
+
+<span class="sd">    The DataFrames should be N_(observation-points) x M_(turns) matrices, and usually contain</span>
+<span class="sd">    the BPM/observation-point names as index, while the columns are simply numbered starting from ``0``.</span>
+<span class="sd">    All DataFrames should have the same N x M size.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        X (pd.DataFrame): Horizontal position data</span>
+<span class="sd">        Y (pd.DataFrame): Vertical position data</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># horizontal data</span>
-    <span class="n">Y</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># vertical data</span>
+    <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+    <span class="n">Y</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
 
 <div class="viewcode-block" id="TransverseData.fieldnames">
 <a class="viewcode-back" href="../../modules/index.html#turn_by_turn.structures.TransverseData.fieldnames">[docs]</a>
@@ -141,20 +149,35 @@
 
 <div class="viewcode-block" id="TrackingData">
 <a class="viewcode-back" href="../../modules/index.html#turn_by_turn.structures.TrackingData">[docs]</a>
-<span class="nd">@dataclass</span>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TrackingData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Object holding multidimensional turn-by-turn simulation data in the form of pandas DataFrames.</span>
+
+<span class="sd">    The DataFrames should be N_observation-points x M_turns matrices, and usually contain</span>
+<span class="sd">    the BPM/observation-point names as index, while the columns are simply numbered starting from ``0``.</span>
+<span class="sd">    All DataFrames should have the same N x M size.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        X (pd.DataFrame): Horizontal position data</span>
+<span class="sd">        PX (pd.DataFrame): Horizontal momentum data</span>
+<span class="sd">        Y (pd.DataFrame): Vertical position data</span>
+<span class="sd">        PY (pd.DataFrame): Vertical momentum data</span>
+<span class="sd">        T (pd.DataFrame): Negative time difference wrt. the reference particle (multiplied by c)</span>
+<span class="sd">        PT (pd.DataFrame): Energy difference wrt. the reference particle divided by the ref. momentum (multiplied by c)</span>
+<span class="sd">        S (pd.DataFrame): Longitudinal position data</span>
+<span class="sd">        E (pd.DataFrame): Energy data</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># horizontal data</span>
-    <span class="n">PX</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># horizontal momentum data</span>
-    <span class="n">Y</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># vertical data</span>
-    <span class="n">PY</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># vertical momentum data</span>
-    <span class="n">T</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># longitudinal data</span>
-    <span class="n">PT</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># longitudinal momentum data</span>
-    <span class="n">S</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># longitudinal position data</span>
-    <span class="n">E</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>  <span class="c1"># energy data</span>
+    <span class="n">X</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+    <span class="n">PX</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+    <span class="n">Y</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+    <span class="n">PY</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+    <span class="n">T</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+    <span class="n">PT</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+    <span class="n">S</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+    <span class="n">E</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
 
 <div class="viewcode-block" id="TrackingData.fieldnames">
 <a class="viewcode-back" href="../../modules/index.html#turn_by_turn.structures.TrackingData.fieldnames">[docs]</a>
@@ -176,31 +199,37 @@
 
 <div class="viewcode-block" id="TbtData">
 <a class="viewcode-back" href="../../modules/index.html#turn_by_turn.structures.TbtData">[docs]</a>
-<span class="nd">@dataclass</span>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TbtData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Object holding a representation of a Turn-by-Turn data measurement. The date of the measurement,</span>
 <span class="sd">    the transverse data, number of turns and bunches as well as the bunch IDs are encapsulated in this object.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        matrices (Sequence[DataType]): Sequence of ``TransverseData`` or ``TrackingData`` objects.</span>
+<span class="sd">                                       Each entry corresponds to a &quot;bunch&quot; or &quot;particle&quot; (tracking).</span>
+<span class="sd">        nturns (int): Number of turns. Needs to be a positive integer.</span>
+<span class="sd">                      It is assumed all bunches (and observation points in all entries therein)</span>
+<span class="sd">                      have the same length in the turn-dimension (columns).</span>
+<span class="sd">        bunch_ids (list[int] | None): List of bunch/particle IDs.</span>
+<span class="sd">                                      Will default to ``[0, 1, ..., nbunches-1]`` if not set.</span>
+<span class="sd">        meta (MetaDict): Dictionary of metadata.</span>
+<span class="sd">        nbunches (int): Number of bunches/particles.</span>
+<span class="sd">                        Automatically set (i.e. cannot be set in the initialization of this object).</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">matrices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">DataType</span><span class="p">]</span>  <span class="c1"># each entry corresponds to a bunch</span>
-    <span class="n">date</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># will default in post_init</span>
-    <span class="n">bunch_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># will default in post_init</span>
-    <span class="n">nturns</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">matrices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">DataType</span><span class="p">]</span>
+    <span class="n">nturns</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">bunch_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>  <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># will default in post_init</span>
+    <span class="n">meta</span><span class="p">:</span> <span class="n">MetaDict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">nbunches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nbunches</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrices</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nturns</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">nturns</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="c1"># should have no default value, but breaks backwards compatibility to move</span>
-            <span class="c1"># up in dataclass definition</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of turns need to be specified and larger than zero.&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-                <span class="n">tzinfo</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">tzutc</span><span class="p">()</span>
-            <span class="p">)</span>  <span class="c1"># to today, UTC if nothing is given</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of turns needs to be larger than zero.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bunch_ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bunch_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbunches</span><span class="p">))</span>  <span class="c1"># we always need bunch-ids</span></div>
