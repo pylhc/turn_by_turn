@@ -1,3 +1,8 @@
+.. automodule:: turn_by_turn.ascii
+    :members:
+    :noindex:
+
+
 .. automodule:: turn_by_turn.doros
     :members:
     :noindex:
