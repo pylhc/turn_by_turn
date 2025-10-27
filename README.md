@@ -1,6 +1,7 @@
 # Turn-By-Turn
 
 [![Cron Testing](https://github.com/pylhc/turn_by_turn/workflows/Cron%20Testing/badge.svg)](https://github.com/pylhc/turn_by_turn/actions?query=workflow%3A%22Cron+Testing%22)
+[![Coverage](https://raw.githubusercontent.com/pylhc/turn_by_turn/python-coverage-comment-action-data/badge.svg)](https://github.com/pylhc/turn_by_turn/tree/python-coverage-comment-action-data)
 [![PyPI Version](https://img.shields.io/pypi/v/turn_by_turn?label=PyPI&logo=pypi)](https://pypi.org/project/turn_by_turn/)
 [![GitHub release](https://img.shields.io/github/v/release/pylhc/turn_by_turn?logo=github)](https://github.com/pylhc/turn_by_turn/)
 [![Conda-forge Version](https://img.shields.io/conda/vn/conda-forge/turn_by_turn?color=orange&logo=anaconda)](https://anaconda.org/conda-forge/turn_by_turn)
