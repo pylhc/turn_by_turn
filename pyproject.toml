@@ -91,7 +91,7 @@ documentation = "https://pylhc.github.io/turn_by_turn/"
 addopts = [
     "--import-mode=importlib",
     "--cov-report=xml",
-    "--cov-report term-missing",
+    "--cov-report=term-missing",
     "--cov-config=pyproject.toml",
     "--cov=turn_by_turn",
 ]
