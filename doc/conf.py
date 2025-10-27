@@ -1,5 +1,5 @@
 #
-# TFS-Pandas documentation build configuration file, created by
+# Documentation build configuration file, created by
 # sphinx-quickstart on Tue Feb  6 12:10:18 2018.
 #
 # This file is execfile()d with the current directory set to its
@@ -74,10 +74,7 @@ autosectionlabel_maxdepth = 2
 # templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
-# You can specify multiple suffix as a list of string:
-#
-# source_suffix = ['.rst', '.md']
-source_suffix = ".rst"
+source_suffix = {'.rst': 'restructuredtext'}
 
 # The master toctree document.
 master_doc = "index"
@@ -241,6 +238,13 @@ texinfo_documents = [
         "Miscellaneous",
     ),
 ]
+
+# -- Options for Autodoc ----------------------------------------------
+
+autodoc_default_options = {
+    "members": True,
+    "no-index": True,
+}
 
 # -- Instersphinx Configuration ----------------------------------------------
 
