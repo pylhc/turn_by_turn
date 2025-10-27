@@ -85,12 +85,16 @@ repository = "https://github.com/pylhc/turn_by_turn"
 documentation = "https://pylhc.github.io/turn_by_turn/"
 # changelog = "https://github.com/pylhc/turn_by_turn/blob/master/CHANGELOG.md"
 
-# ----- Testing ----- #
+# ----- Tests Configuration ----- #
 
 [tool.pytest.ini_options]
 addopts = [
     "--import-mode=importlib",
+    "--cov-report=term-missing",
+    "--cov-config=pyproject.toml",
+    "--cov=turn_by_turn",
 ]
+testpaths = ["tests"]
 # Helpful for pytest-debugging (leave commented out on commit):
 # log_cli = true
 # log_cli_level = "DEBUG"
@@ -98,6 +102,12 @@ addopts = [
 
 [tool.coverage.run]
 relative_files = true
+
+[tool.coverage.report]
+exclude_also = [
+  "if TYPE_CHECKING:",  # do not count type checking imports (ignored at runtime) for coverage
+  "except ImportError:",  # do not count missing optional dependencies set to None, we monkeypatch and test that
+]
 
 # ----- Dev Tools Configuration ----- #
 
