@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Coverage for turn_by_turn/madng.py: 89%</title>
+    <title>Coverage for turn_by_turn/madng.py: 92%</title>
     <link rel="icon" sizes="32x32" href="favicon_32_cb_58284776.png">
     <link rel="stylesheet" href="style_cb_6b508a39.css" type="text/css">
     <script src="coverage_html_cb_6fb7b396.js" defer></script>
@@ -12,7 +12,7 @@
     <div class="content">
         <h1>
             <span class="text">Coverage for </span><b>turn_by_turn/madng.py</b>:
-            <span class="pc_cov">89%</span>
+            <span class="pc_cov">92%</span>
         </h1>
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
@@ -54,10 +54,10 @@
             </div>
         </aside>
         <h2>
-            <span class="text">89 statements &nbsp;</span>
+            <span class="text">86 statements &nbsp;</span>
             <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">79<span class="text"> run</span></button>
-            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">10<span class="text"> missing</span></button>
-            <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">4<span class="text"> excluded</span></button>
+            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">7<span class="text"> missing</span></button>
+            <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">7<span class="text"> excluded</span></button>
         </h2>
         <p class="text">
             <a id="prevFileLink" class="nav" href="z_419d82e8f4a02e52_lhc_py.html">&#xab; prev</a> &nbsp; &nbsp;
@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_419d82e8f4a02e52_ptc_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.0">coverage.py v7.11.0</a>,
-            created at 2025-10-27 11:06 +0000
+            created at 2025-10-27 19:00 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -187,9 +187,9 @@
     <p class="run"><span class="n"><a id="t105" href="#t105">105</a></span><span class="t">        <span class="key">import</span> <span class="nam">tfs</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t106" href="#t106">106</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t107" href="#t107">107</a></span><span class="t">        <span class="nam">is_tfs_df</span> <span class="op">=</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">df</span><span class="op">,</span> <span class="nam">tfs</span><span class="op">.</span><span class="nam">TfsDataFrame</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t108" href="#t108">108</a></span><span class="t">    <span class="key">except</span> <span class="nam">ImportError</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t109" href="#t109">109</a></span><span class="t">        <span class="nam">LOGGER</span><span class="op">.</span><span class="nam">debug</span><span class="op">(</span><span class="str">"The 'tfs' package is not installed. Assuming a pandas DataFrame."</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t110" href="#t110">110</a></span><span class="t">        <span class="nam">is_tfs_df</span> <span class="op">=</span> <span class="key">False</span>&nbsp;</span><span class="r"></span></p>
+    <p class="exc show_exc"><span class="n"><a id="t108" href="#t108">108</a></span><span class="t">    <span class="key">except</span> <span class="nam">ImportError</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="exc show_exc"><span class="n"><a id="t109" href="#t109">109</a></span><span class="t">        <span class="nam">LOGGER</span><span class="op">.</span><span class="nam">debug</span><span class="op">(</span><span class="str">"The 'tfs' package is not installed. Assuming a pandas DataFrame."</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="exc show_exc"><span class="n"><a id="t110" href="#t110">110</a></span><span class="t">        <span class="nam">is_tfs_df</span> <span class="op">=</span> <span class="key">False</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t111" href="#t111">111</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t112" href="#t112">112</a></span><span class="t">    <span class="nam">meta</span><span class="op">:</span> <span class="nam">MetaDict</span> <span class="op">=</span> <span class="op">{</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t113" href="#t113">113</a></span><span class="t">        <span class="str">"source_datatype"</span><span class="op">:</span> <span class="str">"madng"</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
@@ -342,7 +342,7 @@
             <a class="nav" href="z_419d82e8f4a02e52_ptc_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.0">coverage.py v7.11.0</a>,
-            created at 2025-10-27 11:06 +0000
+            created at 2025-10-27 19:00 +0000
         </p>
     </div>
 </footer>
