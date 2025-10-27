@@ -2,7 +2,7 @@
 
 All notable changes to **turn_by_turn** will be documented in this file.
 
-#### v1.0.0 – 2025-10-XX
+#### v1.0.0 – 2025-10-27
 
 This is the first major release of `turn_by_turn`, marking the transition from a pre-1.0 version to a stable API.
 This release includes introduces some small breaking changes to the API, mainly the removal of the `date` attribute from the `TbtData` dataclass, as it was not consistently populated across all datatypes and readers.
