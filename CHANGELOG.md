@@ -2,7 +2,7 @@
 
 All notable changes to **turn_by_turn** will be documented in this file.
 
-#### v1.1.0 – 2025-10-XX
+#### v1.1.0 – 2025-10-29
 
 This release removes the experimental `esrf` module from the package, as it was both unused and out-of-date to the ESRF data format.
 
