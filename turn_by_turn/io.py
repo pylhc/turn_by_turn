@@ -56,8 +56,6 @@ The following table summarizes which modules support disk reading and in-memory 
 +----------------+---------------------+-----------------------+----------------------------------------------------------+
 | ptc            | Yes (trackone)      | No                    | Reads MAD-X PTC trackone files.                          |
 +----------------+---------------------+-----------------------+----------------------------------------------------------+
-| esrf           | Yes (Matlab .mat)   | No                    | Experimental/untested.                                   |
-+----------------+---------------------+-----------------------+----------------------------------------------------------+
 | iota           | Yes (HDF5)          | No                    | Reads IOTA HDF5 files.                                   |
 +----------------+---------------------+-----------------------+----------------------------------------------------------+
 | ascii          | Yes (legacy ASCII)  | No                    | For legacy ASCII files only.                             |
@@ -67,7 +65,7 @@ The following table summarizes which modules support disk reading and in-memory 
 
 - Only ``madng`` and ``xtrack`` support in-memory conversion.
 - Most modules are for disk reading only.
-- Some modules (e.g., ``esrf``) are experimental or have limited support.
+- Some modules are experimental or have limited support.
 
 API
 ===
@@ -82,7 +80,6 @@ from typing import TYPE_CHECKING, Any
 from turn_by_turn import (
     ascii,  # noqa: A004
     doros,
-    esrf,
     iota,
     lhc,
     madng,
@@ -110,7 +107,6 @@ TBT_MODULES = {
     "doros_oscillations": doros,
     "sps": sps,
     "iota": iota,
-    "esrf": esrf,
     "ptc": ptc,
     "trackone": trackone,
     "ascii": ascii,

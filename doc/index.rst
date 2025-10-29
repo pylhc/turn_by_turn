@@ -25,7 +25,6 @@ Different modules support different file formats and workflows (disk reading vs.
 
 - Only ``madng`` and ``xtrack`` support in-memory conversion.
 - Most modules are for disk reading only.
-- Some modules (e.g., ``esrf``) are experimental or have limited support.
 - For writing, see the next section.
 
 Writing Data
