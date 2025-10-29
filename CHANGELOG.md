@@ -2,6 +2,10 @@
 
 All notable changes to **turn_by_turn** will be documented in this file.
 
+#### v1.1.0 – 2025-10-XX
+
+This release removes the experimental `esrf` module from the package, as it was both unused and out-of-date to the ESRF data format.
+
 #### v1.0.0 – 2025-10-27
 
 This is the first major release of `turn_by_turn`, marking the transition from a pre-1.0 version to a stable API.
@@ -26,7 +30,6 @@ Some common meta-entries are:
 - Updated all readers to populate the `meta` attribute with relevant metadata where available.
 - Restructured the `iota` module. This should be mostly transparent to the user, unless they were using internal functions or classes from the `iota` module directly.
 - Added a test for `esrf` datatype reading.
-
 
 #### v0.9.1 – 2025-07-10
 
