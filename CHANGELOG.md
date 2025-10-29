@@ -29,7 +29,6 @@ Some common meta-entries are:
 - Added a `meta` attribute to the `TbtData` dataclass to hold additional metadata as a dictionary.
 - Updated all readers to populate the `meta` attribute with relevant metadata where available.
 - Restructured the `iota` module. This should be mostly transparent to the user, unless they were using internal functions or classes from the `iota` module directly.
-- Added a test for `esrf` datatype reading.
 
 #### v0.9.1 – 2025-07-10
 
