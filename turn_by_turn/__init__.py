@@ -8,7 +8,7 @@ __description__ = (
     "Read and write turn-by-turn measurement files from different particle accelerator formats."
 )
 __url__ = "https://github.com/pylhc/turn_by_turn"
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __author__ = "pylhc"
 __author_email__ = "pylhc@github.com"
 __license__ = "MIT"
