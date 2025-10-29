@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ASCII &mdash; turn_by_turn 1.0.0 documentation</title>
+  <title>ASCII &mdash; turn_by_turn 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=988d0652" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/documentation_options.js?v=fc837d61"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -60,7 +60,6 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">ASCII</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#doros">DOROS</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#esrf">ESRF</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#iota">Iota</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#lhc">LHC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#sps">SPS</a></li>
@@ -251,40 +250,6 @@ distinguish between the bunches.</p>
 <li><p><strong>tbt_data</strong> (<em>TbtData</em>) -- data to be written</p></li>
 <li><p><strong>file_path</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>]</em>) -- path to the turn-by-turn measurement file.</p></li>
 </ul>
-</dd>
-</dl>
-</dd></dl>
-
-<section id="esrf">
-<h1>ESRF<a class="headerlink" href="#esrf" title="Link to this heading"></a></h1>
-<p>Data handling for turn-by-turn measurement files from <code class="docutils literal notranslate"><span class="pre">ESRF</span></code> (files in <strong>matlab</strong> format).
-This module is untested and should be considered experimental at the moment.</p>
-</section>
-<dl class="py function">
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">turn_by_turn.esrf.</span></span><span class="sig-name descname"><span class="pre">load_esrf_mat_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">infile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/turn_by_turn/esrf.html#load_esrf_mat_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Reads the <strong>ESRF</strong> TbT <code class="docutils literal notranslate"><span class="pre">Matlab</span></code> file, checks for NaNs and matrices duplicities from consecutive kicks.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>infile</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>]</em>) -- path to the turn-by-turn measurement file.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A 1D numpy array of BPM names and a 4D Numpy array [quantity, BPM, particle/bunch No.,
-turn No.] quantities in order [x, y]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">turn_by_turn.esrf.</span></span><span class="sig-name descname"><span class="pre">read_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/esrf.html#read_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Reads turn-by-turn data from the <code class="docutils literal notranslate"><span class="pre">ESRF</span></code>’s <strong>Matlab</strong> format file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>file_path</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>]</em>) -- path to the turn-by-turn measurement file.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A <code class="docutils literal notranslate"><span class="pre">TbTData</span></code> object with the loaded data.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.io &mdash; turn_by_turn 1.0.0 documentation</title>
+  <title>turn_by_turn.io &mdash; turn_by_turn 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=988d0652" />
@@ -13,7 +13,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/documentation_options.js?v=fc837d61"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -58,7 +58,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html">ASCII</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#doros">DOROS</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#esrf">ESRF</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#iota">Iota</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#lhc">LHC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#sps">SPS</a></li>
@@ -151,8 +150,6 @@
 <span class="sd">+----------------+---------------------+-----------------------+----------------------------------------------------------+</span>
 <span class="sd">| ptc            | Yes (trackone)      | No                    | Reads MAD-X PTC trackone files.                          |</span>
 <span class="sd">+----------------+---------------------+-----------------------+----------------------------------------------------------+</span>
-<span class="sd">| esrf           | Yes (Matlab .mat)   | No                    | Experimental/untested.                                   |</span>
-<span class="sd">+----------------+---------------------+-----------------------+----------------------------------------------------------+</span>
 <span class="sd">| iota           | Yes (HDF5)          | No                    | Reads IOTA HDF5 files.                                   |</span>
 <span class="sd">+----------------+---------------------+-----------------------+----------------------------------------------------------+</span>
 <span class="sd">| ascii          | Yes (legacy ASCII)  | No                    | For legacy ASCII files only.                             |</span>
@@ -162,7 +159,7 @@
 
 <span class="sd">- Only ``madng`` and ``xtrack`` support in-memory conversion.</span>
 <span class="sd">- Most modules are for disk reading only.</span>
-<span class="sd">- Some modules (e.g., ``esrf``) are experimental or have limited support.</span>
+<span class="sd">- Some modules are experimental or have limited support.</span>
 
 <span class="sd">API</span>
 <span class="sd">===</span>
@@ -177,7 +174,6 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ascii</span><span class="p">,</span>  <span class="c1"># noqa: A004</span>
     <span class="n">doros</span><span class="p">,</span>
-    <span class="n">esrf</span><span class="p">,</span>
     <span class="n">iota</span><span class="p">,</span>
     <span class="n">lhc</span><span class="p">,</span>
     <span class="n">madng</span><span class="p">,</span>
@@ -205,7 +201,6 @@
     <span class="s2">&quot;doros_oscillations&quot;</span><span class="p">:</span> <span class="n">doros</span><span class="p">,</span>
     <span class="s2">&quot;sps&quot;</span><span class="p">:</span> <span class="n">sps</span><span class="p">,</span>
     <span class="s2">&quot;iota&quot;</span><span class="p">:</span> <span class="n">iota</span><span class="p">,</span>
-    <span class="s2">&quot;esrf&quot;</span><span class="p">:</span> <span class="n">esrf</span><span class="p">,</span>
     <span class="s2">&quot;ptc&quot;</span><span class="p">:</span> <span class="n">ptc</span><span class="p">,</span>
     <span class="s2">&quot;trackone&quot;</span><span class="p">:</span> <span class="n">trackone</span><span class="p">,</span>
     <span class="s2">&quot;ascii&quot;</span><span class="p">:</span> <span class="n">ascii</span><span class="p">,</span>

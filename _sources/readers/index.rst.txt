@@ -2,8 +2,6 @@
 
 .. automodule:: turn_by_turn.doros
 
-.. automodule:: turn_by_turn.esrf
-
 .. automodule:: turn_by_turn.iota
 
 .. automodule:: turn_by_turn.lhc
