@@ -86,6 +86,7 @@ from turn_by_turn import (
     ptc,
     sps,
     trackone,
+    superkekb,
     xtrack_line,
 )
 from turn_by_turn.ascii import write_ascii
@@ -111,6 +112,7 @@ TBT_MODULES = {
     "trackone": trackone,
     "ascii": ascii,
     "madng": madng,
+    "superkekb": superkekb,
     "xtrack": xtrack_line,
 }
 
