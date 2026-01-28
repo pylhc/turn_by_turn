@@ -1,16 +1,18 @@
 """
-LHC
+SuperKEKB
 ---
 
-Data handling for turn-by-turn measurement files from the ``LHC`` (files in **SDDS** format).
+Data handling for turn-by-turn measurement files from ``SuperKEKB`` taken by the application in
+the control room. The file format is similar to Mathematica or some json and be parsed easily
+with regex. The extension is usually `.data`.
 """
 
 from __future__ import annotations
 
 import logging
+import re
 from datetime import datetime
 from pathlib import Path
-import re
 
 import numpy as np
 import pandas as pd
@@ -30,33 +32,49 @@ def read_tbt(file_path: str | Path) -> TbtData:
     Returns:
         A ``TbTData`` object with the loaded data.
     """
+
     file_path = Path(file_path)
     LOGGER.debug(f"Reading SuperKEKB file at path: '{file_path.absolute()}'")
-
-    with open(file_path, "r") as f:
-        content = f.read().replace("\n", "").replace(" ", "").replace("\\", "")
+    content = file_path.read_text().replace("\n", "").replace("\\", "").replace(" ", "")
 
     # Get the date, stored in the header, a simple regex is enough
-    date = re.findall(r"(\d{4}-[01]\d-[0-3]\d_[0-2]\d:[0-5]\d:[0-5]\d\.\d+)", content)[0]
-    date = datetime.strptime(date, "%Y-%m-%d_%H:%M:%S.%f")
+    # Same for the values, with the follow pattern:
+    # ("BPM_NAME"->{X_VALUES}, {Y_VALUES}, {STD_ERR?})
+    DATE_PATTERN = re.compile(
+        r"([01]\d\/[0-3]\d\/\d{4}[0-2]\d:[0-5]\d:[0-5]\d)"
+    )  # date in header
+    VALUES_PATTERN = re.compile(
+        r'\("(?P<monitors>[A-Z0-9]+)"->{{(?P<x>[^}]+)},{(?P<y>[^}]+)},{(?P<std>[^}]+)}}\)'
+    )
+
+    try:
+        date = datetime.strptime(
+            re.findall(DATE_PATTERN, content)[0], "%m/%d/%Y%H:%M:%S"
+        )
+    except:
+        date = None
 
     # Craft a regex to extract BPM data
     # The data is organized as follows:
-    # ("BPM_NAME"->{X_VALUES}, {Y_VALUES}, {STD_ERR?})
     x_vals = []
     y_vals = []
     monitors = []
-    for match in re.finditer(
-        r'\("([A-Z0-9]+)"->{{([^}]+)},{([^}]+)},{([^}]+)}}\)', content
-    ):
-        monitors.append(match.group(1))
-        x_vals.append(np.array([float(v) for v in match.group(2).split(",")]))
-        y_vals.append(np.array([float(v) for v in match.group(3).split(",")]))
+    for match in re.finditer(VALUES_PATTERN, content):
+        monitors.append(match.group("monitors"))
+        x_vals.append(np.array([float(v) for v in match.group("x").split(",")]))
+        y_vals.append(np.array([float(v) for v in match.group("y").split(",")]))
     x_vals = np.array(x_vals)
     y_vals = np.array(y_vals)
 
     # Create the TbtData object
-    tbt_data = TbtData(
+    meta_dict = {
+        "file": file_path.name,
+        "source_datatype": "superkekb",
+    }
+    if date is not None:
+        meta_dict["date"] = date
+
+    return TbtData(
         nturns=len(x_vals[0]),
         matrices=[
             TransverseData(
@@ -70,13 +88,8 @@ def read_tbt(file_path: str | Path) -> TbtData:
                 ),
             )
         ],
-        meta={
-            "file": file_path.name,
-            "source_datatype": "superkekb",
-            "date": date,
-        },
+        meta=meta_dict,
     )
-    return tbt_data
 
 
 def write_tbt(file_path: str | Path, tbt_data: TbtData) -> None:

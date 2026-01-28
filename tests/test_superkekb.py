@@ -5,8 +5,7 @@ import pytest
 
 import turn_by_turn.errors
 from turn_by_turn.constants import PRINT_PRECISION
-from turn_by_turn.errors import DataTypeError
-from turn_by_turn.io import read_tbt, write_lhc_ascii, write_tbt
+from turn_by_turn.io import read_tbt, write_tbt
 from turn_by_turn.structures import TbtData
 
 INPUTS_DIR = Path(__file__).parent / "inputs"
@@ -16,16 +15,34 @@ ASCII_PRECISION = 0.6 / np.power(10, PRINT_PRECISION)  # not 0.5 due to rounding
 def test_tbt_read_write_sdds(_superkekb_file, _test_file):
     origin = read_tbt(_superkekb_file, datatype="superkekb")
 
+    # Check that we've got the right number of monitors and turns
+    assert origin.matrices[0].X.shape == (66, 2048)
+    assert origin.matrices[0].Y.shape == (66, 2048)
+    assert origin.meta['date'].strftime('%Y-%m-%d %H:%M:%S') == '2025-11-17 22:31:52'
+
     # Save as a SDDS file and reopen it
     write_tbt(_test_file, origin)
     new = read_tbt(f"{_test_file}.sdds")
     compare_tbt(origin, new, no_binary=False)
 
 
-def test_tbt_write(_superkekb_file, _test_file):
+def test_tbt_read_nodate(_superkekb_file_nodate, _test_file):
+    '''This test contains an invalid date in the header, which is then set to None.'''
+    origin = read_tbt(_superkekb_file_nodate, datatype="superkekb")
+
+    assert "date" not in origin.meta
+
+    # Save as a SDDS file and reopen it, it should work even with no date
+    write_tbt(_test_file, origin)
+    new = read_tbt(f"{_test_file}.sdds")
+    compare_tbt(origin, new, no_binary=False)
+
+
+def test_tbt_write_raises(_superkekb_file, _test_file):
     origin = read_tbt(_superkekb_file, datatype="superkekb")
 
-    # Save as a SuperKEKB file, should raise NotImplementedError
+    # Save as a SuperKEKB file, should raise DataTypeError as the writer isn't declared in the
+    # `WRITER` variable from `io.py`
     with pytest.raises(turn_by_turn.errors.DataTypeError):
         write_tbt(_test_file, origin, datatype="superkekb")
 
@@ -64,4 +81,9 @@ def _test_file(tmp_path) -> Path:
 
 @pytest.fixture()
 def _superkekb_file() -> Path:
-    return INPUTS_DIR / "test_superkekb"
+    return INPUTS_DIR / "test_superkekb.data"
+
+
+@pytest.fixture()
+def _superkekb_file_nodate() -> Path:
+    return INPUTS_DIR / "test_superkekb_nodate.data"
