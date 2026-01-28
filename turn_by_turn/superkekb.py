@@ -74,7 +74,6 @@ def read_tbt(file_path: str | Path) -> TbtData:
     if date is not None:
         meta_dict["date"] = date
 
-    
     tbt_data = TbtData(
         nturns=len(x_vals[0]),
         matrices=[
@@ -92,7 +91,9 @@ def read_tbt(file_path: str | Path) -> TbtData:
         meta=meta_dict,
     )
 
-    LOGGER.info(f"Loaded SuperKEKB TbT file with {tbt_data.nturns} turns and {len(monitors)} monitors.")
+    LOGGER.info(
+        f"Loaded SuperKEKB TbT file with {tbt_data.nturns} turns and {len(monitors)} monitors."
+    )
     return tbt_data
 
 

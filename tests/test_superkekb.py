@@ -18,7 +18,7 @@ def test_tbt_read_write_sdds(_superkekb_file, _test_file):
     # Check that we've got the right number of monitors and turns
     assert origin.matrices[0].X.shape == (66, 2048)
     assert origin.matrices[0].Y.shape == (66, 2048)
-    assert origin.meta['date'].strftime('%Y-%m-%d %H:%M:%S') == '2025-11-17 22:31:52'
+    assert origin.meta["date"].strftime("%Y-%m-%d %H:%M:%S") == "2025-11-17 22:31:52"
 
     # Save as a SDDS file and reopen it
     write_tbt(_test_file, origin)
@@ -27,7 +27,7 @@ def test_tbt_read_write_sdds(_superkekb_file, _test_file):
 
 
 def test_tbt_read_nodate(_superkekb_file_nodate, _test_file):
-    '''This test contains an invalid date in the header, which is then set to None.'''
+    """This test contains an invalid date in the header, which is then set to None."""
     origin = read_tbt(_superkekb_file_nodate, datatype="superkekb")
 
     assert "date" not in origin.meta
