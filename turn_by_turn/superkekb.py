@@ -1,6 +1,6 @@
 """
 SuperKEKB
----
+---------
 
 Data handling for turn-by-turn measurement files from ``SuperKEKB`` taken by the application in
 the control room. The file format is similar to Mathematica or some json and be parsed easily
