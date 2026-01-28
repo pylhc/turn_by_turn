@@ -62,6 +62,8 @@ The following table summarizes which modules support disk reading and in-memory 
 +----------------+---------------------+-----------------------+----------------------------------------------------------+
 | trackone       | Yes (MAD-X)         | No                    | Reads MAD-X trackone files.                              |
 +----------------+---------------------+-----------------------+----------------------------------------------------------+
+| superkekb      | Yes (ASCII)         | No                    | Reads SuperKEKB ASCII files.                            |
++----------------+---------------------+-----------------------+----------------------------------------------------------+
 
 - Only ``madng`` and ``xtrack`` support in-memory conversion.
 - Most modules are for disk reading only.
