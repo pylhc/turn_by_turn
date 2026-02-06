@@ -21,6 +21,17 @@ from turn_by_turn.structures import TbtData, TransverseData
 
 LOGGER = logging.getLogger(__name__)
 
+# Regex patterns to extract the date and the position values from the file
+DATE_PATTERN = re.compile(
+    r"([01]\d\/[0-3]\d\/\d{4}[0-2]\d:[0-5]\d:[0-5]\d)"
+)
+# The position values follow the following pattern
+# The last field is not known and could be the standard deviation (STD_ERR)
+# ("BPM_NAME"->{X_VALUES}, {Y_VALUES}, {STD_ERR?})
+VALUES_PATTERN = re.compile(
+    r'\("(?P<monitors>[A-Z0-9]+)"->{{(?P<x>[^}]+)},{(?P<y>[^}]+)},{(?P<std>[^}]+)}}\)'
+)
+
 
 def read_tbt(file_path: str | Path) -> TbtData:
     """
@@ -37,25 +48,15 @@ def read_tbt(file_path: str | Path) -> TbtData:
     LOGGER.debug(f"Reading SuperKEKB file at path: '{file_path.absolute()}'")
     content = file_path.read_text().replace("\n", "").replace("\\", "").replace(" ", "")
 
-    # Get the date, stored in the header, a simple regex is enough
-    # Same for the values, with the follow pattern:
-    # ("BPM_NAME"->{X_VALUES}, {Y_VALUES}, {STD_ERR?})
-    DATE_PATTERN = re.compile(
-        r"([01]\d\/[0-3]\d\/\d{4}[0-2]\d:[0-5]\d:[0-5]\d)"
-    )  # date in header
-    VALUES_PATTERN = re.compile(
-        r'\("(?P<monitors>[A-Z0-9]+)"->{{(?P<x>[^}]+)},{(?P<y>[^}]+)},{(?P<std>[^}]+)}}\)'
-    )
-
+    # Get the date stored in the header, via a simple regex
     try:
         date = datetime.strptime(
             re.findall(DATE_PATTERN, content)[0], "%m/%d/%Y%H:%M:%S"
         )
-    except:
+    except IndexError:
         date = None
 
-    # Craft a regex to extract BPM data
-    # The data is organized as follows:
+    # Now get the values, looking for each monitor via a regex
     x_vals = []
     y_vals = []
     monitors = []
