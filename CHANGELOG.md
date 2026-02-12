@@ -2,6 +2,11 @@
 
 All notable changes to **turn_by_turn** will be documented in this file.
 
+#### v1.2.0 – 2026-01-28
+
+This minor release adds the reading support of the SuperKEKB file format for the HER and LER rings,
+through the `superkekb` module.
+
 #### v1.1.0 – 2025-10-29
 
 This release removes the experimental `esrf` module from the package, as it was both unused and out-of-date to the ESRF data format.

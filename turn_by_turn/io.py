@@ -62,6 +62,8 @@ The following table summarizes which modules support disk reading and in-memory 
 +----------------+---------------------+-----------------------+----------------------------------------------------------+
 | trackone       | Yes (MAD-X)         | No                    | Reads MAD-X trackone files.                              |
 +----------------+---------------------+-----------------------+----------------------------------------------------------+
+| superkekb      | Yes                 | No                    | Reads SuperKEKB files.                                   |
++----------------+---------------------+-----------------------+----------------------------------------------------------+
 
 - Only ``madng`` and ``xtrack`` support in-memory conversion.
 - Most modules are for disk reading only.
@@ -86,6 +88,7 @@ from turn_by_turn import (
     ptc,
     sps,
     trackone,
+    superkekb,
     xtrack_line,
 )
 from turn_by_turn.ascii import write_ascii
@@ -111,6 +114,7 @@ TBT_MODULES = {
     "trackone": trackone,
     "ascii": ascii,
     "madng": madng,
+    "superkekb": superkekb,
     "xtrack": xtrack_line,
 }
 
