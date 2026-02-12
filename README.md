@@ -9,17 +9,18 @@
 | turn\_by\_turn/constants.py    |       13 |        0 |    100% |           |
 | turn\_by\_turn/doros.py        |       91 |        6 |     93% |109-110, 115-116, 175-176 |
 | turn\_by\_turn/errors.py       |        9 |        0 |    100% |           |
-| turn\_by\_turn/io.py           |       46 |        3 |     93% |171, 209-210 |
+| turn\_by\_turn/io.py           |       46 |        3 |     93% |175, 213-214 |
 | turn\_by\_turn/iota.py         |       80 |        2 |     98% |     52-53 |
 | turn\_by\_turn/lhc.py          |       46 |        0 |    100% |           |
 | turn\_by\_turn/madng.py        |       86 |        7 |     92% |70-71, 120-121, 127, 191-192 |
 | turn\_by\_turn/ptc.py          |      138 |        7 |     95% |141, 160-161, 193-194, 225, 230 |
 | turn\_by\_turn/sps.py          |       64 |        3 |     95% |59, 125-126 |
 | turn\_by\_turn/structures.py   |       45 |        3 |     93% |46, 87, 124 |
+| turn\_by\_turn/superkekb.py    |       36 |        1 |     97% |       109 |
 | turn\_by\_turn/trackone.py     |       58 |        4 |     93% | 82, 86-88 |
 | turn\_by\_turn/utils.py        |       50 |        0 |    100% |           |
 | turn\_by\_turn/xtrack\_line.py |       39 |        7 |     82% |82-83, 88, 98, 113, 121, 165 |
-|                      **TOTAL** |  **873** |   **53** | **94%** |           |
+| **TOTAL**                      |  **909** |   **54** | **94%** |           |
 
 
 ## Setup coverage badge
