@@ -1,0 +1,240 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>turn_by_turn.superkekb &mdash; turn_by_turn 1.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=988d0652" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=6efca38a"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/omc_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#io">IO</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#reading-data">Reading Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#writing-data">Writing Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#supported-modules-and-limitations">Supported Modules and Limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#api">API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#structures">Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#utils">Utils</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Readers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html">ASCII</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#doros">DOROS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#iota">Iota</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#lhc">LHC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#sps">SPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#ptc">PTC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#trackone">Trackone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#superkekb">SuperKEKB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#mad-ng">MAD-NG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#xtrack-line">XTRACK_LINE</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">turn_by_turn</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">turn_by_turn.superkekb</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for turn_by_turn.superkekb</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">SuperKEKB</span>
+<span class="sd">---------</span>
+
+<span class="sd">Data handling for turn-by-turn measurement files from ``SuperKEKB`` taken by the application in</span>
+<span class="sd">the control room. The file format is similar to Mathematica or some json and be parsed easily</span>
+<span class="sd">with regex. The extension is usually `.data`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.structures</span><span class="w"> </span><span class="kn">import</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">TransverseData</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Regex patterns to extract the date and the position values from the file</span>
+<span class="n">DATE_PATTERN</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="sa">r</span><span class="s2">&quot;([01]\d\/[0-3]\d\/\d</span><span class="si">{4}</span><span class="s2">[0-2]\d:[0-5]\d:[0-5]\d)&quot;</span>
+<span class="p">)</span>
+<span class="c1"># The position values follow the following pattern</span>
+<span class="c1"># The last field is not known and could be the standard deviation (STD_ERR)</span>
+<span class="c1"># (&quot;BPM_NAME&quot;-&gt;{X_VALUES}, {Y_VALUES}, {STD_ERR?})</span>
+<span class="n">VALUES_PATTERN</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="sa">r</span><span class="s1">&#39;\(&quot;(?P&lt;monitors&gt;[A-Z0-9]+)&quot;-&gt;{{(?P&lt;x&gt;[^}]+)},{(?P&lt;y&gt;[^}]+)},{(?P&lt;std&gt;[^}]+)}}\)&#39;</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="read_tbt">
+<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.superkekb.read_tbt">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads turn-by-turn data from the ``SuperKEKB``&#39;s measurement file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        file_path (Union[str, Path]): path to the turn-by-turn measurement file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A ``TbTData`` object with the loaded data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reading SuperKEKB file at path: &#39;</span><span class="si">{</span><span class="n">file_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Get the date stored in the header, via a simple regex</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+            <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">DATE_PATTERN</span><span class="p">,</span> <span class="n">content</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;%m/</span><span class="si">%d</span><span class="s2">/%Y%H:%M:%S&quot;</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Now get the values, looking for each monitor via a regex</span>
+    <span class="n">x_vals</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">y_vals</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">monitors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">VALUES_PATTERN</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
+        <span class="n">monitors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;monitors&quot;</span><span class="p">))</span>
+        <span class="n">x_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)]))</span>
+        <span class="n">y_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)]))</span>
+    <span class="n">x_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_vals</span><span class="p">)</span>
+    <span class="n">y_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_vals</span><span class="p">)</span>
+
+    <span class="c1"># Create the TbtData object</span>
+    <span class="n">meta_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="n">file_path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="s2">&quot;source_datatype&quot;</span><span class="p">:</span> <span class="s2">&quot;superkekb&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">meta_dict</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">date</span>
+
+    <span class="n">tbt_data</span> <span class="o">=</span> <span class="n">TbtData</span><span class="p">(</span>
+        <span class="n">nturns</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">x_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="n">matrices</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">TransverseData</span><span class="p">(</span>
+                <span class="n">X</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                    <span class="n">index</span><span class="o">=</span><span class="n">monitors</span><span class="p">,</span>
+                    <span class="n">data</span><span class="o">=</span><span class="n">x_vals</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">Y</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                    <span class="n">index</span><span class="o">=</span><span class="n">monitors</span><span class="p">,</span>
+                    <span class="n">data</span><span class="o">=</span><span class="n">y_vals</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">],</span>
+        <span class="n">meta</span><span class="o">=</span><span class="n">meta_dict</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Loaded SuperKEKB TbT file with </span><span class="si">{</span><span class="n">tbt_data</span><span class="o">.</span><span class="n">nturns</span><span class="si">}</span><span class="s2"> turns and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">monitors</span><span class="p">)</span><span class="si">}</span><span class="s2"> monitors.&quot;</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">tbt_data</span></div>
+
+
+
+<div class="viewcode-block" id="write_tbt">
+<a class="viewcode-back" href="../../readers/index.html#turn_by_turn.superkekb.write_tbt">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_tbt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">tbt_data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Writes turn-by-turn data to a ``SuperKEKB``&#39;s measurement file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        file_path (Union[str, Path]): path to the output turn-by-turn measurement file.</span>
+<span class="sd">        tbt_data (TbtData): turn-by-turn data to write.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Writing SuperKEKB files is not implemented yet.&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -6,17 +6,17 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Constants &mdash; turn_by_turn 1.1.0 documentation</title>
+  <title>Constants &mdash; turn_by_turn 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=988d0652" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=fc837d61"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=6efca38a"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -66,6 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../readers/index.html#sps">SPS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../readers/index.html#ptc">PTC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../readers/index.html#trackone">Trackone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readers/index.html#superkekb">SuperKEKB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../readers/index.html#mad-ng">MAD-NG</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../readers/index.html#xtrack-line">XTRACK_LINE</a></li>
 </ul>
@@ -101,7 +102,7 @@
 </section>
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.constants.</span></span><span class="sig-name descname"><span class="pre">MetaDict</span></span><a class="reference internal" href="../_modules/turn_by_turn/constants.html#MetaDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">turn_by_turn.constants.</span></span><span class="sig-name descname"><span class="pre">MetaDict</span></span><a class="reference internal" href="../_modules/turn_by_turn/constants.html#MetaDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Metadata dictionary, to type-hint known entries.
 None of the entries are required (<code class="docutils literal notranslate"><span class="pre">total=False</span></code>).</p>
 <dl class="py attribute">
@@ -249,6 +250,11 @@ Should the <code class="docutils literal notranslate"><span class="pre">noise</s
 <td><p>No</p></td>
 <td><p>Reads MAD-X trackone files.</p></td>
 </tr>
+<tr class="row-odd"><td><p>superkekb</p></td>
+<td><p>Yes</p></td>
+<td><p>No</p></td>
+<td><p>Reads SuperKEKB files.</p></td>
+</tr>
 </tbody>
 </table>
 <ul class="simple">
@@ -335,7 +341,7 @@ defaults to <code class="docutils literal notranslate"><span class="pre">lhc</sp
 </section>
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.structures.</span></span><span class="sig-name descname"><span class="pre">TbtData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">matrices:</span> <span class="pre">Sequence[DataType],</span> <span class="pre">nturns:</span> <span class="pre">int,</span> <span class="pre">bunch_ids:</span> <span class="pre">list[int]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">meta:</span> <span class="pre">MetaDict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TbtData"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">turn_by_turn.structures.</span></span><span class="sig-name descname"><span class="pre">TbtData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">matrices:</span> <span class="pre">Sequence[DataType],</span> <span class="pre">nturns:</span> <span class="pre">int,</span> <span class="pre">bunch_ids:</span> <span class="pre">list[int]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">meta:</span> <span class="pre">MetaDict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TbtData"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Object holding a representation of a Turn-by-Turn data measurement. The date of the measurement,
 the transverse data, number of turns and bunches as well as the bunch IDs are encapsulated in this object.</p>
 <dl class="py attribute">
@@ -402,7 +408,7 @@ Automatically set (i.e. cannot be set in the initialization of this object).</p>
 
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.structures.</span></span><span class="sig-name descname"><span class="pre">TrackingData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PX</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PY</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TrackingData"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">turn_by_turn.structures.</span></span><span class="sig-name descname"><span class="pre">TrackingData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PX</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PY</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TrackingData"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Object holding multidimensional turn-by-turn simulation data in the form of pandas DataFrames.</p>
 <p>The DataFrames should be N_observation-points x M_turns matrices, and usually contain
 the BPM/observation-point names as index, while the columns are simply numbered starting from <code class="docutils literal notranslate"><span class="pre">0</span></code>.
@@ -497,7 +503,7 @@ All DataFrames should have the same N x M size.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fieldnames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TrackingData.fieldnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">fieldnames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TrackingData.fieldnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Return a list of the fields of this dataclass.</p>
 </dd></dl>
 
@@ -505,7 +511,7 @@ All DataFrames should have the same N x M size.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">turn_by_turn.structures.</span></span><span class="sig-name descname"><span class="pre">TransverseData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TransverseData"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">turn_by_turn.structures.</span></span><span class="sig-name descname"><span class="pre">TransverseData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TransverseData"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Object holding measured turn-by-turn data for both transverse planes in the form of pandas DataFrames.</p>
 <p>The DataFrames should be N_(observation-points) x M_(turns) matrices, and usually contain
 the BPM/observation-point names as index, while the columns are simply numbered starting from <code class="docutils literal notranslate"><span class="pre">0</span></code>.
@@ -534,7 +540,7 @@ All DataFrames should have the same N x M size.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fieldnames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TransverseData.fieldnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">fieldnames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/turn_by_turn/structures.html#TransverseData.fieldnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Return a list of the fields of this dataclass.</p>
 </dd></dl>
 
@@ -657,7 +663,7 @@ bunches/particles at all used BPMs.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">turn_by_turn.utils.</span></span><span class="sig-name descname"><span class="pre">numpy_to_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">names:</span> <span class="pre">~numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix:</span> <span class="pre">~numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype:</span> <span class="pre">~turn_by_turn.structures.TransverseData</span> <span class="pre">|</span> <span class="pre">~turn_by_turn.structures.TrackingData</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'turn_by_turn.structures.TransverseData'&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/utils.html#numpy_to_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.utils.</span></span><span class="sig-name descname"><span class="pre">numpy_to_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TransverseData</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">TrackingData</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;class</span> <span class="pre">'turn_by_turn.structures.TransverseData'&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/utils.html#numpy_to_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Converts turn by turn matrices and names into a <code class="docutils literal notranslate"><span class="pre">TbTData</span></code> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

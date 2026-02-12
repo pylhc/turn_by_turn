@@ -12,6 +12,8 @@
 
 .. automodule:: turn_by_turn.trackone
 
+.. automodule:: turn_by_turn.superkekb
+
 .. automodule:: turn_by_turn.madng
 
 .. automodule:: turn_by_turn.xtrack_line
