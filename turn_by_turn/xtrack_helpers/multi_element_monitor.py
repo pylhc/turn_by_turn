@@ -1,6 +1,6 @@
 """
-XTrack Multi-Element Monitor Conversion
----------------------------------------
+XTrack TbT Conversion from Multi-Element Monitor
+------------------------------------------------
 
 Convert Xsuite ``MultiElementMonitor`` output into ``TbtData``.
 Reference: https://xsuite.readthedocs.io/en/latest/track.html#multi-element-monitor

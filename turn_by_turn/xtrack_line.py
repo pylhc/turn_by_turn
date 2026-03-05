@@ -1,6 +1,6 @@
 """
-XTrack Line Conversion
-----------------------
+XTrack TbT Conversion from Lines
+--------------------------------
 
 Helpers to convert data produced by the ``xtrack`` tracking framework into the
 ``turn_by_turn`` ``TbtData`` format.
@@ -46,18 +46,18 @@ def convert_to_tbt(xline: Line) -> TbtData:
         ``xtrack.ParticlesMonitor`` elements.
 
     Args:
-            xline (Line): An ``xtrack.Line`` containing monitor data.
+        xline (Line): An ``xtrack.Line`` containing monitor data.
 
     Returns:
-            TbtData: The extracted turn-by-turn data. The ``meta`` mapping contains a
-                    ``source_datatype`` key describing the origin of the data.
+        TbtData: The extracted turn-by-turn data. The ``meta`` mapping contains a `
+        `source_datatype`` key describing the origin of the data.
     """
     try:
         import xtrack as xt
     except ImportError as e:
         raise ImportError(
             "The 'xtrack' package is required to convert xtrack Line objects. "
-            "Install it with: pip install 'turn_by_turn[xtrack]'"
+            "Install it with: python -m pip install 'turn_by_turn[xtrack]'"
         ) from e
 
     if not isinstance(xline, xt.Line):

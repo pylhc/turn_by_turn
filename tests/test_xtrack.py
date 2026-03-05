@@ -5,7 +5,7 @@ import pytest
 import xtrack as xt
 
 from tests.test_lhc_and_general import compare_tbt
-from turn_by_turn import xtrack_helpers, xtrack_line
+from turn_by_turn import xtrack_helpers
 from turn_by_turn.io import convert_to_tbt
 from turn_by_turn.structures import TbtData
 
@@ -19,7 +19,7 @@ def test_convert_xsuite(example_line: xt.Line, example_fake_tbt: TbtData):
     example_line.track(particles, num_turns=3)
 
     # Convert to TbtData using xtrack
-    tbt_data = xtrack_line.particle_monitors.convert_to_tbt(example_line)
+    tbt_data = xtrack_helpers.particle_monitors.convert_to_tbt(example_line)
     compare_tbt(example_fake_tbt, tbt_data, no_binary=True)
     assert tbt_data.meta["source_datatype"] == "xtrack_particle_monitors"
 
@@ -38,7 +38,7 @@ def test_convert_xsuite_multi_element_monitor(example_line: xt.Line, example_fak
     monitor_names = ["BPM1", "BPM3", "BPM2"]
     example_line.track(particles, num_turns=3, multi_element_monitor_at=monitor_names)
 
-    tbt_data = xtrack_line.multi_element_monitor.convert_to_tbt(example_line)
+    tbt_data = xtrack_helpers.multi_element_monitor.convert_to_tbt(example_line)
     compare_tbt(example_fake_tbt, tbt_data, no_binary=True)
     assert tbt_data.meta["source_datatype"] == "xtrack_multi_element_monitor"
 

@@ -70,7 +70,7 @@ def read_tbt(file_path: str | Path) -> TbtData:
     except ImportError as e:
         raise ImportError(
             "The 'tfs' package is required to read MAD-NG TFS files. "
-            "Install it with: pip install 'turn_by_turn[madng]'"
+            "Install it with: python -m pip install 'turn_by_turn[madng]'"
         ) from e
 
     LOGGER.debug("Starting to read TBT data from dataframe")
@@ -190,7 +190,8 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
         import tfs
     except ImportError as e:
         raise ImportError(
-            "The 'tfs' package is required to write MAD-NG TFS files. Install it with: pip install 'turn_by_turn[madng]'"
+            "The 'tfs' package is required to write MAD-NG TFS files. "
+            "Install it with: python -m pip install 'turn_by_turn[madng]'"
         ) from e
 
     planes = [plane.lower() for plane in TransverseData.fieldnames()]  # x, y

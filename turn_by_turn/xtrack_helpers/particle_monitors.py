@@ -1,6 +1,6 @@
 """
-XTrack Particle Monitors Conversion
------------------------------------
+XTrack TbT Conversion from Particle Monitors
+--------------------------------------------
 
 Convert tracking results produced by one or more ``xtrack.ParticlesMonitor``
 elements into the standardised ``TbtData`` format used by ``turn_by_turn``.
