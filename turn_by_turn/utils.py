@@ -29,7 +29,7 @@ def generate_average_tbtdata(tbtdata: TbtData) -> TbtData:
     bunches/particles at all used BPMs.
 
     Args:
-        tbtdata (TbtData): entry TbtData object from measurements.
+        tbtdata (TbtData): input TbtData object from measurements.
 
     Returns:
         A new TbtData object with the averaged matrices.
@@ -60,7 +60,7 @@ def get_averaged_data(
     Average data from a given plane from the matrices of a ``TbtData``.
 
     Args:
-        bpm_names (Sequence[str]):
+        bpm_names (Sequence[str]): Names of the BPMs to average data for.
         matrices (Sequence[TransverseData]): matrices from a ``TbtData`` object.
         plane (str): name of the given plane to average in.
         turns (int): number of turns in the provided data.
@@ -86,7 +86,8 @@ def matrices_to_array(tbt_data: TbtData) -> np.ndarray:
         tbt_data (TbtData): ``TbtData`` object to convert the data from.
 
     Returns:
-        A numpy array with the matrices data.
+        A numpy array with shape (2, n_bpms, nbunches, nturns) containing the matrices data,
+        where the first dimension corresponds to planes (X=0, Y=1).
     """
     LOGGER.debug("Getting number of BPMs from the measurement data.")
     n_bpms = tbt_data.matrices[0].X.index.size
@@ -107,16 +108,16 @@ def add_noise(
 ) -> np.ndarray:
     """
     Returns the given data with added noise. Noise is generated as a standard normal distribution (mean=0,
-    standard_deviation=1) with the size of the input data, and scaled by the a factor before being added to
+    standard deviation=1) with the size of the input data, and scaled by a factor before being added to
     the provided data. Said factor can either be provided, or calculated from the input data's own standard
     deviation.
 
     Args:
         data (np.ndarray): your input data.
-        noise (float): the scaling factor applied to the generated noise.
-        sigma (float): if provided, then that number times the standard deviation of the input data will
+        noise (float | None): the scaling factor applied to the generated noise.
+        sigma (float | None): if provided, then that number times the standard deviation of the input data will
             be used as scaling factor for the generated noise.
-        seed(int): a given seed to initialise the RNG.
+        seed(int | np.random.Generator | None): Seed for the random number generator. Can be an integer or an np.random.Generator instance.
 
     Returns:
         A new numpy array with added noise to the provided data.
@@ -144,7 +145,7 @@ def add_noise_to_tbt(
         noise (float | None): the scaling factor applied to the generated noise.
         sigma (float | None): if provided, then that number times the standard deviation of the input data will
             be used as scaling factor for the generated noise.
-        seed(int | np.random.Generator | None): a given seed to initialise the RNG.
+        seed(int | np.random.Generator | None): Seed for the random number generator. Can be an integer or an np.random.Generator instance.
 
     Returns:
         A copy of the TbtData with noised data on all matrices.
@@ -206,7 +207,7 @@ def numpy_to_tbt(
 def all_elements_equal(iterable: Iterable) -> bool:
     """
     Check if all elements in an iterable are equal.
-    WARNING: Does not necissarily work with floating point numbers.
+    WARNING: Does not necessarily work with floating point numbers.
 
     Args:
         iterable (Iterable): an iterable to check.
