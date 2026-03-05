@@ -8,11 +8,11 @@ elements into the standardised ``TbtData`` format used by ``turn_by_turn``.
 Usage
 =====
 
-    from turn_by_turn.xtrack_helpers import particle_monitors
+    from turn_by_turn.xtrack import convert_to_tbt
 
     # after building particles and tracking a line containing
     # xt.ParticlesMonitor elements, convert to TbtData:
-    tbt = particle_monitors.convert_to_tbt(line)
+    tbt = convert_to_tbt(line)
 
 Prerequisites for using ``convert_to_tbt``:
 
@@ -51,7 +51,6 @@ extract the data from each particle monitor into a ``TbtData`` object.
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
@@ -59,11 +58,8 @@ import xtrack as xt
 
 from turn_by_turn.structures import TbtData, TransverseData
 
-if TYPE_CHECKING:
-    from pathlib import Path
-
-
 LOGGER = logging.getLogger(__name__)
+
 
 def is_line_suitable_for_conversion(xline: xt.Line) -> bool:
     """
@@ -78,6 +74,7 @@ def is_line_suitable_for_conversion(xline: xt.Line) -> bool:
         bool: True if the Line is suitable for conversion, False otherwise.
     """
     return any(isinstance(elem, xt.ParticlesMonitor) for elem in xline.elements)
+
 
 def convert_to_tbt(xline: xt.Line) -> TbtData:
     """
@@ -112,10 +109,11 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
 
     # First check that no particles were lost during tracking. There will be trailing
     # zeros in the data if particles were lost. This might be difficult to detect.
-    assert all(mon.data.particle_id[-1] == mon.data.particle_id.max() for mon in monitors), (
-        "Some particles were lost during tracking, which is not supported by this function. "
-        "Ensure that all particles are tracked through the entire line without loss."
-    )
+    if not all(mon.data.particle_id[-1] == mon.data.particle_id.max() for mon in monitors):
+        raise ValueError(
+            "Some particles were lost during tracking, which is not supported by this function. "
+            "Ensure that all particles are tracked through the entire line without loss."
+        )
 
     # Check that all monitors have the same number of turns
     nturns_set = {mon.data.at_turn.max() + 1 for mon in monitors}
@@ -162,14 +160,3 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
         nturns=nturns,
         meta={"source_datatype": "xtrack_particle_monitors", "date": pd.Timestamp.now()},
     )
-
-
-# Added this function to match the interface, but it is not implemented.
-def read_tbt(path: str | Path) -> None:
-    """
-    Not implemented.
-
-    Reading TBT data directly from files is not supported for xtrack.
-    Use ``convert_to_tbt`` to convert an in-memory ``xtrack.Line`` instead.
-    """
-    raise NotImplementedError("Reading TBT data from xtrack Line files is not implemented.")

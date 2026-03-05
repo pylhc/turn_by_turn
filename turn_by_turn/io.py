@@ -91,7 +91,7 @@ from turn_by_turn import (
     sps,
     superkekb,
     trackone,
-    xtrack_line,
+    xtrack,
 )
 from turn_by_turn.ascii import write_ascii
 from turn_by_turn.errors import DataTypeError
@@ -100,8 +100,8 @@ from turn_by_turn.utils import add_noise_to_tbt
 LOGGER = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
+    import xtrack as xt
     from pandas import DataFrame
-    from xtrack import Line
 
     from turn_by_turn.structures import TbtData
 
@@ -117,7 +117,7 @@ TBT_MODULES = {
     "ascii": tbt_ascii,
     "madng": madng,
     "superkekb": superkekb,
-    "xtrack": xtrack_line,  # Dispatches to particle_monitors or multi_element_monitor based on the Line's monitor data
+    "xtrack": xtrack,  # Dispatches to particle_monitors or multi_element_monitor based on the Line's monitor data
 }
 
 # Modules supporting in-memory conversion to TbtData (not file readers)
@@ -164,7 +164,7 @@ def read_tbt(file_path: str | Path, datatype: str = "lhc") -> TbtData:
 
 
 # Note: I don't specify tfs.TfsDataFrame as this inherits from pandas.DataFrame
-def convert_to_tbt(file_data: DataFrame | Line, datatype: str = "xtrack") -> TbtData:
+def convert_to_tbt(file_data: DataFrame | xt.Line, datatype: str = "xtrack") -> TbtData:
     """
     Convert in-memory simulation data to a ``TbtData`` object.
 

@@ -5,36 +5,48 @@ XTrack TbT Conversion from Lines
 Helpers to convert data produced by the ``xtrack`` tracking framework into the
 ``turn_by_turn`` ``TbtData`` format.
 
-This module dispatches conversion to the implementations in
-``turn_by_turn.xtrack_helpers``:
+This module converts monitor data from ``xtrack`` into the corresponding
+``TbtData`` representation. It currently supports data produced by:
 
-- ``multi_element_monitor``: converts data produced by xtrack's
-    ``MultiElementMonitor`` (recorded on ``line.record_multi_element_last_track``).
-- ``particle_monitors``: converts data produced by one or more
-    ``ParticlesMonitor`` elements placed in the line.
+- ``xtrack.MultiElementMonitor`` recorded via ``xtrack.Line.record_multi_element_last_track``.
+- One or more ``xtrack.ParticlesMonitor`` elements placed in the line.
 
-The dispatch order prefers the multi-element monitor converter when
-``record_multi_element_last_track`` is present; otherwise it falls back to
-the particle monitors converter.
+The appropriate converter is selected based on which monitor data are present
+on the provided ``xtrack.Line``. If multi-element monitor data are available, they
+are preferred; otherwise particle monitor data are used.
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from turn_by_turn.xtrack_helpers import multi_element_monitor, particle_monitors
+from . import _multi_element_monitor as multi_element_monitor
+from . import _particle_monitors as particle_monitors
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from xtrack import Line
 
     from turn_by_turn.structures import TbtData
+
+
+# Added this function to match the interface, but it is not implemented.
+def read_tbt(path: str | Path) -> None:
+    """
+    Not implemented.
+
+    Reading TBT data directly from files is not supported for xtrack.
+    Use ``convert_to_tbt`` to convert an in-memory ``xtrack.Line`` instead.
+    """
+    raise NotImplementedError("Reading TBT data from xtrack Line files is not implemented.")
 
 
 def convert_to_tbt(xline: Line) -> TbtData:
     """
     Convert tracking results from an ``xtrack.Line`` into a ``TbtData`` object.
 
-    Dispatches to one of the helper converters in ``turn_by_turn.xtrack_helpers``
+    Dispatches to one of the specific converters in ``turn_by_turn.xtrack``
     depending on which monitor data is available in the provided ``Line``.
 
     Supported source datatypes and resulting ``TbtData.meta['source_datatype']``
@@ -49,8 +61,8 @@ def convert_to_tbt(xline: Line) -> TbtData:
         xline (Line): An ``xtrack.Line`` containing monitor data.
 
     Returns:
-        TbtData: The extracted turn-by-turn data. The ``meta`` mapping contains a `
-        `source_datatype`` key describing the origin of the data.
+        TbtData: The extracted turn-by-turn data. The ``meta`` mapping contains a
+        ``source_datatype`` key describing the origin of the data.
     """
     try:
         import xtrack as xt
@@ -70,6 +82,9 @@ def convert_to_tbt(xline: Line) -> TbtData:
         return particle_monitors.convert_to_tbt(xline)
 
     raise ValueError(
-        "No suitable monitor data found in line. "
-        "Ensure you tracked with either particle monitors or multi-element monitors, and that tracking completed successfully."
+        "No suitable monitor data found on the provided xtrack.Line. "
+        "The line must contain either recorded multi-element monitor data "
+        "(from xtrack.MultiElementMonitor via Line.record_multi_element_last_track) "
+        "or one or more xtrack.ParticlesMonitor elements with completed tracking data "
+        "that are still present and accessible."
     )

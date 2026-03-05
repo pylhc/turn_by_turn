@@ -20,9 +20,9 @@ Usage
 
 2. Convert to ``turn_by_turn`` data::
 
-    from turn_by_turn.xtrack_helpers import multi_element_monitor
+    from turn_by_turn.xtrack import convert_to_tbt
 
-    tbt = multi_element_monitor.convert_to_tbt(line)
+    tbt = convert_to_tbt(line)
 
 Notes
 =====
@@ -57,7 +57,15 @@ def is_line_suitable_for_conversion(xline: xt.Line) -> bool:
     Returns:
         bool: True if the Line is suitable for conversion, False otherwise.
     """
-    return hasattr(xline, "record_multi_element_last_track") and xline.record_multi_element_last_track is not None
+    try:
+        return (
+            hasattr(xline, "record_multi_element_last_track")
+            and xline.record_multi_element_last_track is not None
+        )
+    except RuntimeError:
+        # If the line doesn't have a suitable tracker, xtrack raises a RuntimeError.
+        # In that case, the line is not suitable for conversion.
+        return False
 
 
 def convert_to_tbt(xline: xt.Line) -> TbtData:
