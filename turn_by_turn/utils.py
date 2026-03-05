@@ -100,7 +100,10 @@ def matrices_to_array(tbt_data: TbtData) -> np.ndarray:
 
 
 def add_noise(
-    data: np.ndarray, noise: float | None = None, sigma: float | None = None, seed: int | None = None
+    data: np.ndarray,
+    noise: float | None = None,
+    sigma: float | None = None,
+    seed: int | np.random.Generator | None = None,
 ) -> np.ndarray:
     """
     Returns the given data with added noise. Noise is generated as a standard normal distribution (mean=0,
@@ -126,7 +129,10 @@ def add_noise(
 
 
 def add_noise_to_tbt(
-    data: TbtData, noise: float = None, sigma: float = None, seed: int = None
+    data: TbtData,
+    noise: float | None = None,
+    sigma: float | None = None,
+    seed: int | np.random.Generator | None = None,
 ) -> TbtData:
     """
     Returns a new copy of the given TbT data with added noise.
@@ -135,10 +141,10 @@ def add_noise_to_tbt(
 
     Args:
         data (TbtData): your input TbT-data.
-        noise (float): the scaling factor applied to the generated noise.
-        sigma (float): if provided, then that number times the standard deviation of the input data will
+        noise (float | None): the scaling factor applied to the generated noise.
+        sigma (float | None): if provided, then that number times the standard deviation of the input data will
             be used as scaling factor for the generated noise.
-        seed(int): a given seed to initialise the RNG.
+        seed(int | np.random.Generator | None): a given seed to initialise the RNG.
 
     Returns:
         A copy of the TbtData with noised data on all matrices.

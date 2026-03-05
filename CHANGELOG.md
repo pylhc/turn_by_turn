@@ -2,6 +2,11 @@
 
 All notable changes to **turn_by_turn** will be documented in this file.
 
+### v1.3.0 – 2026-03-XX
+
+Release `1.3.0` adds functionality for the loading of tracking simulation data from an `xtrack.Line` with the newly implemented `MultiElementMonitor`.
+
+
 #### v1.2.0 – 2026-01-28
 
 This minor release adds the reading support of the SuperKEKB file format for the HER and LER rings,

@@ -6,7 +6,7 @@ This module provides functions to read and write turn-by-turn measurement data
 produced by the ``MAD-NG`` code. MAD-NG stores its tracking data in the **TFS**
 (Table File System) file format.
 
-Data is loaded into the standardized ``TbtData`` structure used by ``turn_by_turn``,
+Data is loaded into the standardised ``TbtData`` structure used by ``turn_by_turn``,
 allowing easy post-processing and conversion between formats.
 
 Dependencies:
@@ -96,7 +96,7 @@ def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
         TbtData: The extracted and structured turn-by-turn data.
 
     Raises:
-        TypeError: If the input is not a recognized DataFrame type.
+        TypeError: If the input is not a recognised DataFrame type.
         ValueError: If the data structure is inconsistent (e.g., lost particles).
     """
 

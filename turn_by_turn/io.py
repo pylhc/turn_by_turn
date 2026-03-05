@@ -39,33 +39,35 @@ While data can be loaded from the formats of different machines/codes (each thro
 Supported Modules and Limitations
 =================================
 
-The following table summarizes which modules support disk reading and in-memory conversion, and any important limitations:
 
-+----------------+---------------------+-----------------------+----------------------------------------------------------+
-| Module         | Disk Reading        | In-Memory Conversion  | Notes / Limitations                                      |
-+================+=====================+=======================+==========================================================+
-| lhc            | Yes (SDDS, ASCII)   | No                    | Reads LHC SDDS and legacy ASCII files.                   |
-+----------------+---------------------+-----------------------+----------------------------------------------------------+
-| sps            | Yes (SDDS, ASCII)   | No                    | Reads SPS SDDS and legacy ASCII files.                   |
-+----------------+---------------------+-----------------------+----------------------------------------------------------+
-| doros          | Yes (HDF5)          | No                    | Reads DOROS HDF5 files.                                  |
-+----------------+---------------------+-----------------------+----------------------------------------------------------+
-| madng          | Yes (TFS)           | Yes                   | In-memory: only via pandas/tfs DataFrame.                |
-+----------------+---------------------+-----------------------+----------------------------------------------------------+
-| xtrack         | No                  | Yes                   | Only in-memory via xtrack.Line.                          |
-+----------------+---------------------+-----------------------+----------------------------------------------------------+
-| ptc            | Yes (trackone)      | No                    | Reads MAD-X PTC trackone files.                          |
-+----------------+---------------------+-----------------------+----------------------------------------------------------+
-| iota           | Yes (HDF5)          | No                    | Reads IOTA HDF5 files.                                   |
-+----------------+---------------------+-----------------------+----------------------------------------------------------+
-| ascii          | Yes (legacy ASCII)  | No                    | For legacy ASCII files only.                             |
-+----------------+---------------------+-----------------------+----------------------------------------------------------+
-| trackone       | Yes (MAD-X)         | No                    | Reads MAD-X trackone files.                              |
-+----------------+---------------------+-----------------------+----------------------------------------------------------+
-| superkekb      | Yes                 | No                    | Reads SuperKEKB files.                                   |
-+----------------+---------------------+-----------------------+----------------------------------------------------------+
+The following table summarizes which modules support disk reading and in-memory conversion, and any important limitations::
 
-- Only ``madng`` and ``xtrack`` support in-memory conversion.
+    +-------------+---------------------+-----------------------+---------------------------------------------------------------+
+    | Module      | Disk Reading        | In-Memory Conversion  | Notes / Limitations                                           |
+    +=============+=====================+=======================+===============================================================+
+    | lhc         | Yes (SDDS, ASCII)   | No                    | Reads LHC SDDS and legacy ASCII files.                        |
+    +-------------+---------------------+-----------------------+---------------------------------------------------------------+
+    | sps         | Yes (SDDS, ASCII)   | No                    | Reads SPS SDDS and legacy ASCII files.                        |
+    +-------------+---------------------+-----------------------+---------------------------------------------------------------+
+    | doros       | Yes (HDF5)          | No                    | Reads DOROS HDF5 files.                                       |
+    +-------------+---------------------+-----------------------+---------------------------------------------------------------+
+    | madng       | Yes (TFS)           | Yes                   | In-memory: only via pandas/tfs DataFrame.                     |
+    +-------------+---------------------+-----------------------+---------------------------------------------------------------+
+    | xtrack      | No                  | Yes                   | In-memory via xtrack.Line + ParticlesMonitor or               |
+    |             |                     |                       | MultiElementMonitor.                                          |
+    +-------------+---------------------+-----------------------+---------------------------------------------------------------+
+    | ptc         | Yes (trackone)      | No                    | Reads MAD-X PTC trackone files.                               |
+    +-------------+---------------------+-----------------------+---------------------------------------------------------------+
+    | iota        | Yes (HDF5)          | No                    | Reads IOTA HDF5 files.                                        |
+    +-------------+---------------------+-----------------------+---------------------------------------------------------------+
+    | ascii       | Yes (legacy ASCII)  | No                    | For legacy ASCII files only.                                  |
+    +-------------+---------------------+-----------------------+---------------------------------------------------------------+
+    | trackone    | Yes (MAD-X)         | No                    | Reads MAD-X trackone files.                                   |
+    +-------------+---------------------+-----------------------+---------------------------------------------------------------+
+    | superkekb   | Yes                 | No                    | Reads SuperKEKB files.                                        |
+    +-------------+---------------------+-----------------------+---------------------------------------------------------------+
+
+- In-memory converters: ``madng``, ``xtrack_line.particle_monitors``, ``xtrack_line.multi_element_monitor``.
 - Most modules are for disk reading only.
 - Some modules are experimental or have limited support.
 
@@ -79,16 +81,16 @@ import logging
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+import turn_by_turn.ascii as tbt_ascii
 from turn_by_turn import (
-    ascii,  # noqa: A004
     doros,
     iota,
     lhc,
     madng,
     ptc,
     sps,
-    trackone,
     superkekb,
+    trackone,
     xtrack_line,
 )
 from turn_by_turn.ascii import write_ascii
@@ -112,14 +114,14 @@ TBT_MODULES = {
     "iota": iota,
     "ptc": ptc,
     "trackone": trackone,
-    "ascii": ascii,
+    "ascii": tbt_ascii,
     "madng": madng,
     "superkekb": superkekb,
-    "xtrack": xtrack_line,
+    "xtrack": xtrack_line,  # Dispatches to particle_monitors or multi_element_monitor based on the Line's monitor data
 }
 
 # Modules supporting in-memory conversion to TbtData (not file readers)
-TBT_CONVERTERS = ("madng", "xtrack")
+TBT_CONVERTERS = ("madng", "xtrack", "xtrack_multi_element")
 
 # implemented writers
 WRITERS = (
@@ -164,12 +166,17 @@ def read_tbt(file_path: str | Path, datatype: str = "lhc") -> TbtData:
 # Note: I don't specify tfs.TfsDataFrame as this inherits from pandas.DataFrame
 def convert_to_tbt(file_data: DataFrame | Line, datatype: str = "xtrack") -> TbtData:
     """
-    Convert a pandas or tfs DataFrame (MAD-NG) or a Line (XTrack) to a TbtData object.
+    Convert in-memory simulation data to a ``TbtData`` object.
+
     Args:
-        file_data (Union[DataFrame, xt.Line]): The data to convert.
-        datatype (str): The type of the data, either 'xtrack' or 'madng'. Defaults to 'xtrack'.
+        file_data (Union[DataFrame, Line]): The data to convert.
+            For ``madng`` this must be a pandas/tfs DataFrame.
+            For ``xtrack`` and ``xtrack_multi_element`` this must be an ``xtrack.Line``.
+        datatype (str): In-memory converter key. One of ``madng``, ``xtrack``,
+            or ``xtrack_multi_element``. Defaults to ``xtrack``.
+
     Returns:
-        TbtData: The converted TbtData object.
+        TbtData: The converted object.
     """
     if datatype.lower() not in TBT_CONVERTERS:
         raise DataTypeError(f"Only {','.join(TBT_CONVERTERS)} converters are implemented for now.")
@@ -181,8 +188,8 @@ def convert_to_tbt(file_data: DataFrame | Line, datatype: str = "xtrack") -> Tbt
 def write_tbt(
     output_path: str | Path,
     tbt_data: TbtData,
-    noise: float = None,
-    seed: int = None,
+    noise: float | None = None,
+    seed: int | None = None,
     datatype: str = "lhc",
 ) -> None:
     """
