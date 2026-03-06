@@ -70,6 +70,7 @@ test = [
 doc = [
     "sphinx >= 7.0",
     "sphinx_rtd_theme >= 2.0",
+    "xtrack >= 0.99.0",
 ]
 
 all = [
