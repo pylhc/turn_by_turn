@@ -2,7 +2,7 @@
 
 All notable changes to **turn_by_turn** will be documented in this file.
 
-### v1.3.0 – 2026-03-XX
+### v1.3.0 – 2026-03-06
 
 Release `1.3.0` adds functionality for the loading of tracking simulation data from an `xtrack.Line` with the newly implemented `MultiElementMonitor`.
 **Breaking Change:** Removed `xtrack_line` module; use `xtrack` instead. If you use the `convert_to_tbt` function exposed directly from the `turn_by_turn` package, no changes are necessary, as it will automatically detect the presence of the `MultiElementMonitor` and use it if available.
