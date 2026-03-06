@@ -696,7 +696,8 @@ Reference: <a class="reference external" href="https://xsuite.readthedocs.io/en/
 <li><p>Data is read from <code class="docutils literal notranslate"><span class="pre">line.record_multi_element_last_track</span></code>.</p></li>
 <li><p>The converter expects arrays with shape <code class="docutils literal notranslate"><span class="pre">(turn,</span> <span class="pre">particle,</span> <span class="pre">obs)</span></code> from
 <code class="docutils literal notranslate"><span class="pre">monitor.get(&quot;x&quot;)</span></code> and <code class="docutils literal notranslate"><span class="pre">monitor.get(&quot;y&quot;)</span></code>.</p></li>
-<li><p>Observation order in the output follows <code class="docutils literal notranslate"><span class="pre">monitor.obs_names</span></code>.</p></li>
+<li><p>Output order follows the order of monitor names provided to <code class="docutils literal notranslate"><span class="pre">multi_element_monitor_at</span></code>,
+independent of the order in which they appear in the line.</p></li>
 </ul>
 </section>
 </section>
@@ -715,11 +716,7 @@ Reference: <a class="reference external" href="https://xsuite.readthedocs.io/en/
 <dd class="field-odd"><p>TbtData</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>ImportError</strong> -- If <code class="docutils literal notranslate"><span class="pre">xtrack</span></code> is not installed.</p></li>
-<li><p><strong>TypeError</strong> -- If <code class="docutils literal notranslate"><span class="pre">xline</span></code> is not an <code class="docutils literal notranslate"><span class="pre">xtrack.Line</span></code>.</p></li>
-<li><p><strong>ValueError</strong> -- If monitor data is missing, or has unexpected shape.</p></li>
-</ul>
+<dd class="field-even"><p><strong>ValueError</strong> -- If monitor data is missing, or has unexpected shape.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -740,14 +737,6 @@ Reference: <a class="reference external" href="https://xsuite.readthedocs.io/en/
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">turn_by_turn.xtrack._multi_element_monitor.</span></span><span class="sig-name descname"><span class="pre">read_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/xtrack/_multi_element_monitor.html#read_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Not implemented.</p>
-<p>Reading <code class="docutils literal notranslate"><span class="pre">xtrack</span></code> multi-element monitor data directly from files is not supported.
-Use <code class="docutils literal notranslate"><span class="pre">convert_to_tbt</span></code> on an in-memory tracked <code class="docutils literal notranslate"><span class="pre">xtrack.Line</span></code> instead.</p>
 </dd></dl>
 
 
