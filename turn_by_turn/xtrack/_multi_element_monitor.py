@@ -29,7 +29,8 @@ Notes
 - Data is read from ``line.record_multi_element_last_track``.
 - The converter expects arrays with shape ``(turn, particle, obs)`` from
   ``monitor.get("x")`` and ``monitor.get("y")``.
-- Observation order in the output follows ``monitor.obs_names``.
+- Output order follows the order of monitor names provided to ``multi_element_monitor_at``,
+  independent of the order in which they appear in the line.
 """
 
 from __future__ import annotations
@@ -42,9 +43,8 @@ import pandas as pd
 from turn_by_turn.structures import TbtData, TransverseData
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     import xtrack as xt
+
 
 def is_line_suitable_for_conversion(xline: xt.Line) -> bool:
     """
@@ -79,8 +79,6 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
         TbtData: Turn-by-turn data for each particle and observed element.
 
     Raises:
-        ImportError: If ``xtrack`` is not installed.
-        TypeError: If ``xline`` is not an ``xtrack.Line``.
         ValueError: If monitor data is missing, or has unexpected shape.
     """
     monitor: xt.MultiElementMonitor = xline.record_multi_element_last_track
@@ -117,13 +115,3 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
         nturns=nturns,
         meta={"source_datatype": "xtrack_multi_element_monitor", "date": pd.Timestamp.now()},
     )
-
-
-def read_tbt(path: str | Path) -> None:
-    """
-    Not implemented.
-
-    Reading ``xtrack`` multi-element monitor data directly from files is not supported.
-    Use ``convert_to_tbt`` on an in-memory tracked ``xtrack.Line`` instead.
-    """
-    raise NotImplementedError("Reading TBT data from xtrack multi-element monitor files is not implemented.")

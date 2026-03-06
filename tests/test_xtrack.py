@@ -37,7 +37,7 @@ def test_convert_xsuite(example_line: xt.Line, example_fake_tbt: TbtData):
 )
 def test_convert_xsuite_multi_element_monitor(example_line: xt.Line, example_fake_tbt: TbtData):
     particles = example_line.build_particles(x=[1e-3, -1e-3], y=[-1e-3, 1e-3])
-    monitor_names = ["BPM1", "BPM3", "BPM2"]
+    monitor_names = ["BPM1", "BPM3", "BPM2"]  # Order is important
     example_line.track(particles, num_turns=3, multi_element_monitor_at=monitor_names)
 
     tbt_data = _multi_element_monitor.convert_to_tbt(example_line)
