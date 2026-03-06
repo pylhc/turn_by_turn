@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.utils &mdash; turn_by_turn 1.2.0 documentation</title>
+  <title>turn_by_turn.utils &mdash; turn_by_turn 1.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=988d0652" />
@@ -13,7 +13,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=6efca38a"></script>
+      <script src="../../_static/documentation_options.js?v=1f29e9d3"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -43,15 +43,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Constants</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#io">IO</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#reading-data">Reading Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#writing-data">Writing Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#supported-modules-and-limitations">Supported Modules and Limitations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#api">API</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#structures">Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#utils">Utils</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Readers</span></p>
@@ -65,7 +57,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#trackone">Trackone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#superkekb">SuperKEKB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#mad-ng">MAD-NG</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#xtrack-line">XTRACK_LINE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#xtrack-tbt-conversion-from-multi-element-monitor">XTrack TbT Conversion from Multi-Element Monitor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#usage">Usage</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -126,7 +121,7 @@
 <span class="sd">    bunches/particles at all used BPMs.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        tbtdata (TbtData): entry TbtData object from measurements.</span>
+<span class="sd">        tbtdata (TbtData): input TbtData object from measurements.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A new TbtData object with the averaged matrices.</span>
@@ -160,7 +155,7 @@
 <span class="sd">    Average data from a given plane from the matrices of a ``TbtData``.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        bpm_names (Sequence[str]):</span>
+<span class="sd">        bpm_names (Sequence[str]): Names of the BPMs to average data for.</span>
 <span class="sd">        matrices (Sequence[TransverseData]): matrices from a ``TbtData`` object.</span>
 <span class="sd">        plane (str): name of the given plane to average in.</span>
 <span class="sd">        turns (int): number of turns in the provided data.</span>
@@ -189,7 +184,8 @@
 <span class="sd">        tbt_data (TbtData): ``TbtData`` object to convert the data from.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        A numpy array with the matrices data.</span>
+<span class="sd">        A numpy array with shape (2, n_bpms, nbunches, nturns) containing the matrices data,</span>
+<span class="sd">        where the first dimension corresponds to planes (X=0, Y=1).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Getting number of BPMs from the measurement data.&quot;</span><span class="p">)</span>
     <span class="n">n_bpms</span> <span class="o">=</span> <span class="n">tbt_data</span><span class="o">.</span><span class="n">matrices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">size</span>
@@ -206,20 +202,23 @@
 <div class="viewcode-block" id="add_noise">
 <a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.add_noise">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">add_noise</span><span class="p">(</span>
-    <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the given data with added noise. Noise is generated as a standard normal distribution (mean=0,</span>
-<span class="sd">    standard_deviation=1) with the size of the input data, and scaled by the a factor before being added to</span>
+<span class="sd">    standard deviation=1) with the size of the input data, and scaled by a factor before being added to</span>
 <span class="sd">    the provided data. Said factor can either be provided, or calculated from the input data&#39;s own standard</span>
 <span class="sd">    deviation.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        data (np.ndarray): your input data.</span>
-<span class="sd">        noise (float): the scaling factor applied to the generated noise.</span>
-<span class="sd">        sigma (float): if provided, then that number times the standard deviation of the input data will</span>
+<span class="sd">        noise (float | None): the scaling factor applied to the generated noise.</span>
+<span class="sd">        sigma (float | None): if provided, then that number times the standard deviation of the input data will</span>
 <span class="sd">            be used as scaling factor for the generated noise.</span>
-<span class="sd">        seed(int): a given seed to initialise the RNG.</span>
+<span class="sd">        seed(int | np.random.Generator | None): Seed for the random number generator. Can be an integer or an np.random.Generator instance.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A new numpy array with added noise to the provided data.</span>
@@ -235,7 +234,10 @@
 <div class="viewcode-block" id="add_noise_to_tbt">
 <a class="viewcode-back" href="../../modules/index.html#turn_by_turn.utils.add_noise_to_tbt">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">add_noise_to_tbt</span><span class="p">(</span>
-    <span class="n">data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span> <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">TbtData</span><span class="p">,</span>
+    <span class="n">noise</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a new copy of the given TbT data with added noise.</span>
@@ -244,10 +246,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        data (TbtData): your input TbT-data.</span>
-<span class="sd">        noise (float): the scaling factor applied to the generated noise.</span>
-<span class="sd">        sigma (float): if provided, then that number times the standard deviation of the input data will</span>
+<span class="sd">        noise (float | None): the scaling factor applied to the generated noise.</span>
+<span class="sd">        sigma (float | None): if provided, then that number times the standard deviation of the input data will</span>
 <span class="sd">            be used as scaling factor for the generated noise.</span>
-<span class="sd">        seed(int): a given seed to initialise the RNG.</span>
+<span class="sd">        seed(int | np.random.Generator | None): Seed for the random number generator. Can be an integer or an np.random.Generator instance.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A copy of the TbtData with noised data on all matrices.</span>
@@ -315,7 +317,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">all_elements_equal</span><span class="p">(</span><span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check if all elements in an iterable are equal.</span>
-<span class="sd">    WARNING: Does not necissarily work with floating point numbers.</span>
+<span class="sd">    WARNING: Does not necessarily work with floating point numbers.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        iterable (Iterable): an iterable to check.</span>

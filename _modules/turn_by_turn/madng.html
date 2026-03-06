@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.madng &mdash; turn_by_turn 1.2.0 documentation</title>
+  <title>turn_by_turn.madng &mdash; turn_by_turn 1.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=988d0652" />
@@ -13,7 +13,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=6efca38a"></script>
+      <script src="../../_static/documentation_options.js?v=1f29e9d3"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -43,15 +43,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Constants</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#io">IO</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#reading-data">Reading Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#writing-data">Writing Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#supported-modules-and-limitations">Supported Modules and Limitations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/index.html#api">API</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#structures">Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/index.html">Structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules/index.html#utils">Utils</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Readers</span></p>
@@ -65,7 +57,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#trackone">Trackone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#superkekb">SuperKEKB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#mad-ng">MAD-NG</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#xtrack-line">XTRACK_LINE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readers/index.html#xtrack-tbt-conversion-from-multi-element-monitor">XTrack TbT Conversion from Multi-Element Monitor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../readers/index.html#usage">Usage</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -101,7 +96,7 @@
 <span class="sd">produced by the ``MAD-NG`` code. MAD-NG stores its tracking data in the **TFS**</span>
 <span class="sd">(Table File System) file format.</span>
 
-<span class="sd">Data is loaded into the standardized ``TbtData`` structure used by ``turn_by_turn``,</span>
+<span class="sd">Data is loaded into the standardised ``TbtData`` structure used by ``turn_by_turn``,</span>
 <span class="sd">allowing easy post-processing and conversion between formats.</span>
 
 <span class="sd">Dependencies:</span>
@@ -167,7 +162,7 @@
     <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
             <span class="s2">&quot;The &#39;tfs&#39; package is required to read MAD-NG TFS files. &quot;</span>
-            <span class="s2">&quot;Install it with: pip install &#39;turn_by_turn[madng]&#39;&quot;</span>
+            <span class="s2">&quot;Install it with: python -m pip install &#39;turn_by_turn[madng]&#39;&quot;</span>
         <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
     <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Starting to read TBT data from dataframe&quot;</span><span class="p">)</span>
@@ -196,7 +191,7 @@
 <span class="sd">        TbtData: The extracted and structured turn-by-turn data.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        TypeError: If the input is not a recognized DataFrame type.</span>
+<span class="sd">        TypeError: If the input is not a recognised DataFrame type.</span>
 <span class="sd">        ValueError: If the data structure is inconsistent (e.g., lost particles).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -293,7 +288,8 @@
         <span class="kn">import</span><span class="w"> </span><span class="nn">tfs</span>
     <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-            <span class="s2">&quot;The &#39;tfs&#39; package is required to write MAD-NG TFS files. Install it with: pip install &#39;turn_by_turn[madng]&#39;&quot;</span>
+            <span class="s2">&quot;The &#39;tfs&#39; package is required to write MAD-NG TFS files. &quot;</span>
+            <span class="s2">&quot;Install it with: python -m pip install &#39;turn_by_turn[madng]&#39;&quot;</span>
         <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
     <span class="n">planes</span> <span class="o">=</span> <span class="p">[</span><span class="n">plane</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">TransverseData</span><span class="o">.</span><span class="n">fieldnames</span><span class="p">()]</span>  <span class="c1"># x, y</span>

@@ -23,7 +23,7 @@ Supported Modules and Limitations
 
 Different modules support different file formats and workflows (disk reading vs. in-memory conversion). For a detailed table of which modules support which features, and any important limitations, see the documentation for the :mod:`turn_by_turn.io` module.
 
-- Only ``madng`` and ``xtrack`` support in-memory conversion.
+- In-memory converters are ``madng``, ``xtrack``.
 - Most modules are for disk reading only.
 - For writing, see the next section.
 
