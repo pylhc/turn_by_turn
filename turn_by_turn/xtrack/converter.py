@@ -63,6 +63,11 @@ def convert_to_tbt(xline: Line) -> TbtData:
     Returns:
         TbtData: The extracted turn-by-turn data. The ``meta`` mapping contains a
         ``source_datatype`` key describing the origin of the data.
+
+    Raises:
+        ImportError: If the ``xtrack`` package is not installed.
+        TypeError: If the input is not an ``xtrack.Line``.
+        ValueError: If no suitable monitor data is found on the provided Line.
     """
     try:
         import xtrack as xt
