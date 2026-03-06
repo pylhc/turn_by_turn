@@ -20,10 +20,10 @@
 | turn\_by\_turn/trackone.py                         |       58 |        4 |     93% | 82, 86-88 |
 | turn\_by\_turn/utils.py                            |       50 |        0 |    100% |           |
 | turn\_by\_turn/xtrack/\_\_init\_\_.py              |        2 |        0 |    100% |           |
-| turn\_by\_turn/xtrack/\_multi\_element\_monitor.py |       28 |        2 |     93% |   98, 129 |
+| turn\_by\_turn/xtrack/\_multi\_element\_monitor.py |       26 |        1 |     96% |        96 |
 | turn\_by\_turn/xtrack/\_particle\_monitors.py      |       33 |        4 |     88% |105, 113, 121, 129 |
-| turn\_by\_turn/xtrack/converter.py                 |       18 |        2 |     89% |     69-70 |
-| **TOTAL**                                          |  **952** |   **55** | **94%** |           |
+| turn\_by\_turn/xtrack/converter.py                 |       18 |        2 |     89% |     74-75 |
+| **TOTAL**                                          |  **950** |   **54** | **94%** |           |
 
 
 ## Setup coverage badge
