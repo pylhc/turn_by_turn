@@ -6,7 +6,7 @@ This module provides functions to read and write turn-by-turn measurement data
 produced by the ``MAD-NG`` code. MAD-NG stores its tracking data in the **TFS**
 (Table File System) file format.
 
-Data is loaded into the standardized ``TbtData`` structure used by ``turn_by_turn``,
+Data is loaded into the standardised ``TbtData`` structure used by ``turn_by_turn``,
 allowing easy post-processing and conversion between formats.
 
 Dependencies:
@@ -70,7 +70,7 @@ def read_tbt(file_path: str | Path) -> TbtData:
     except ImportError as e:
         raise ImportError(
             "The 'tfs' package is required to read MAD-NG TFS files. "
-            "Install it with: pip install 'turn_by_turn[madng]'"
+            "Install it with: python -m pip install 'turn_by_turn[madng]'"
         ) from e
 
     LOGGER.debug("Starting to read TBT data from dataframe")
@@ -96,7 +96,7 @@ def convert_to_tbt(df: pd.DataFrame | tfs.TfsDataFrame) -> TbtData:
         TbtData: The extracted and structured turn-by-turn data.
 
     Raises:
-        TypeError: If the input is not a recognized DataFrame type.
+        TypeError: If the input is not a recognised DataFrame type.
         ValueError: If the data structure is inconsistent (e.g., lost particles).
     """
 
@@ -190,7 +190,8 @@ def write_tbt(output_path: str | Path, tbt_data: TbtData) -> None:
         import tfs
     except ImportError as e:
         raise ImportError(
-            "The 'tfs' package is required to write MAD-NG TFS files. Install it with: pip install 'turn_by_turn[madng]'"
+            "The 'tfs' package is required to write MAD-NG TFS files. "
+            "Install it with: python -m pip install 'turn_by_turn[madng]'"
         ) from e
 
     planes = [plane.lower() for plane in TransverseData.fieldnames()]  # x, y

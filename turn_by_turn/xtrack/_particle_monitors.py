@@ -1,24 +1,33 @@
 """
-XTRACK_LINE
------------
+XTrack TbT Conversion from Particle Monitors
+--------------------------------------------
 
-This module provides functions to convert tracking results from an ``xtrack.Line``
-into the standardized ``TbtData`` format used by ``turn_by_turn``.
+Convert tracking results produced by one or more ``xtrack.ParticlesMonitor``
+elements into the standardised ``TbtData`` format used by ``turn_by_turn``.
+
+Usage
+=====
+
+    from turn_by_turn.xtrack import convert_to_tbt
+
+    # after building particles and tracking a line containing
+    # xt.ParticlesMonitor elements, convert to TbtData:
+    tbt = convert_to_tbt(line)
 
 Prerequisites for using ``convert_to_tbt``:
 
-  1. The input ``Line`` must contain one or more ``ParticlesMonitor`` elements
+1. The input ``Line`` must contain one or more ``ParticlesMonitor`` elements
      positioned at each location where turn-by-turn data is required (e.g., all BPMs).
 
      A valid monitor setup involves:
 
-       - Placing a ``xt.ParticlesMonitor`` instance in the line's element sequence
+     - Placing a ``xt.ParticlesMonitor`` instance in the line's element sequence
          at all the places you would like to observe.
-       - Configuring each monitor with identical settings:
+     - Configuring each monitor with identical settings:
 
-           * ``start_at_turn`` (first turn to record, usually 0)
-           * ``stop_at_turn`` (The total number of turns to record, e.g., 100)
-           * ``num_particles`` (number of tracked particles)
+             * ``start_at_turn`` (first turn to record, usually 0)
+             * ``stop_at_turn`` (The total number of turns to record, e.g., 100)
+             * ``num_particles`` (number of tracked particles)
 
      If any monitor is configured with different parameters, ``convert_to_tbt``
      will either find no data or raise an inconsistency error.
@@ -28,11 +37,11 @@ Prerequisites for using ``convert_to_tbt``:
      This may result in extra rows filled with zeros for turns where no real
      data was recorded, which might not be desirable for your analysis.
 
-  2. Before conversion, you must:
+2. Before conversion, you must:
 
-       - Build particles with the desired initial coordinates
+     - Build particles with the desired initial coordinates
          (using ``line.build_particles(...)``).
-       - Track those particles through the line for the intended number of turns
+     - Track those particles through the line for the intended number of turns
          (using ``line.track(..., num_turns=num_turns)``).
 
 Once these conditions are met, pass the tracked ``Line`` to ``convert_to_tbt`` to
@@ -42,19 +51,29 @@ extract the data from each particle monitor into a ``TbtData`` object.
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
+import xtrack as xt
 
 from turn_by_turn.structures import TbtData, TransverseData
 
-if TYPE_CHECKING:
-    from pathlib import Path
-
-    import xtrack as xt
-
 LOGGER = logging.getLogger(__name__)
+
+
+def is_line_suitable_for_conversion(xline: xt.Line) -> bool:
+    """
+    Check if the given xtrack Line is suitable for conversion to TbtData.
+
+    This function verifies that the Line contains at least one ParticlesMonitor
+    and that all monitors have consistent tracking data (same number of turns and particles).
+
+    Args:
+        xline (xt.Line): The xtrack Line to check.
+    Returns:
+        bool: True if the Line is suitable for conversion, False otherwise.
+    """
+    return any(isinstance(elem, xt.ParticlesMonitor) for elem in xline.elements)
 
 
 def convert_to_tbt(xline: xt.Line) -> TbtData:
@@ -73,20 +92,8 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
         TbtData: The extracted turn-by-turn data for all particles and monitors.
 
     Raises:
-        ImportError: If the ``xtrack`` library is not installed.
-        TypeError: If the input is not a valid ``xtrack.Line``.
         ValueError: If no monitors are found or data is inconsistent.
     """
-    try:
-        import xtrack as xt
-    except ImportError as e:
-        raise ImportError(
-            "The 'xtrack' package is required to convert xtrack Line objects. Install it with: pip install 'turn_by_turn[xtrack]'"
-        ) from e
-
-    if not isinstance(xline, xt.Line):
-        raise TypeError(f"Expected an xtrack Line object, got {type(xline)} instead.")
-
     # Collect monitor names and monitor objects in order from the line
     monitor_pairs = [
         (name, elem)
@@ -102,10 +109,11 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
 
     # First check that no particles were lost during tracking. There will be trailing
     # zeros in the data if particles were lost. This might be difficult to detect.
-    assert all(mon.data.particle_id[-1] == mon.data.particle_id.max() for mon in monitors), (
-        "Some particles were lost during tracking, which is not supported by this function. "
-        "Ensure that all particles are tracked through the entire line without loss."
-    )
+    if not all(mon.data.particle_id[-1] == mon.data.particle_id.max() for mon in monitors):
+        raise ValueError(
+            "Some particles were lost during tracking, which is not supported by this function. "
+            "Ensure that all particles are tracked through the entire line without loss."
+        )
 
     # Check that all monitors have the same number of turns
     nturns_set = {mon.data.at_turn.max() + 1 for mon in monitors}
@@ -145,21 +153,10 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
         # Create a TransverseData object for this particle and add to the list
         matrices.append(TransverseData(**tracking_data_dict))
 
-    # Add meta-information
-    meta = {
-        "source_datatype": "xtrack",
-    }
-
     # Return the TbtData object containing all particles' data
-    return TbtData(matrices=matrices, bunch_ids=list(range(npart)), nturns=nturns, meta=meta)
-
-
-# Added this function to match the interface, but it is not implemented.
-def read_tbt(path: str | Path) -> None:
-    """
-    Not implemented.
-
-    Reading TBT data directly from files is not supported for xtrack.
-    Use ``convert_to_tbt`` to convert an in-memory ``xtrack.Line`` instead.
-    """
-    raise NotImplementedError("Reading TBT data from xtrack Line files is not implemented.")
+    return TbtData(
+        matrices=matrices,
+        bunch_ids=list(range(npart)),
+        nturns=nturns,
+        meta={"source_datatype": "xtrack_particle_monitors", "date": pd.Timestamp.now()},
+    )

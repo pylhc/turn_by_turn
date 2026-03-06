@@ -55,9 +55,9 @@ madng = [
 ]
 
 xtrack = [
-    "xtrack >= 0.84.7",      # for xtrack
+    "xtrack >= 0.99.0",      # for xtrack
     "setuptools >= 65",      # for xtrack
-    "xpart >= 0.23.0",       # for xtrack
+    "xpart >= 0.23.8",       # for xtrack
 ]
 
 test = [
