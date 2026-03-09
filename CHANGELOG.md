@@ -2,6 +2,10 @@
 
 All notable changes to **turn_by_turn** will be documented in this file.
 
+### v1.3.1 - 2026-03-09
+
+Patch release to fix a default import of `xtrack` when importing `turn_by_turn`.
+
 ### v1.3.0 – 2026-03-06
 
 Release `1.3.0` adds functionality for the loading of tracking simulation data from an `xtrack.Line` with the newly implemented `MultiElementMonitor`.
