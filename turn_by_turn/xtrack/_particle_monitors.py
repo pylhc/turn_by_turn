@@ -51,12 +51,15 @@ extract the data from each particle monitor into a ``TbtData`` object.
 from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
-import xtrack as xt
 
 from turn_by_turn.structures import TbtData, TransverseData
+
+if TYPE_CHECKING:
+    import xtrack as xt  # noqa: TC004
 
 LOGGER = logging.getLogger(__name__)
 
@@ -70,9 +73,18 @@ def is_line_suitable_for_conversion(xline: xt.Line) -> bool:
 
     Args:
         xline (xt.Line): The xtrack Line to check.
+
     Returns:
         bool: True if the Line is suitable for conversion, False otherwise.
     """
+    try:
+        import xtrack as xt
+    except ImportError as e:
+        raise ImportError(
+            "The 'xtrack' package is required to convert xtrack Line objects. "
+            "Install it with: python -m pip install 'turn_by_turn[xtrack]'"
+        ) from e
+
     return any(isinstance(elem, xt.ParticlesMonitor) for elem in xline.elements)
 
 
