@@ -73,7 +73,7 @@ def convert_to_tbt(xline: Line) -> TbtData:
         import xtrack as xt
     except ImportError as e:
         raise ImportError(
-            "The 'xtrack' package is required to convert xtrack Line objects. "
+            "The 'xtrack' package is required to convert from xtrack monitors. "
             "Install it with: python -m pip install 'turn_by_turn[xtrack]'"
         ) from e
 

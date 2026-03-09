@@ -81,7 +81,7 @@ def is_line_suitable_for_conversion(xline: xt.Line) -> bool:
         import xtrack as xt
     except ImportError as e:
         raise ImportError(
-            "The 'xtrack' package is required to convert xtrack Line objects. "
+            "The 'xtrack' package is required to convert from xtrack monitors. "
             "Install it with: python -m pip install 'turn_by_turn[xtrack]'"
         ) from e
 
@@ -106,6 +106,14 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
     Raises:
         ValueError: If no monitors are found or data is inconsistent.
     """
+    try:
+        import xtrack as xt
+    except ImportError as e:
+        raise ImportError(
+            "The 'xtrack' package is required to convert from xtrack monitors. "
+            "Install it with: python -m pip install 'turn_by_turn[xtrack]'"
+        ) from e
+
     # Collect monitor names and monitor objects in order from the line
     monitor_pairs = [
         (name, elem)
