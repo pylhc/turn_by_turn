@@ -60,12 +60,12 @@
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">4<span class="text"> excluded</span></button>
         </h2>
         <p class="text">
-            <a id="prevFileLink" class="nav" href="z_e4c91c46144d8786__particle_monitors_py.html">&#xab; prev</a> &nbsp; &nbsp;
+            <a id="prevFileLink" class="nav" href="z_e4c91c46144d8786__particles_monitor_py.html">&#xab; prev</a> &nbsp; &nbsp;
             <a id="indexLink" class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a id="nextFileLink" class="nav" href="index.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.1">coverage.py v7.13.1</a>,
-            created at 2026-03-06 12:37 +0000
+            created at 2026-03-09 09:47 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -81,8 +81,8 @@
 </header>
 <main id="source">
     <p class="pln"><span class="n"><a id="t1" href="#t1">1</a></span><span class="t"><span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t2" href="#t2">2</a></span><span class="t"><span class="str">XTrack TbT Conversion from Lines</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t3" href="#t3">3</a></span><span class="t"><span class="str">--------------------------------</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t2" href="#t2">2</a></span><span class="t"><span class="str">XTrack TbT Conversion</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t3" href="#t3">3</a></span><span class="t"><span class="str">---------------------</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t4" href="#t4">4</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t5" href="#t5">5</a></span><span class="t"><span class="str">Helpers to convert data produced by the ``xtrack`` tracking framework into the</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t6" href="#t6">6</a></span><span class="t"><span class="str">``turn_by_turn`` ``TbtData`` format.</span>&nbsp;</span><span class="r"></span></p>
@@ -102,8 +102,8 @@
     <p class="pln"><span class="n"><a id="t20" href="#t20">20</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t21" href="#t21">21</a></span><span class="t"><span class="key">from</span> <span class="nam">typing</span> <span class="key">import</span> <span class="nam">TYPE_CHECKING</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t22" href="#t22">22</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t23" href="#t23">23</a></span><span class="t"><span class="key">from</span> <span class="op">.</span> <span class="key">import</span> <span class="nam">_multi_element_monitor</span> <span class="key">as</span> <span class="nam">multi_element_monitor</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t24" href="#t24">24</a></span><span class="t"><span class="key">from</span> <span class="op">.</span> <span class="key">import</span> <span class="nam">_particle_monitors</span> <span class="key">as</span> <span class="nam">particle_monitors</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t23" href="#t23">23</a></span><span class="t"><span class="key">from</span> <span class="nam">turn_by_turn</span><span class="op">.</span><span class="nam">xtrack</span> <span class="key">import</span> <span class="nam">_multi_element_monitor</span> <span class="key">as</span> <span class="nam">multi_element_monitor</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t24" href="#t24">24</a></span><span class="t"><span class="key">from</span> <span class="nam">turn_by_turn</span><span class="op">.</span><span class="nam">xtrack</span> <span class="key">import</span> <span class="nam">_particles_monitor</span> <span class="key">as</span> <span class="nam">particles_monitor</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t25" href="#t25">25</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="exc show_exc"><span class="n"><a id="t26" href="#t26">26</a></span><span class="t"><span class="key">if</span> <span class="nam">TYPE_CHECKING</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="exc show_exc"><span class="n"><a id="t27" href="#t27">27</a></span><span class="t">    <span class="key">from</span> <span class="nam">pathlib</span> <span class="key">import</span> <span class="nam">Path</span>&nbsp;</span><span class="r"></span></p>
@@ -136,7 +136,7 @@
     <p class="pln"><span class="n"><a id="t54" href="#t54">54</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t55" href="#t55">55</a></span><span class="t"><span class="str">    - ``xtrack_multi_element_monitor``: when converting from an</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t56" href="#t56">56</a></span><span class="t"><span class="str">        ``xtrack.MultiElementMonitor`` (via ``record_multi_element_last_track``).</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t57" href="#t57">57</a></span><span class="t"><span class="str">    - ``xtrack_particle_monitors``: when converting from one or more</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t57" href="#t57">57</a></span><span class="t"><span class="str">    - ``xtrack_particles_monitor``: when converting from one or more</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t58" href="#t58">58</a></span><span class="t"><span class="str">        ``xtrack.ParticlesMonitor`` elements.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t59" href="#t59">59</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t60" href="#t60">60</a></span><span class="t"><span class="str">    Args:</span>&nbsp;</span><span class="r"></span></p>
@@ -155,7 +155,7 @@
     <p class="run"><span class="n"><a id="t73" href="#t73">73</a></span><span class="t">        <span class="key">import</span> <span class="nam">xtrack</span> <span class="key">as</span> <span class="nam">xt</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t74" href="#t74">74</a></span><span class="t">    <span class="key">except</span> <span class="nam">ImportError</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t75" href="#t75">75</a></span><span class="t">        <span class="key">raise</span> <span class="nam">ImportError</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis mis2 show_mis"><span class="n"><a id="t76" href="#t76">76</a></span><span class="t">            <span class="str">"The 'xtrack' package is required to convert xtrack Line objects. "</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis mis2 show_mis"><span class="n"><a id="t76" href="#t76">76</a></span><span class="t">            <span class="str">"The 'xtrack' package is required to convert from xtrack monitors. "</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis mis2 show_mis"><span class="n"><a id="t77" href="#t77">77</a></span><span class="t">            <span class="str">"Install it with: python -m pip install 'turn_by_turn[xtrack]'"</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis mis2 show_mis"><span class="n"><a id="t78" href="#t78">78</a></span><span class="t">        <span class="op">)</span> <span class="key">from</span> <span class="nam">e</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t79" href="#t79">79</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -165,8 +165,8 @@
     <p class="run"><span class="n"><a id="t83" href="#t83">83</a></span><span class="t">    <span class="key">if</span> <span class="nam">multi_element_monitor</span><span class="op">.</span><span class="nam">is_line_suitable_for_conversion</span><span class="op">(</span><span class="nam">xline</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t84" href="#t84">84</a></span><span class="t">        <span class="key">return</span> <span class="nam">multi_element_monitor</span><span class="op">.</span><span class="nam">convert_to_tbt</span><span class="op">(</span><span class="nam">xline</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t85" href="#t85">85</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t86" href="#t86">86</a></span><span class="t">    <span class="key">if</span> <span class="nam">particle_monitors</span><span class="op">.</span><span class="nam">is_line_suitable_for_conversion</span><span class="op">(</span><span class="nam">xline</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t87" href="#t87">87</a></span><span class="t">        <span class="key">return</span> <span class="nam">particle_monitors</span><span class="op">.</span><span class="nam">convert_to_tbt</span><span class="op">(</span><span class="nam">xline</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t86" href="#t86">86</a></span><span class="t">    <span class="key">if</span> <span class="nam">particles_monitor</span><span class="op">.</span><span class="nam">is_line_suitable_for_conversion</span><span class="op">(</span><span class="nam">xline</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t87" href="#t87">87</a></span><span class="t">        <span class="key">return</span> <span class="nam">particles_monitor</span><span class="op">.</span><span class="nam">convert_to_tbt</span><span class="op">(</span><span class="nam">xline</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t88" href="#t88">88</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t89" href="#t89">89</a></span><span class="t">    <span class="key">raise</span> <span class="nam">ValueError</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t90" href="#t90">90</a></span><span class="t">        <span class="str">"No suitable monitor data found on the provided xtrack.Line. "</span>&nbsp;</span><span class="r"></span></p>
@@ -179,12 +179,12 @@
 <footer>
     <div class="content">
         <p>
-            <a class="nav" href="z_e4c91c46144d8786__particle_monitors_py.html">&#xab; prev</a> &nbsp; &nbsp;
+            <a class="nav" href="z_e4c91c46144d8786__particles_monitor_py.html">&#xab; prev</a> &nbsp; &nbsp;
             <a class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a class="nav" href="index.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.13.1">coverage.py v7.13.1</a>,
-            created at 2026-03-06 12:37 +0000
+            created at 2026-03-09 09:47 +0000
         </p>
     </div>
 </footer>
