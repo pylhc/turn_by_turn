@@ -54,6 +54,13 @@ Package Reference
 
    readers/*
 
+.. toctree::
+   :caption: Converters
+   :maxdepth: 1
+   :glob:
+
+   converters/*
+
 
 Indices and tables
 ------------------
