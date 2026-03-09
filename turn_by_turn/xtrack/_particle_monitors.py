@@ -59,12 +59,12 @@ import pandas as pd
 from turn_by_turn.structures import TbtData, TransverseData
 
 if TYPE_CHECKING:
-    import xtrack as xt  # noqa: TC004
+    from xtrack import Line
 
 LOGGER = logging.getLogger(__name__)
 
 
-def is_line_suitable_for_conversion(xline: xt.Line) -> bool:
+def is_line_suitable_for_conversion(xline: Line) -> bool:
     """
     Check if the given xtrack Line is suitable for conversion to TbtData.
 
@@ -77,18 +77,12 @@ def is_line_suitable_for_conversion(xline: xt.Line) -> bool:
     Returns:
         bool: True if the Line is suitable for conversion, False otherwise.
     """
-    try:
-        import xtrack as xt
-    except ImportError as e:
-        raise ImportError(
-            "The 'xtrack' package is required to convert from xtrack monitors. "
-            "Install it with: python -m pip install 'turn_by_turn[xtrack]'"
-        ) from e
+    from xtrack import ParticlesMonitor
 
-    return any(isinstance(elem, xt.ParticlesMonitor) for elem in xline.elements)
+    return any(isinstance(elem, ParticlesMonitor) for elem in xline.elements)
 
 
-def convert_to_tbt(xline: xt.Line) -> TbtData:
+def convert_to_tbt(xline: Line) -> TbtData:
     """
     Convert tracking results from an ``xtrack`` Line into a ``TbtData`` object.
 
@@ -106,19 +100,13 @@ def convert_to_tbt(xline: xt.Line) -> TbtData:
     Raises:
         ValueError: If no monitors are found or data is inconsistent.
     """
-    try:
-        import xtrack as xt
-    except ImportError as e:
-        raise ImportError(
-            "The 'xtrack' package is required to convert from xtrack monitors. "
-            "Install it with: python -m pip install 'turn_by_turn[xtrack]'"
-        ) from e
+    from xtrack import ParticlesMonitor
 
     # Collect monitor names and monitor objects in order from the line
     monitor_pairs = [
         (name, elem)
         for name, elem in zip(xline.element_names, xline.elements)
-        if isinstance(elem, xt.ParticlesMonitor)
+        if isinstance(elem, ParticlesMonitor)
     ]
     # Check that we have at least one monitor
     if not monitor_pairs:
