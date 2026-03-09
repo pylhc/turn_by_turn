@@ -1,6 +1,6 @@
 """
-XTrack TbT Conversion from Lines
---------------------------------
+XTrack TbT Conversion
+---------------------
 
 Helpers to convert data produced by the ``xtrack`` tracking framework into the
 ``turn_by_turn`` ``TbtData`` format.
