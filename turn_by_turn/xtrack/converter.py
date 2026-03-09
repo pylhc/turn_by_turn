@@ -1,6 +1,6 @@
 """
-XTrack TbT Conversion from Lines
---------------------------------
+XTrack TbT Conversion
+---------------------
 
 Helpers to convert data produced by the ``xtrack`` tracking framework into the
 ``turn_by_turn`` ``TbtData`` format.
@@ -20,8 +20,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from . import _multi_element_monitor as multi_element_monitor
-from . import _particle_monitors as particle_monitors
+from turn_by_turn.xtrack import _multi_element_monitor as multi_element_monitor
+from turn_by_turn.xtrack import _particles_monitor as particles_monitor
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -54,7 +54,7 @@ def convert_to_tbt(xline: Line) -> TbtData:
 
     - ``xtrack_multi_element_monitor``: when converting from an
         ``xtrack.MultiElementMonitor`` (via ``record_multi_element_last_track``).
-    - ``xtrack_particle_monitors``: when converting from one or more
+    - ``xtrack_particles_monitor``: when converting from one or more
         ``xtrack.ParticlesMonitor`` elements.
 
     Args:
@@ -73,7 +73,7 @@ def convert_to_tbt(xline: Line) -> TbtData:
         import xtrack as xt
     except ImportError as e:
         raise ImportError(
-            "The 'xtrack' package is required to convert xtrack Line objects. "
+            "The 'xtrack' package is required to convert from xtrack monitors. "
             "Install it with: python -m pip install 'turn_by_turn[xtrack]'"
         ) from e
 
@@ -83,8 +83,8 @@ def convert_to_tbt(xline: Line) -> TbtData:
     if multi_element_monitor.is_line_suitable_for_conversion(xline):
         return multi_element_monitor.convert_to_tbt(xline)
 
-    if particle_monitors.is_line_suitable_for_conversion(xline):
-        return particle_monitors.convert_to_tbt(xline)
+    if particles_monitor.is_line_suitable_for_conversion(xline):
+        return particles_monitor.convert_to_tbt(xline)
 
     raise ValueError(
         "No suitable monitor data found on the provided xtrack.Line. "
