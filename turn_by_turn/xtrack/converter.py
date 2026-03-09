@@ -21,7 +21,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from turn_by_turn.xtrack import _multi_element_monitor as multi_element_monitor
-from turn_by_turn.xtrack import _particle_monitors as particle_monitors
+from turn_by_turn.xtrack import _particles_monitor as particle_monitors
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -54,7 +54,7 @@ def convert_to_tbt(xline: Line) -> TbtData:
 
     - ``xtrack_multi_element_monitor``: when converting from an
         ``xtrack.MultiElementMonitor`` (via ``record_multi_element_last_track``).
-    - ``xtrack_particle_monitors``: when converting from one or more
+    - ``xtrack_particles_monitor``: when converting from one or more
         ``xtrack.ParticlesMonitor`` elements.
 
     Args:

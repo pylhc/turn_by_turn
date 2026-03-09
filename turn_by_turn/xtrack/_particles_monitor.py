@@ -166,5 +166,5 @@ def convert_to_tbt(xline: Line) -> TbtData:
         matrices=matrices,
         bunch_ids=list(range(npart)),
         nturns=nturns,
-        meta={"source_datatype": "xtrack_particle_monitors", "date": pd.Timestamp.now()},
+        meta={"source_datatype": "xtrack_particles_monitor", "date": pd.Timestamp.now()},
     )

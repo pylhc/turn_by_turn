@@ -7,7 +7,7 @@ import xtrack as xt
 from tests.test_lhc_and_general import compare_tbt
 from turn_by_turn.io import convert_to_tbt as io_convert_to_tbt
 from turn_by_turn.structures import TbtData
-from turn_by_turn.xtrack import _multi_element_monitor, _particle_monitors
+from turn_by_turn.xtrack import _multi_element_monitor, _particles_monitor
 from turn_by_turn.xtrack.converter import convert_to_tbt as xtrack_convert_to_tbt
 from turn_by_turn.xtrack.converter import read_tbt
 
@@ -21,14 +21,14 @@ def test_convert_xsuite(example_line: xt.Line, example_fake_tbt: TbtData):
     example_line.track(particles, num_turns=3)
 
     # Convert to TbtData using xtrack
-    tbt_data = _particle_monitors.convert_to_tbt(example_line)
+    tbt_data = _particles_monitor.convert_to_tbt(example_line)
     compare_tbt(example_fake_tbt, tbt_data, no_binary=True)
-    assert tbt_data.meta["source_datatype"] == "xtrack_particle_monitors"
+    assert tbt_data.meta["source_datatype"] == "xtrack_particles_monitor"
 
     # Now convert using the generic function
     tbt_data = io_convert_to_tbt(example_line, datatype="xtrack")
     compare_tbt(example_fake_tbt, tbt_data, no_binary=True)
-    assert tbt_data.meta["source_datatype"] == "xtrack_particle_monitors"
+    assert tbt_data.meta["source_datatype"] == "xtrack_particles_monitor"
 
 
 @pytest.mark.skipif(sys.platform == "win32", reason="xtrack not supported on Windows")
