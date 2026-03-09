@@ -1,0 +1,466 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAD-NG &mdash; turn_by_turn 1.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=988d0652" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=bb516dca"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="ASCII" href="../readers/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/omc_logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html#io">IO</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#reading-data">Reading Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#writing-data">Writing Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#supported-modules-and-limitations">Supported Modules and Limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/index.html#api">API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html#structures">Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html#utils">Utils</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Readers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readers/index.html">ASCII</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readers/index.html#doros">DOROS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readers/index.html#iota">Iota</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readers/index.html#lhc">LHC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readers/index.html#sps">SPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readers/index.html#ptc">PTC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readers/index.html#trackone">Trackone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readers/index.html#superkekb">SuperKEKB</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Converters</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">MAD-NG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#xtrack-tbt-conversion">XTrack TbT Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#xtrack-tbt-conversion-from-multi-element-monitor">XTrack TbT Conversion from Multi-Element Monitor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#xtrack-tbt-conversion-from-particle-monitors">XTrack TbT Conversion from Particle Monitors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Usage</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">turn_by_turn</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">MAD-NG</li>
+      <li class="wy-breadcrumbs-aside">
+              <!-- User defined GitHub URL -->
+              <a href="https://github.com/pylhc/turn_by_turn" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mad-ng">
+<h1>MAD-NG<a class="headerlink" href="#mad-ng" title="Link to this heading"></a></h1>
+<p>This module provides functions to read and write turn-by-turn measurement data
+produced by the <code class="docutils literal notranslate"><span class="pre">MAD-NG</span></code> code. MAD-NG stores its tracking data in the <strong>TFS</strong>
+(Table File System) file format.</p>
+<p>Data is loaded into the standardised <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> structure used by <code class="docutils literal notranslate"><span class="pre">turn_by_turn</span></code>,
+allowing easy post-processing and conversion between formats.</p>
+<dl class="simple">
+<dt>Dependencies:</dt><dd><ul class="simple">
+<li><p>Requires the <code class="docutils literal notranslate"><span class="pre">tfs-pandas</span> <span class="pre">&gt;=</span> <span class="pre">4.0.0</span></code> package for compatibility with MAD-NG
+features. Earlier versions does not support MAD-NG TFS files.</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.madng.</span></span><span class="sig-name descname"><span class="pre">convert_to_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tfs.TfsDataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/madng.html#convert_to_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Convert a TFS or pandas DataFrame to a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object.</p>
+<p>This function parses the required turn-by-turn columns, reconstructs the
+particle-by-particle tracking data, and returns a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> instance
+that can be written or converted to other formats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pd.DataFrame</em><em> | </em><em>TfsDataFrame</em>) -- DataFrame containing MAD-NG turn-by-turn tracking data.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The extracted and structured turn-by-turn data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TbtData</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> -- If the input is not a recognised DataFrame type.</p></li>
+<li><p><strong>ValueError</strong> -- If the data structure is inconsistent (e.g., lost particles).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.madng.</span></span><span class="sig-name descname"><span class="pre">read_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/madng.html#read_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Read turn-by-turn data from a MAD-NG TFS file.</p>
+<p>Loads the TFS file using <code class="docutils literal notranslate"><span class="pre">tfs-pandas</span></code> and converts its contents into a
+<code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object for use with the <code class="docutils literal notranslate"><span class="pre">turn_by_turn</span></code> toolkit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em><em> | </em><em>Path</em>) -- Path to the MAD-NG TFS measurement file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The loaded turn-by-turn data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TbtData</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ImportError</strong> -- If the <code class="docutils literal notranslate"><span class="pre">tfs-pandas</span></code> package is not installed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.madng.</span></span><span class="sig-name descname"><span class="pre">write_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tbt_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TbtData</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/madng.html#write_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Write turn-by-turn data to a MAD-NG TFS file.</p>
+<p>Takes a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object and writes its contents to disk in the standard
+TFS format used by MAD-NG, including relevant headers (date, time, origin).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_path</strong> (<em>str</em><em> | </em><em>Path</em>) -- Destination file path for the TFS file.</p></li>
+<li><p><strong>tbt_data</strong> (<em>TbtData</em>) -- The turn-by-turn data to write.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ImportError</strong> -- If the <code class="docutils literal notranslate"><span class="pre">tfs-pandas</span></code> package is not installed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="xtrack-tbt-conversion">
+<h1>XTrack TbT Conversion<a class="headerlink" href="#xtrack-tbt-conversion" title="Link to this heading"></a></h1>
+<p>Helpers to convert data produced by the <code class="docutils literal notranslate"><span class="pre">xtrack</span></code> tracking framework into the
+<code class="docutils literal notranslate"><span class="pre">turn_by_turn</span></code> <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> format.</p>
+<p>This module converts monitor data from <code class="docutils literal notranslate"><span class="pre">xtrack</span></code> into the corresponding
+<code class="docutils literal notranslate"><span class="pre">TbtData</span></code> representation. It currently supports data produced by:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">xtrack.MultiElementMonitor</span></code> recorded via <code class="docutils literal notranslate"><span class="pre">xtrack.Line.record_multi_element_last_track</span></code>.</p></li>
+<li><p>One or more <code class="docutils literal notranslate"><span class="pre">xtrack.ParticlesMonitor</span></code> elements placed in the line.</p></li>
+</ul>
+<p>The appropriate converter is selected based on which monitor data are present
+on the provided <code class="docutils literal notranslate"><span class="pre">xtrack.Line</span></code>. If multi-element monitor data are available, they
+are preferred; otherwise particle monitor data are used.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.xtrack.converter.</span></span><span class="sig-name descname"><span class="pre">convert_to_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Line</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/xtrack/converter.html#convert_to_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Convert tracking results from an <code class="docutils literal notranslate"><span class="pre">xtrack.Line</span></code> into a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object.</p>
+<p>Dispatches to one of the specific converters in <code class="docutils literal notranslate"><span class="pre">turn_by_turn.xtrack</span></code>
+depending on which monitor data is available in the provided <code class="docutils literal notranslate"><span class="pre">Line</span></code>.</p>
+<p>Supported source datatypes and resulting <code class="docutils literal notranslate"><span class="pre">TbtData.meta['source_datatype']</span></code>
+values:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">xtrack_multi_element_monitor</span></code>: when converting from an</dt><dd><p><code class="docutils literal notranslate"><span class="pre">xtrack.MultiElementMonitor</span></code> (via <code class="docutils literal notranslate"><span class="pre">record_multi_element_last_track</span></code>).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">xtrack_particles_monitor</span></code>: when converting from one or more</dt><dd><p><code class="docutils literal notranslate"><span class="pre">xtrack.ParticlesMonitor</span></code> elements.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>xline</strong> (<em>Line</em>) -- An <code class="docutils literal notranslate"><span class="pre">xtrack.Line</span></code> containing monitor data.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The extracted turn-by-turn data. The <code class="docutils literal notranslate"><span class="pre">meta</span></code> mapping contains a
+<code class="docutils literal notranslate"><span class="pre">source_datatype</span></code> key describing the origin of the data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TbtData</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ImportError</strong> -- If the <code class="docutils literal notranslate"><span class="pre">xtrack</span></code> package is not installed.</p></li>
+<li><p><strong>TypeError</strong> -- If the input is not an <code class="docutils literal notranslate"><span class="pre">xtrack.Line</span></code>.</p></li>
+<li><p><strong>ValueError</strong> -- If no suitable monitor data is found on the provided Line.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.xtrack.converter.</span></span><span class="sig-name descname"><span class="pre">read_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/xtrack/converter.html#read_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Not implemented.</p>
+<p>Reading TBT data directly from files is not supported for xtrack.
+Use <code class="docutils literal notranslate"><span class="pre">convert_to_tbt</span></code> to convert an in-memory <code class="docutils literal notranslate"><span class="pre">xtrack.Line</span></code> instead.</p>
+</dd></dl>
+
+<section id="xtrack-tbt-conversion-from-multi-element-monitor">
+<h1>XTrack TbT Conversion from Multi-Element Monitor<a class="headerlink" href="#xtrack-tbt-conversion-from-multi-element-monitor" title="Link to this heading"></a></h1>
+<p>Convert Xsuite <code class="docutils literal notranslate"><span class="pre">MultiElementMonitor</span></code> output into <code class="docutils literal notranslate"><span class="pre">TbtData</span></code>.
+Reference: <a class="reference external" href="https://xsuite.readthedocs.io/en/latest/track.html#multi-element-monitor">https://xsuite.readthedocs.io/en/latest/track.html#multi-element-monitor</a></p>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Track with <code class="docutils literal notranslate"><span class="pre">multi_element_monitor_at</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">xtrack</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xt</span>
+<span class="c1"># place a MultiElementMonitor in the line via the xtrack API</span>
+<span class="n">monitor_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;BPM1&quot;</span><span class="p">,</span> <span class="s2">&quot;BPM2&quot;</span><span class="p">,</span> <span class="s2">&quot;BPM3&quot;</span><span class="p">]</span>
+<span class="n">line</span><span class="o">.</span><span class="n">track</span><span class="p">(</span>
+     <span class="n">particles</span><span class="p">,</span>
+     <span class="n">num_turns</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+     <span class="n">multi_element_monitor_at</span><span class="o">=</span><span class="n">monitor_names</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Convert to <code class="docutils literal notranslate"><span class="pre">turn_by_turn</span></code> data:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.xtrack</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_to_tbt</span>
+
+<span class="n">tbt</span> <span class="o">=</span> <span class="n">convert_to_tbt</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Data is read from <code class="docutils literal notranslate"><span class="pre">line.record_multi_element_last_track</span></code>.</p></li>
+<li><p>The converter expects arrays with shape <code class="docutils literal notranslate"><span class="pre">(turn,</span> <span class="pre">particle,</span> <span class="pre">obs)</span></code> from
+<code class="docutils literal notranslate"><span class="pre">monitor.get(&quot;x&quot;)</span></code> and <code class="docutils literal notranslate"><span class="pre">monitor.get(&quot;y&quot;)</span></code>.</p></li>
+<li><p>Output order follows the order of monitor names provided to <code class="docutils literal notranslate"><span class="pre">multi_element_monitor_at</span></code>,
+independent of the order in which they appear in the line.</p></li>
+</ul>
+</section>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.xtrack._multi_element_monitor.</span></span><span class="sig-name descname"><span class="pre">convert_to_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xt.Line</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/xtrack/_multi_element_monitor.html#convert_to_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Convert <code class="docutils literal notranslate"><span class="pre">xtrack</span></code> multi-element monitor data to <code class="docutils literal notranslate"><span class="pre">TbtData</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>xline</strong> (<em>xt.Line</em>) -- Tracked line containing <code class="docutils literal notranslate"><span class="pre">record_multi_element_last_track</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Turn-by-turn data for each particle and observed element.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TbtData</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> -- If monitor data is missing, or has unexpected shape.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.xtrack._multi_element_monitor.</span></span><span class="sig-name descname"><span class="pre">is_line_suitable_for_conversion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xt.Line</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/xtrack/_multi_element_monitor.html#is_line_suitable_for_conversion"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Check if the given xtrack Line is suitable for conversion to TbtData.</p>
+<p>This function verifies that the Line contains a non None multi-element monitor data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>xline</strong> (<em>xt.Line</em>) -- The xtrack Line to check.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the Line is suitable for conversion, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="xtrack-tbt-conversion-from-particle-monitors">
+<h1>XTrack TbT Conversion from Particle Monitors<a class="headerlink" href="#xtrack-tbt-conversion-from-particle-monitors" title="Link to this heading"></a></h1>
+<p>Convert tracking results produced by one or more <code class="docutils literal notranslate"><span class="pre">xtrack.ParticlesMonitor</span></code>
+elements into the standardised <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> format used by <code class="docutils literal notranslate"><span class="pre">turn_by_turn</span></code>.</p>
+<section id="id1">
+<h2>Usage<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>from turn_by_turn.xtrack import convert_to_tbt</p>
+<p># after building particles and tracking a line containing
+# xt.ParticlesMonitor elements, convert to TbtData:
+tbt = convert_to_tbt(line)</p>
+</div></blockquote>
+<p>Prerequisites for using <code class="docutils literal notranslate"><span class="pre">convert_to_tbt</span></code>:</p>
+<ol class="arabic">
+<li><dl>
+<dt>The input <code class="docutils literal notranslate"><span class="pre">Line</span></code> must contain one or more <code class="docutils literal notranslate"><span class="pre">ParticlesMonitor</span></code> elements</dt><dd><p>positioned at each location where turn-by-turn data is required (e.g., all BPMs).</p>
+<p>A valid monitor setup involves:</p>
+<ul>
+<li><dl class="simple">
+<dt>Placing a <code class="docutils literal notranslate"><span class="pre">xt.ParticlesMonitor</span></code> instance in the line’s element sequence</dt><dd><p>at all the places you would like to observe.</p>
+</dd>
+</dl>
+</li>
+<li><p>Configuring each monitor with identical settings:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">start_at_turn</span></code> (first turn to record, usually 0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stop_at_turn</span></code> (The total number of turns to record, e.g., 100)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_particles</span></code> (number of tracked particles)</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>If any monitor is configured with different parameters, <code class="docutils literal notranslate"><span class="pre">convert_to_tbt</span></code>
+will either find no data or raise an inconsistency error.</p>
+<p>Also, if you specify more turns than were actually tracked, the resulting
+TBT data will include all turns up to the monitor’s configured limit.
+This may result in extra rows filled with zeros for turns where no real
+data was recorded, which might not be desirable for your analysis.</p>
+</dd>
+</dl>
+</li>
+<li><p>Before conversion, you must:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>Build particles with the desired initial coordinates</dt><dd><p>(using <code class="docutils literal notranslate"><span class="pre">line.build_particles(...)</span></code>).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Track those particles through the line for the intended number of turns</dt><dd><p>(using <code class="docutils literal notranslate"><span class="pre">line.track(...,</span> <span class="pre">num_turns=num_turns)</span></code>).</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<p>Once these conditions are met, pass the tracked <code class="docutils literal notranslate"><span class="pre">Line</span></code> to <code class="docutils literal notranslate"><span class="pre">convert_to_tbt</span></code> to
+extract the data from each particle monitor into a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object.</p>
+</section>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.xtrack._particles_monitor.</span></span><span class="sig-name descname"><span class="pre">convert_to_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Line</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/xtrack/_particles_monitor.html#convert_to_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Convert tracking results from an <code class="docutils literal notranslate"><span class="pre">xtrack</span></code> Line into a <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object.</p>
+<p>This function extracts all <code class="docutils literal notranslate"><span class="pre">ParticlesMonitor</span></code> elements found in the Line,
+verifies they contain consistent turn-by-turn data, and assembles the results
+into the standard <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> format. One <code class="docutils literal notranslate"><span class="pre">TransverseData</span></code> matrix is created
+per tracked particle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>xline</strong> (<em>Line</em>) -- An <code class="docutils literal notranslate"><span class="pre">xtrack.Line</span></code> containing at least one <code class="docutils literal notranslate"><span class="pre">ParticlesMonitor</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The extracted turn-by-turn data for all particles and monitors.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TbtData</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> -- If no monitors are found or data is inconsistent.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.xtrack._particles_monitor.</span></span><span class="sig-name descname"><span class="pre">is_line_suitable_for_conversion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Line</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/xtrack/_particles_monitor.html#is_line_suitable_for_conversion"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Check if the given xtrack Line is suitable for conversion to TbtData.</p>
+<p>This function verifies that the Line contains at least one ParticlesMonitor
+and that all monitors have consistent tracking data (same number of turns and particles).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>xline</strong> (<em>xt.Line</em>) -- The xtrack Line to check.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the Line is suitable for conversion, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../readers/index.html" class="btn btn-neutral float-left" title="ASCII" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

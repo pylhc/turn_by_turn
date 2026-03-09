@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.xtrack.converter &mdash; turn_by_turn 1.3.0 documentation</title>
+  <title>turn_by_turn.xtrack.converter &mdash; turn_by_turn 1.3.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=988d0652" />
@@ -13,7 +13,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=1f29e9d3"></script>
+      <script src="../../../_static/documentation_options.js?v=bb516dca"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -64,14 +64,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../readers/index.html#ptc">PTC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readers/index.html#trackone">Trackone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readers/index.html#superkekb">SuperKEKB</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../readers/index.html#mad-ng">MAD-NG</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../readers/index.html#xtrack-tbt-conversion-from-lines">XTrack TbT Conversion from Lines</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../readers/index.html#xtrack-tbt-conversion-from-multi-element-monitor">XTrack TbT Conversion from Multi-Element Monitor</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../readers/index.html#usage">Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Converters</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../converters/index.html">MAD-NG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../converters/index.html#xtrack-tbt-conversion">XTrack TbT Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../converters/index.html#xtrack-tbt-conversion-from-multi-element-monitor">XTrack TbT Conversion from Multi-Element Monitor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../converters/index.html#usage">Usage</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../../readers/index.html#xtrack-tbt-conversion-from-particle-monitors">XTrack TbT Conversion from Particle Monitors</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../readers/index.html#id1">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../converters/index.html#xtrack-tbt-conversion-from-particle-monitors">XTrack TbT Conversion from Particle Monitors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../converters/index.html#id1">Usage</a></li>
 </ul>
 </li>
 </ul>
@@ -102,8 +105,8 @@
              
   <h1>Source code for turn_by_turn.xtrack.converter</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">XTrack TbT Conversion from Lines</span>
-<span class="sd">--------------------------------</span>
+<span class="sd">XTrack TbT Conversion</span>
+<span class="sd">---------------------</span>
 
 <span class="sd">Helpers to convert data produced by the ``xtrack`` tracking framework into the</span>
 <span class="sd">``turn_by_turn`` ``TbtData`` format.</span>
@@ -123,8 +126,8 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">_multi_element_monitor</span> <span class="k">as</span> <span class="n">multi_element_monitor</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">_particle_monitors</span> <span class="k">as</span> <span class="n">particle_monitors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.xtrack</span><span class="w"> </span><span class="kn">import</span> <span class="n">_multi_element_monitor</span> <span class="k">as</span> <span class="n">multi_element_monitor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">turn_by_turn.xtrack</span><span class="w"> </span><span class="kn">import</span> <span class="n">_particles_monitor</span> <span class="k">as</span> <span class="n">particles_monitor</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
@@ -136,7 +139,7 @@
 
 <span class="c1"># Added this function to match the interface, but it is not implemented.</span>
 <div class="viewcode-block" id="read_tbt">
-<a class="viewcode-back" href="../../../readers/index.html#turn_by_turn.xtrack.converter.read_tbt">[docs]</a>
+<a class="viewcode-back" href="../../../converters/index.html#turn_by_turn.xtrack.converter.read_tbt">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">read_tbt</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Not implemented.</span>
@@ -149,7 +152,7 @@
 
 
 <div class="viewcode-block" id="convert_to_tbt">
-<a class="viewcode-back" href="../../../readers/index.html#turn_by_turn.xtrack.converter.convert_to_tbt">[docs]</a>
+<a class="viewcode-back" href="../../../converters/index.html#turn_by_turn.xtrack.converter.convert_to_tbt">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">convert_to_tbt</span><span class="p">(</span><span class="n">xline</span><span class="p">:</span> <span class="n">Line</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TbtData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert tracking results from an ``xtrack.Line`` into a ``TbtData`` object.</span>
@@ -162,7 +165,7 @@
 
 <span class="sd">    - ``xtrack_multi_element_monitor``: when converting from an</span>
 <span class="sd">        ``xtrack.MultiElementMonitor`` (via ``record_multi_element_last_track``).</span>
-<span class="sd">    - ``xtrack_particle_monitors``: when converting from one or more</span>
+<span class="sd">    - ``xtrack_particles_monitor``: when converting from one or more</span>
 <span class="sd">        ``xtrack.ParticlesMonitor`` elements.</span>
 
 <span class="sd">    Args:</span>
@@ -181,7 +184,7 @@
         <span class="kn">import</span><span class="w"> </span><span class="nn">xtrack</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xt</span>
     <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-            <span class="s2">&quot;The &#39;xtrack&#39; package is required to convert xtrack Line objects. &quot;</span>
+            <span class="s2">&quot;The &#39;xtrack&#39; package is required to convert from xtrack monitors. &quot;</span>
             <span class="s2">&quot;Install it with: python -m pip install &#39;turn_by_turn[xtrack]&#39;&quot;</span>
         <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
@@ -191,8 +194,8 @@
     <span class="k">if</span> <span class="n">multi_element_monitor</span><span class="o">.</span><span class="n">is_line_suitable_for_conversion</span><span class="p">(</span><span class="n">xline</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">multi_element_monitor</span><span class="o">.</span><span class="n">convert_to_tbt</span><span class="p">(</span><span class="n">xline</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">particle_monitors</span><span class="o">.</span><span class="n">is_line_suitable_for_conversion</span><span class="p">(</span><span class="n">xline</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">particle_monitors</span><span class="o">.</span><span class="n">convert_to_tbt</span><span class="p">(</span><span class="n">xline</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">particles_monitor</span><span class="o">.</span><span class="n">is_line_suitable_for_conversion</span><span class="p">(</span><span class="n">xline</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">particles_monitor</span><span class="o">.</span><span class="n">convert_to_tbt</span><span class="p">(</span><span class="n">xline</span><span class="p">)</span>
 
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
         <span class="s2">&quot;No suitable monitor data found on the provided xtrack.Line. &quot;</span>
