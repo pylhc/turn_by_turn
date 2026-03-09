@@ -20,8 +20,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from . import _multi_element_monitor as multi_element_monitor
-from . import _particle_monitors as particle_monitors
+from turn_by_turn.xtrack import _multi_element_monitor as multi_element_monitor
+from turn_by_turn.xtrack import _particle_monitors as particle_monitors
 
 if TYPE_CHECKING:
     from pathlib import Path
