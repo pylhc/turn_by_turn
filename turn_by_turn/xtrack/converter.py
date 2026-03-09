@@ -21,7 +21,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from turn_by_turn.xtrack import _multi_element_monitor as multi_element_monitor
-from turn_by_turn.xtrack import _particles_monitor as particle_monitors
+from turn_by_turn.xtrack import _particles_monitor as particles_monitor
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -83,8 +83,8 @@ def convert_to_tbt(xline: Line) -> TbtData:
     if multi_element_monitor.is_line_suitable_for_conversion(xline):
         return multi_element_monitor.convert_to_tbt(xline)
 
-    if particle_monitors.is_line_suitable_for_conversion(xline):
-        return particle_monitors.convert_to_tbt(xline)
+    if particles_monitor.is_line_suitable_for_conversion(xline):
+        return particles_monitor.convert_to_tbt(xline)
 
     raise ValueError(
         "No suitable monitor data found on the provided xtrack.Line. "
