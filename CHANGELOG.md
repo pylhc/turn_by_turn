@@ -4,11 +4,14 @@ All notable changes to **turn_by_turn** will be documented in this file.
 
 ### v1.3.2 - 2026-04-09
 
-Patch release with PSB reader follow-up updates.
+PSB-focused update branch.
+
+This update is scoped to PSB support only. Non-PSB behavior follows master.
 
 **Added:**
 
-- Added dedicated PSB-vs-LHC data consistency tests using committed test inputs.
+- New PSB reader module for PSB SDDS files.
+- Focused PSB test suite, including PSB-vs-LHC data consistency checks.
 
 **Changed:**
 
