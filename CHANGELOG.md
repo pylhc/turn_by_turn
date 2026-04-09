@@ -2,6 +2,19 @@
 
 All notable changes to **turn_by_turn** will be documented in this file.
 
+### v1.3.2 - 2026-04-09
+
+Patch release with PSB reader follow-up updates.
+
+**Added:**
+
+- Added dedicated PSB-vs-LHC data consistency tests using committed test inputs.
+
+**Changed:**
+
+- Standardized PSB test input file names under `tests/inputs`.
+- Clarified in documentation that PSB support is read-only and may evolve after the CERN long shutdown.
+
 ### v1.3.1 - 2026-03-09
 
 Patch release to fix a default import of `xtrack` when importing `turn_by_turn`.
