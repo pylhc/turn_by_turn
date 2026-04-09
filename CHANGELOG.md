@@ -4,19 +4,11 @@ All notable changes to **turn_by_turn** will be documented in this file.
 
 ### v1.3.2 - 2026-04-09
 
-PSB-focused update branch.
-
-This update is scoped to PSB support only. Non-PSB behavior follows master.
+This patch release adds PSB file reading support.
 
 **Added:**
 
-- New PSB reader module for PSB SDDS files.
-- Focused PSB test suite, including PSB-vs-LHC data consistency checks.
-
-**Changed:**
-
-- Standardized PSB test input file names under `tests/inputs`.
-- Clarified in documentation that PSB support is read-only and may evolve after the CERN long shutdown.
+- New `psb` reader module for PSB SDDS files.
 
 ### v1.3.1 - 2026-03-09
 
