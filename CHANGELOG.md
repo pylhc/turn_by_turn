@@ -6,10 +6,6 @@ All notable changes to **turn_by_turn** will be documented in this file.
 
 This patch release adds PSB file reading support.
 
-**Added:**
-
-- New `psb` reader module for PSB SDDS files.
-
 ### v1.3.1 - 2026-03-09
 
 Patch release to fix a default import of `xtrack` when importing `turn_by_turn`.
