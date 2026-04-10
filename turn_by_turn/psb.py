@@ -6,8 +6,8 @@ Data handling for turn-by-turn measurement files from the ``PSB`` (Proton Synchr
 (files in **SDDS** format).
 
 .. note::
-    The PSB file structure and reader behavior may change after the CERN long shutdown.
-    Treat this reader as subject to updates when new post-shutdown data becomes available.
+    The PSB file structure and reader behavior may change after the CERN LS3.
+    Treat this reader as subject to updates (or removal) when new post-shutdown data format is known.
 """
 
 from __future__ import annotations
