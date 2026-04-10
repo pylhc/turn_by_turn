@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ASCII &mdash; turn_by_turn 1.3.1 documentation</title>
+  <title>ASCII &mdash; turn_by_turn 1.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=988d0652" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=bb516dca"></script>
+      <script src="../_static/documentation_options.js?v=9172181d"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -67,6 +67,7 @@
 <li class="toctree-l1"><a class="reference internal" href="#ptc">PTC</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#trackone">Trackone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#superkekb">SuperKEKB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#psb">PSB</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Converters</span></p>
 <ul>
@@ -595,6 +596,30 @@ with regex. The extension is usually <cite>.data</cite>.</p>
 <li><p><strong>file_path</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>]</em>) -- path to the output turn-by-turn measurement file.</p></li>
 <li><p><strong>tbt_data</strong> (<em>TbtData</em>) -- turn-by-turn data to write.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="psb">
+<h1>PSB<a class="headerlink" href="#psb" title="Link to this heading"></a></h1>
+<p>Data handling for turn-by-turn measurement files from the <code class="docutils literal notranslate"><span class="pre">PSB</span></code> (Proton Synchrotron Booster)
+(files in <strong>SDDS</strong> format).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The PSB file structure and reader behavior may change after the CERN LS3.
+Treat this reader as subject to updates (or removal) when new post-shutdown data format is known.</p>
+</div>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">turn_by_turn.psb.</span></span><span class="sig-name descname"><span class="pre">read_tbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TbtData</span></span></span><a class="reference internal" href="../_modules/turn_by_turn/psb.html#read_tbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Reads turn-by-turn data from the <code class="docutils literal notranslate"><span class="pre">PSB</span></code>’s <strong>SDDS</strong> format file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>]</em>) -- path to the turn-by-turn measurement file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <code class="docutils literal notranslate"><span class="pre">TbtData</span></code> object with the loaded data.</p>
 </dd>
 </dl>
 </dd></dl>
