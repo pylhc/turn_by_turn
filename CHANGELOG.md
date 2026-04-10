@@ -2,9 +2,9 @@
 
 All notable changes to **turn_by_turn** will be documented in this file.
 
-### v1.3.2 - 2026-04-09
+### v1.4.0 - 2026-04-10
 
-This patch release adds PSB file reading support.
+This minor release adds PSB file reading support.
 
 ### v1.3.1 - 2026-03-09
 

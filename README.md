@@ -10,7 +10,7 @@
 This package provides reading functionality for turn-by-turn BPM measurements data from different particle accelerators.
 It also provides writing functionality in the `LHC`'s own SDDS format, through our `sdds` package.
 Supported accelerators include: LHC, SPS, PSB, IOTA, SuperKEKB, and others.
-PSB support is currently read-only and may evolve after the CERN long shutdown.
+PSB support is currently read-only and may change during LS3.
 Files are read into a custom-made `TbtData` dataclass encompassing the relevant information.
 
 See the [API documentation](https://pylhc.github.io/turn_by_turn/) for details.

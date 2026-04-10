@@ -66,14 +66,14 @@ The following table summarizes which modules support disk reading and in-memory 
     +-------------+---------------------+-----------------------+---------------------------------------------------------------+
     | superkekb   | Yes                 | No                    | Reads SuperKEKB files.                                        |
     +-------------+---------------------+-----------------------+---------------------------------------------------------------+
-    | psb         | Yes (SDDS)          | No                    | Reads PSB SDDS files (read-only; may change after long shutdown). |
+    | psb         | Yes (SDDS)          | No                    | Reads PSB SDDS files (read-only; may be removed after LS3).   |
     +-------------+---------------------+-----------------------+---------------------------------------------------------------+
 
 - In-memory converters: ``madng``, ``xtrack_line.particle_monitors``, ``xtrack_line.multi_element_monitor``.
 - Most modules are for disk reading only.
 - Some modules are experimental or have limited support.
 - PSB module is read-only.
-- PSB support may evolve after the CERN long shutdown as file conventions are updated.
+- After/During LS3, the file formats for the PSB and SPS may change to be more similar to the LHC's SDDS.
 
 API
 ===

@@ -48,7 +48,7 @@ def read_tbt(file_path: str | Path) -> TbtData:
         file_path (Union[str, Path]): path to the turn-by-turn measurement file.
 
     Returns:
-        A ``TbTData`` object with the loaded data.
+        A ``TbtData`` object with the loaded data.
     """
     file_path = Path(file_path)
     LOGGER.debug(f"Reading PSB file at path: '{file_path.absolute()}'")
@@ -58,6 +58,11 @@ def read_tbt(file_path: str | Path) -> TbtData:
     bunch_ids = sdds_file.values[BUNCH_ID if BUNCH_ID in sdds_file.values else HOR_BUNCH_ID]
 
     if len(bunch_ids) > nbunches:
+        LOGGER.info(
+            f"Number of bunch IDs ({len(bunch_ids)}) exceeds number of bunches ({nbunches}). "
+            f"Truncating bunch IDs to match number of bunches."
+            f"This could happen when you kick fewer bunches than the total in the machine."
+        )
         bunch_ids = bunch_ids[:nbunches]
 
     nturns = sdds_file.values[N_TURNS]

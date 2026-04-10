@@ -17,18 +17,12 @@ LHC_CONVERTED_FILE = INPUTS_DIR / "test_psb_as_lhc.sdds"
 
 @pytest.fixture(scope="module")
 def _psb_file() -> Path:
-    psb_path = Path(PSB_FILE).resolve()
-    if not psb_path.exists():
-        pytest.skip(f"PSB test file not found at {psb_path}")
-    return psb_path
+    return Path(PSB_FILE).resolve()
 
 
 @pytest.fixture(scope="module")
 def _lhc_converted_file() -> Path:
-    lhc_path = Path(LHC_CONVERTED_FILE).resolve()
-    if not lhc_path.exists():
-        pytest.skip(f"LHC converted test file not found at {lhc_path}")
-    return lhc_path
+    return Path(LHC_CONVERTED_FILE).resolve()
 
 
 def test_read_psb_core_fields(_psb_file):
