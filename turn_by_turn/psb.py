@@ -58,7 +58,7 @@ def read_tbt(file_path: str | Path) -> TbtData:
     bunch_ids = sdds_file.values[BUNCH_ID if BUNCH_ID in sdds_file.values else HOR_BUNCH_ID]
 
     if len(bunch_ids) > nbunches:
-        LOGGER.info(
+        LOGGER.debug(
             f"Number of bunch IDs ({len(bunch_ids)}) exceeds number of bunches ({nbunches}). "
             f"Truncating bunch IDs to match number of bunches."
             f"This could happen when you kick fewer bunches than the total in the machine."
