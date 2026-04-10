@@ -61,7 +61,7 @@ def read_tbt(file_path: str | Path) -> TbtData:
         bunch_ids = bunch_ids[:nbunches]
 
     nturns = sdds_file.values[N_TURNS]
-    # PSB uses milliseconds, so divide by 1e6 to get seconds for datetime conversion
+    # PSB uses milliseconds, so divide by 1e3 to get seconds for datetime conversion
     date = datetime.fromtimestamp(sdds_file.values[ACQ_STAMP] / 1e3, tz=tz.tzutc())
     bpm_names = sdds_file.values[BPM_NAMES]
     nbpms = len(bpm_names)
