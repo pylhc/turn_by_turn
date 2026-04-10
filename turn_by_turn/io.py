@@ -72,7 +72,7 @@ The following table summarizes which modules support disk reading and in-memory 
 - In-memory converters: ``madng``, ``xtrack_line.particle_monitors``, ``xtrack_line.multi_element_monitor``.
 - Most modules are for disk reading only.
 - Some modules are experimental or have limited support.
-- PSB module is read-only (no write support).
+- PSB module is read-only.
 - PSB support may evolve after the CERN long shutdown as file conventions are updated.
 
 API
