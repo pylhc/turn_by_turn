@@ -2,6 +2,10 @@
 
 All notable changes to **turn_by_turn** will be documented in this file.
 
+### v1.4.0 - 2026-04-10
+
+This minor release adds PSB file reading support.
+
 ### v1.3.1 - 2026-03-09
 
 Patch release to fix a default import of `xtrack` when importing `turn_by_turn`.

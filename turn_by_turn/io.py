@@ -66,10 +66,14 @@ The following table summarizes which modules support disk reading and in-memory 
     +-------------+---------------------+-----------------------+---------------------------------------------------------------+
     | superkekb   | Yes                 | No                    | Reads SuperKEKB files.                                        |
     +-------------+---------------------+-----------------------+---------------------------------------------------------------+
+    | psb         | Yes (SDDS)          | No                    | Reads PSB SDDS files (read-only; may be removed after LS3).   |
+    +-------------+---------------------+-----------------------+---------------------------------------------------------------+
 
 - In-memory converters: ``madng``, ``xtrack_line.particle_monitors``, ``xtrack_line.multi_element_monitor``.
 - Most modules are for disk reading only.
 - Some modules are experimental or have limited support.
+- PSB module is read-only.
+- After/During LS3, the file formats for the PSB and SPS may change to be more similar to the LHC's SDDS.
 
 API
 ===
@@ -87,6 +91,7 @@ from turn_by_turn import (
     iota,
     lhc,
     madng,
+    psb,
     ptc,
     sps,
     superkekb,
@@ -107,6 +112,7 @@ if TYPE_CHECKING:
 
 TBT_MODULES = {
     "lhc": lhc,
+    "psb": psb,
     "doros": doros,
     "doros_positions": doros,
     "doros_oscillations": doros,
