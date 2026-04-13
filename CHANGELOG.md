@@ -2,6 +2,10 @@
 
 All notable changes to **turn_by_turn** will be documented in this file.
 
+### v1.4.1 - 2026-04-13
+
+Adds an alias for the PSB module, `psbooster`, for compatibility with the beta-beat GUI.
+
 ### v1.4.0 - 2026-04-10
 
 This minor release adds PSB file reading support.
