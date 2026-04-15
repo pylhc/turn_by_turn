@@ -9,7 +9,7 @@
 | turn\_by\_turn/constants.py                        |       13 |        0 |    100% |           |
 | turn\_by\_turn/doros.py                            |       91 |        6 |     93% |109-110, 115-116, 175-176 |
 | turn\_by\_turn/errors.py                           |        9 |        0 |    100% |           |
-| turn\_by\_turn/io.py                               |       47 |        3 |     94% |188, 226-227 |
+| turn\_by\_turn/io.py                               |       47 |        3 |     94% |190, 228-229 |
 | turn\_by\_turn/iota.py                             |       80 |        2 |     98% |     52-53 |
 | turn\_by\_turn/lhc.py                              |       46 |        0 |    100% |           |
 | turn\_by\_turn/madng.py                            |       86 |        7 |     92% |70-71, 120-121, 127, 191-192 |
