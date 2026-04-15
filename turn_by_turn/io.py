@@ -73,6 +73,7 @@ The following table summarizes which modules support disk reading and in-memory 
 - Most modules are for disk reading only.
 - Some modules are experimental or have limited support.
 - PSB module is read-only.
+- The PSB module also has the alias ``psbooster`` as this is what the beta-beat GUI calls it.
 - After/During LS3, the file formats for the PSB and SPS may change to be more similar to the LHC's SDDS.
 
 API
@@ -113,6 +114,7 @@ if TYPE_CHECKING:
 TBT_MODULES = {
     "lhc": lhc,
     "psb": psb,
+    "psbooster": psb,
     "doros": doros,
     "doros_positions": doros,
     "doros_oscillations": doros,
