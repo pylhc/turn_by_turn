@@ -63,6 +63,7 @@ xtrack = [
 test = [
     "pytest>=7.0",
     "pytest-cov>=2.9",
+    "xsuite",  # or it bugs out on prebuilt kernels
     "turn_by_turn[madng]",
     "turn_by_turn[xtrack]",
 ]
