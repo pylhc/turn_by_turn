@@ -54,18 +54,16 @@ madng = [
     "tfs-pandas >= 4.0.0",   # for reading MAD-NG files (Could do everything in memory with just pandas)
 ]
 
-xtrack = [
-    "xtrack >= 0.99.0",      # for xtrack
-    "setuptools >= 65",      # for xtrack
-    "xpart >= 0.23.8",       # for xtrack
+xsuite = [
+    "xsuite >= 0.54.6; sys_platform != 'win32'",
 ]
+
 
 test = [
     "pytest>=7.0",
     "pytest-cov>=2.9",
-    "xsuite",  # or it bugs out on prebuilt kernels
     "turn_by_turn[madng]",
-    "turn_by_turn[xtrack]",
+    "turn_by_turn[xsuite]",
 ]
 
 doc = [
@@ -77,7 +75,7 @@ all = [
     "turn_by_turn[test]",
     "turn_by_turn[doc]",
     "turn_by_turn[madng]",
-    "turn_by_turn[xtrack]",
+    "turn_by_turn[xsuite]",
 ]
 
 [project.urls]

@@ -2,6 +2,8 @@ import sys
 
 import numpy as np
 import pytest
+
+pytest.importorskip("xtrack")  # Skip all tests in this file if xtrack is not installed
 import xtrack as xt
 
 from tests.test_lhc_and_general import compare_tbt
