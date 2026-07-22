@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>turn_by_turn.psb &mdash; turn_by_turn 1.4.1 documentation</title>
+  <title>turn_by_turn.psb &mdash; turn_by_turn 1.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=988d0652" />
@@ -13,7 +13,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=350a9c04"></script>
+      <script src="../../_static/documentation_options.js?v=e0a75244"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -146,6 +146,19 @@
     <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="s2">&quot;verPositionsConcentratedAndSorted&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
+<span class="c1"># The PSB beam travels counter-clockwise, so the BPM pickups measure horizontal</span>
+<span class="c1"># position with the opposite sign to the MAD-X / tracking coordinate system:</span>
+<span class="c1">#</span>
+<span class="c1">#     x_bpm = -x_tracking</span>
+<span class="c1">#</span>
+<span class="c1"># The raw SDDS payload is in the hardware convention. We invert it here, at the</span>
+<span class="c1"># single point where PSB files enter the codebase, so that every consumer -- omc3</span>
+<span class="c1"># included -- works in the standard tracking frame. Do not apply this correction</span>
+<span class="c1"># a second time downstream.</span>
+<span class="c1">#</span>
+<span class="c1"># Vertical is unaffected. Units are left as-is (millimetres, as stored).</span>
+<span class="n">X_SIGN</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+
 
 <div class="viewcode-block" id="read_tbt">
 <a class="viewcode-back" href="../../readers/index.html#turn_by_turn.psb.read_tbt">[docs]</a>
@@ -156,8 +169,11 @@
 <span class="sd">    Args:</span>
 <span class="sd">        file_path (Union[str, Path]): path to the turn-by-turn measurement file.</span>
 
+<span class="sd">    The horizontal plane is inverted on read to convert from the PSB BPM hardware</span>
+<span class="sd">    convention to the MAD-X / tracking convention -- see ``X_SIGN`` above.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        A ``TbtData`` object with the loaded data.</span>
+<span class="sd">        A ``TbtData`` object with the loaded data, horizontal sign corrected.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reading PSB file at path: &#39;</span><span class="si">{</span><span class="n">file_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
@@ -183,7 +199,7 @@
 
     <span class="n">matrices</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">TransverseData</span><span class="p">(</span>
-            <span class="n">X</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">bpm_names</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">][:,</span> <span class="n">idx</span><span class="p">,</span> <span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+            <span class="n">X</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">bpm_names</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">X_SIGN</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">][:,</span> <span class="n">idx</span><span class="p">,</span> <span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
             <span class="n">Y</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">bpm_names</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Y&quot;</span><span class="p">][:,</span> <span class="n">idx</span><span class="p">,</span> <span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbunches</span><span class="p">)</span>
