@@ -44,7 +44,7 @@ POSITIONS: dict[str, str] = {
 #
 #     x_bpm = -x_tracking
 #
-# The raw SDDS payload is in the hardware convention. We negate it here, at the
+# The raw SDDS payload is in the hardware convention. We invert it here, at the
 # single point where PSB files enter the codebase, so that every consumer -- omc3
 # included -- works in the standard tracking frame. Do not apply this correction
 # a second time downstream.
@@ -60,7 +60,7 @@ def read_tbt(file_path: str | Path) -> TbtData:
     Args:
         file_path (Union[str, Path]): path to the turn-by-turn measurement file.
 
-    The horizontal plane is negated on read to convert from the PSB BPM hardware
+    The horizontal plane is inverted on read to convert from the PSB BPM hardware
     convention to the MAD-X / tracking convention -- see ``X_SIGN`` above.
 
     Returns:

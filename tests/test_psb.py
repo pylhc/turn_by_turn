@@ -64,7 +64,7 @@ def test_read_psb_via_io_dispatch(_psb_file):
 def test_psb_and_lhc_converted_data_match(_psb_file, _lhc_converted_file):
     """PSB data must match the previously converted LHC file values (from Ewen).
 
-    Horizontal is negated by the PSB reader (``psb.X_SIGN``) to convert from the
+    Horizontal sign is inverted by the PSB reader (``psb.X_SIGN``) to convert from the
     BPM hardware convention to the tracking convention. The LHC reader applies no
     such correction, so on the converted copy of the same file the two readers
     must agree in Y and differ by exactly a sign in X.
@@ -87,8 +87,8 @@ def test_psb_and_lhc_converted_data_match(_psb_file, _lhc_converted_file):
     np.testing.assert_allclose(matrix_psb.Y.to_numpy(), matrix_lhc.Y.to_numpy(), rtol=0.0, atol=1e-8)
 
 
-def test_psb_negates_horizontal_against_raw_sdds(monkeypatch, tmp_path):
-    """The reader must negate X and leave Y untouched, exactly."""
+def test_psb_inverts_horizontal_against_raw_sdds(monkeypatch, tmp_path):
+    """The reader must invert the horizontal sign and leave Y untouched, exactly."""
     fake_values = {
         psb.N_BUNCHES: 1,
         psb.N_TURNS: 2,
