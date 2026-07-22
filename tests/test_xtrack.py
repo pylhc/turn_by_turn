@@ -2,6 +2,8 @@ import sys
 
 import numpy as np
 import pytest
+
+pytest.importorskip("xtrack")  # Skip all tests in this file if xtrack is not installed
 import xtrack as xt
 
 from tests.test_lhc_and_general import compare_tbt
@@ -12,7 +14,6 @@ from turn_by_turn.xtrack.converter import convert_to_tbt as xtrack_convert_to_tb
 from turn_by_turn.xtrack.converter import read_tbt
 
 
-@pytest.mark.skipif(sys.platform == "win32", reason="xtrack not supported on Windows")
 def test_convert_xsuite(example_line: xt.Line, example_fake_tbt: TbtData):
     # Build the particles
     particles = example_line.build_particles(x=[1e-3, -1e-3], y=[-1e-3, 1e-3])
@@ -31,7 +32,6 @@ def test_convert_xsuite(example_line: xt.Line, example_fake_tbt: TbtData):
     assert tbt_data.meta["source_datatype"] == "xtrack_particles_monitor"
 
 
-@pytest.mark.skipif(sys.platform == "win32", reason="xtrack not supported on Windows")
 @pytest.mark.skipif(
     xt.__version__ < "0.99.0", reason="xtrack version does not support multi-element monitor"
 )
@@ -49,7 +49,6 @@ def test_convert_xsuite_multi_element_monitor(example_line: xt.Line, example_fak
     assert tbt_data.meta["source_datatype"] == "xtrack_multi_element_monitor"
 
 
-@pytest.mark.skipif(sys.platform == "win32", reason="xtrack not supported on Windows")
 def test_read_tbt_raises_not_implemented():
     with pytest.raises(
         NotImplementedError, match="Reading TBT data from xtrack Line files is not implemented"
@@ -63,7 +62,6 @@ def test_convert_to_tbt_invalid_type():
         xtrack_convert_to_tbt("not a line")  # ty:ignore[invalid-argument-type]
 
 
-@pytest.mark.skipif(sys.platform == "win32", reason="xtrack not supported on Windows")
 def test_convert_to_tbt_no_monitors():
     # Create a line without monitors
     line = xt.Line(elements=[xt.Drift(length=1.0)], element_names=["drift"])
