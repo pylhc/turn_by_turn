@@ -5,6 +5,8 @@ All notable changes to **turn_by_turn** will be documented in this file.
 ### v1.5.0 - 2026-07-23
 
 Now, when reading PSB files, the horizontal position of the BPM is inverted to match the model convention, as the PSB runs anticlockwise.
+Also changed the optional `xtrack` dependency to `xsuite`, installing xsuite >= 0.54.6 when not on Windows, as now we need the full `xsuite` package for anything related to `xtrack`.
+Please note that as of this release, [xsuite issue \#852](https://github.com/xsuite/xsuite/issues/852) means that setuptools will not be automatically installed, so if any elements need rebuilding, you will need to install setuptools manually.
 
 
 ### v1.4.1 - 2026-04-13
