@@ -2,6 +2,11 @@
 
 All notable changes to **turn_by_turn** will be documented in this file.
 
+### v1.5.0 - 2026-07-23
+
+Now, when reading PSB files, the horizontal position of the BPM is inverted to match the model convention, as the PSB runs anticlockwise.
+
+
 ### v1.4.1 - 2026-04-13
 
 Adds an alias for the PSB module, `psbooster`, for compatibility with the beta-beat GUI.

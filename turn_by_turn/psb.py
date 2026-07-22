@@ -39,6 +39,19 @@ POSITIONS: dict[str, str] = {
     "Y": "verPositionsConcentratedAndSorted",
 }
 
+# The PSB beam travels counter-clockwise, so the BPM pickups measure horizontal
+# position with the opposite sign to the MAD-X / tracking coordinate system:
+#
+#     x_bpm = -x_tracking
+#
+# The raw SDDS payload is in the hardware convention. We invert it here, at the
+# single point where PSB files enter the codebase, so that every consumer -- omc3
+# included -- works in the standard tracking frame. Do not apply this correction
+# a second time downstream.
+#
+# Vertical is unaffected. Units are left as-is (millimetres, as stored).
+X_SIGN: float = -1.0
+
 
 def read_tbt(file_path: str | Path) -> TbtData:
     """
@@ -47,8 +60,11 @@ def read_tbt(file_path: str | Path) -> TbtData:
     Args:
         file_path (Union[str, Path]): path to the turn-by-turn measurement file.
 
+    The horizontal plane is inverted on read to convert from the PSB BPM hardware
+    convention to the MAD-X / tracking convention -- see ``X_SIGN`` above.
+
     Returns:
-        A ``TbtData`` object with the loaded data.
+        A ``TbtData`` object with the loaded data, horizontal sign corrected.
     """
     file_path = Path(file_path)
     LOGGER.debug(f"Reading PSB file at path: '{file_path.absolute()}'")
@@ -74,7 +90,7 @@ def read_tbt(file_path: str | Path) -> TbtData:
 
     matrices = [
         TransverseData(
-            X=pd.DataFrame(index=bpm_names, data=data["X"][:, idx, :], dtype=float),
+            X=pd.DataFrame(index=bpm_names, data=X_SIGN * data["X"][:, idx, :], dtype=float),
             Y=pd.DataFrame(index=bpm_names, data=data["Y"][:, idx, :], dtype=float),
         )
         for idx in range(nbunches)

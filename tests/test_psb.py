@@ -62,7 +62,13 @@ def test_read_psb_via_io_dispatch(_psb_file):
 
 
 def test_psb_and_lhc_converted_data_match(_psb_file, _lhc_converted_file):
-    """Core regression test: PSB data must match the converted LHC file values."""
+    """PSB data must match the previously converted LHC file values (from Ewen).
+
+    Horizontal sign is inverted by the PSB reader (``psb.X_SIGN``) to convert from the
+    BPM hardware convention to the tracking convention. The LHC reader applies no
+    such correction, so on the converted copy of the same file the two readers
+    must agree in Y and differ by exactly a sign in X.
+    """
     tbt_psb = read_tbt(_psb_file, datatype="psb")
     tbt_lhc = read_tbt(_lhc_converted_file, datatype="lhc")
 
@@ -75,8 +81,29 @@ def test_psb_and_lhc_converted_data_match(_psb_file, _lhc_converted_file):
     assert list(matrix_psb.X.index) == list(matrix_lhc.X.index)
     assert list(matrix_psb.Y.index) == list(matrix_lhc.Y.index)
 
-    np.testing.assert_allclose(matrix_psb.X.to_numpy(), matrix_lhc.X.to_numpy(), rtol=0.0, atol=1e-8)
+    np.testing.assert_allclose(
+        matrix_psb.X.to_numpy(), psb.X_SIGN * matrix_lhc.X.to_numpy(), rtol=0.0, atol=1e-8
+    )
     np.testing.assert_allclose(matrix_psb.Y.to_numpy(), matrix_lhc.Y.to_numpy(), rtol=0.0, atol=1e-8)
+
+
+def test_psb_inverts_horizontal_against_raw_sdds(monkeypatch, tmp_path):
+    """The reader must invert the horizontal sign and leave Y untouched, exactly."""
+    fake_values = {
+        psb.N_BUNCHES: 1,
+        psb.N_TURNS: 2,
+        psb.ACQ_STAMP: 1775638241670,
+        psb.BPM_NAMES: np.array(["BPM.TEST"], dtype=object),
+        psb.BUNCH_ID: np.array([0], dtype=int),
+        psb.POSITIONS["X"]: np.array([1.0, -2.0], dtype=float),
+        psb.POSITIONS["Y"]: np.array([3.0, -4.0], dtype=float),
+    }
+    monkeypatch.setattr(psb.sdds, "read", lambda _path: SimpleNamespace(values=fake_values))
+
+    matrix = psb.read_tbt(tmp_path / "dummy.sdds").matrices[0]
+
+    np.testing.assert_allclose(matrix.X.to_numpy(), np.array([[-1.0, 2.0]]))
+    np.testing.assert_allclose(matrix.Y.to_numpy(), np.array([[3.0, -4.0]]))
 
 
 def test_hor_bunch_id_fallback_and_truncation(monkeypatch, tmp_path):
