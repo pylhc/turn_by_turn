@@ -13,7 +13,7 @@
 | turn\_by\_turn/iota.py                             |       80 |        2 |     98% |     52-53 |
 | turn\_by\_turn/lhc.py                              |       46 |        0 |    100% |           |
 | turn\_by\_turn/madng.py                            |       86 |        7 |     92% |70-71, 120-121, 127, 191-192 |
-| turn\_by\_turn/psb.py                              |       34 |        0 |    100% |           |
+| turn\_by\_turn/psb.py                              |       35 |        0 |    100% |           |
 | turn\_by\_turn/ptc.py                              |      138 |        7 |     95% |141, 160-161, 193-194, 225, 230 |
 | turn\_by\_turn/sps.py                              |       64 |        3 |     95% |59, 125-126 |
 | turn\_by\_turn/structures.py                       |       45 |        3 |     93% |46, 87, 124 |
@@ -24,7 +24,7 @@
 | turn\_by\_turn/xtrack/\_multi\_element\_monitor.py |       26 |       15 |     42% |    84-112 |
 | turn\_by\_turn/xtrack/\_particles\_monitor.py      |       35 |        4 |     89% |113, 121, 129, 137 |
 | turn\_by\_turn/xtrack/converter.py                 |       18 |        3 |     83% | 74-75, 84 |
-| **TOTAL**                                          |  **986** |   **69** | **93%** |           |
+| **TOTAL**                                          |  **987** |   **69** | **93%** |           |
 
 
 ## Setup coverage badge
