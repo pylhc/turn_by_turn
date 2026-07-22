@@ -42,6 +42,11 @@
         {
             "name": "Tobias Persson",
             "affiliation": "CERN"
+        },
+        {
+            "name": "Joshua Mark Gray",
+            "affiliation": "Nikhef & CERN",
+            "orcid": "0009-0003-4396-6286"
         }
     ],
     "title": "Turn-by-Turn",
